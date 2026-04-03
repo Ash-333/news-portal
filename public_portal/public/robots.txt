@@ -1,0 +1,25 @@
+# *
+User-agent: *
+Allow: /
+Disallow: /login
+Disallow: /register
+Disallow: /profile
+Disallow: /bookmarks
+Disallow: /search
+
+# Googlebot-News
+User-agent: Googlebot-News
+Allow: /
+Disallow: /login
+Disallow: /register
+Disallow: /profile
+Disallow: /bookmarks
+Disallow: /search
+
+# Host
+Host: http://localhost:3001
+
+# Sitemaps
+Sitemap: http://localhost:3001/sitemap.xml
+Sitemap: http://localhost:3001/sitemap-news.xml
+Sitemap: http://localhost:3001/sitemap-images.xml

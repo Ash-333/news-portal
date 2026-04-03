@@ -1,0 +1,184 @@
+{
+  "site": {
+    "name": "HTC Media",
+    "tagline": "Your Trusted Source for News",
+    "description": "Latest news, breaking news, and in-depth analysis from Nepal and around the world."
+  },
+  "nav": {
+    "home": "Home",
+    "politics": "Politics",
+    "business": "Business",
+    "sports": "Sports",
+    "entertainment": "Entertainment",
+    "technology": "Technology",
+    "health": "Health",
+    "education": "Education",
+    "opinion": "Opinion",
+    "province": "Province",
+    "world": "World",
+    "national": "National",
+    "search": "Search",
+    "menu": "Menu",
+    "close": "Close"
+  },
+  "article": {
+    "readMore": "Read More",
+    "readTime": "min read",
+    "publishedOn": "Published on",
+    "modifiedOn": "Modified on",
+    "by": "By",
+    "share": "Share",
+    "facebook": "Facebook",
+    "twitter": "Twitter",
+    "whatsapp": "WhatsApp",
+    "viber": "Viber",
+    "copyLink": "Copy Link",
+    "print": "Print",
+    "tags": "Tags",
+    "relatedArticles": "Related Articles",
+    "comments": "Comments",
+    "leaveComment": "Leave a Comment",
+    "submit": "Submit",
+    "nextArticle": "Next Article",
+    "prevArticle": "Previous Article"
+  },
+  "category": {
+    "latest": "Latest",
+    "featured": "Featured",
+    "trending": "Trending",
+    "mostRead": "Most Read",
+    "viewAll": "View All"
+  },
+  "search": {
+    "placeholder": "Search news...",
+    "results": "Search Results",
+    "noResults": "No results found",
+    "filters": "Filters",
+    "clearFilters": "Clear Filters",
+    "searchButton": "Search"
+  },
+  "user": {
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "profile": "Profile",
+    "bookmarks": "Bookmarks",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "forgotPassword": "Forgot Password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "bookmarkAdded": "Article bookmarked",
+    "bookmarkRemoved": "Bookmark removed"
+  },
+  "footer": {
+    "about": "About Us",
+    "categories": "Categories",
+    "quickLinks": "Quick Links",
+    "contact": "Contact Us",
+    "followUs": "Follow Us",
+    "newsletter": "Newsletter",
+    "subscribe": "Subscribe",
+    "emailPlaceholder": "Enter your email",
+    "rights": "All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Use",
+    "contactUs": "Contact",
+    "aboutUs": "About"
+  },
+  "breakingNews": "Breaking News",
+  "weather": {
+    "temperature": "Temperature",
+    "humidity": "Humidity",
+    "wind": "Wind Speed",
+    "condition": "Condition"
+  },
+  "market": {
+    "gold": "Gold",
+    "silver": "Silver",
+    "forex": "Forex",
+    "nepse": "NEPSE",
+    "perTola": "per tola",
+    "per10g": "per 10g"
+  },
+  "sports": {
+    "live": "Live",
+    "upcoming": "Upcoming",
+    "finished": "Finished",
+    "score": "Score"
+  },
+  "language": {
+    "toggle": "Switch Language",
+    "nepali": "Nepali",
+    "english": "English"
+  },
+  "date": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "daysAgo": "days ago"
+  },
+  "errors": {
+    "404": "Page Not Found",
+    "404Message": "The page you are looking for does not exist.",
+    "goHome": "Go to Home",
+    "generic": "Something went wrong",
+    "tryAgain": "Please try again later"
+  },
+  "auth": {
+    "welcomeBack": "Welcome Back",
+    "loginSubtitle": "Sign in to continue to your account",
+    "createAccount": "Create Account",
+    "registerSubtitle": "Join us and stay informed",
+    "loginFailed": "Login failed. Please check your credentials.",
+    "registerFailed": "Registration failed. Please try again.",
+    "passwordMismatch": "Passwords do not match",
+    "passwordTooShort": "Password must be at least 8 characters",
+    "confirmPassword": "Confirm Password",
+    "registerSuccess": "Registration Successful",
+    "verifyEmailSent": "Your account has been created. Please login to continue.",
+    "forgotPassword": "Forgot Password",
+    "forgotPasswordDesc": "Enter your email to receive a reset link",
+    "forgotPasswordFailed": "Failed to send reset link. Please try again.",
+    "checkEmail": "Check Your Email",
+    "resetLinkSent": "We've sent a password reset link to your email.",
+    "sendResetLink": "Send Reset Link",
+    "backToLogin": "Back to Login",
+    "resetPassword": "Reset Password",
+    "resetPasswordDesc": "Enter your new password",
+    "newPassword": "New Password",
+    "resetPasswordFailed": "Failed to reset password. Link may be expired.",
+    "invalidToken": "Invalid Link",
+    "invalidTokenDesc": "This password reset link is invalid or has expired.",
+    "requestNewLink": "Request New Link",
+    "passwordResetSuccess": "Password Reset Successful",
+    "passwordResetSuccessDesc": "Your password has been updated. Please login.",
+    "verifying": "Verifying your email...",
+    "emailVerified": "Email Verified",
+    "emailVerifiedDesc": "Your email has been verified successfully.",
+    "verificationFailed": "Verification Failed",
+    "verificationResent": "Verification email sent. Check your inbox.",
+    "resendFailed": "Failed to resend. Please try again.",
+    "verifyYourEmail": "Verify Your Email",
+    "verifyEmailDesc": "Please verify your email to comment on articles.",
+    "resendVerification": "Resend Verification Email"
+  },
+  "polls": {
+    "vote": "Vote",
+    "votes": "votes",
+    "expired": "Expired",
+    "loginToVote": "Login or register to vote"
+  },
+  "ads": {
+    "advertisement": "Advertisement"
+  },
+  "common": {
+    "loading": "Loading...",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "confirm": "Confirm"
+  }
+}

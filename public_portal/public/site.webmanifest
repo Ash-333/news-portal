@@ -1,0 +1,16 @@
+{
+  "name": "HTC Media",
+  "short_name": "NepaliNews",
+  "description": "Your trusted source for news from Nepal and around the world.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#dc2626",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

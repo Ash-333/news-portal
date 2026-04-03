@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">News Placeholder</title>
+  <desc id="desc">Fallback image for news articles without a featured image.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#991b1b" />
+      <stop offset="100%" stop-color="#1f2937" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg)" />
+  <g fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2">
+    <path d="M70 90h1060" />
+    <path d="M70 150h780" />
+    <path d="M70 210h700" />
+    <path d="M70 270h520" />
+  </g>
+  <rect x="760" y="160" width="300" height="220" rx="16" fill="rgba(255,255,255,0.12)" />
+  <path d="M820 330l58-70 50 55 38-45 64 60" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" opacity="0.75" />
+  <circle cx="845" cy="225" r="24" fill="#fff" opacity="0.8" />
+  <text x="70" y="470" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="74" font-weight="700">News Portal</text>
+  <text x="70" y="535" fill="rgba(255,255,255,0.82)" font-family="Arial, Helvetica, sans-serif" font-size="34">Featured image unavailable</text>
+</svg>

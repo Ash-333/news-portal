@@ -1,0 +1,184 @@
+{
+  "site": {
+    "name": "एच.टि.सी. मिडिया",
+    "tagline": "तपाईंको विश्वसनीय समाचार स्रोत",
+    "description": "नेपाल र विश्वभरका ताजा समाचार, ब्रेकिङ न्युज र गहिरो विश्लेषण।"
+  },
+  "nav": {
+    "home": "गृहपृष्ठ",
+    "politics": "राजनीति",
+    "business": "व्यापार",
+    "sports": "खेलकुद",
+    "entertainment": "मनोरञ्जन",
+    "technology": "प्रविधि",
+    "health": "स्वास्थ्य",
+    "education": "शिक्षा",
+    "opinion": "विचार",
+    "province": "प्रदेश",
+    "world": "विश्व",
+    "national": "राष्ट्रिय",
+    "search": "खोजी",
+    "menu": "मेनु",
+    "close": "बन्द गर्नुहोस्"
+  },
+  "article": {
+    "readMore": "थप पढ्नुहोस्",
+    "readTime": "मिनेट पढाइ",
+    "publishedOn": "प्रकाशित मिति",
+    "modifiedOn": "परिमार्जित मिति",
+    "by": "लेखक",
+    "share": "सेयर गर्नुहोस्",
+    "facebook": "फेसबुक",
+    "twitter": "ट्विटर",
+    "whatsapp": "व्हाट्सएप",
+    "viber": "भाइबर",
+    "copyLink": "लिंक कपी गर्नुहोस्",
+    "print": "प्रिन्ट गर्नुहोस्",
+    "tags": "ट्यागहरू",
+    "relatedArticles": "सम्बन्धित समाचार",
+    "comments": "टिप्पणीहरू",
+    "leaveComment": "टिप्पणी छोड्नुहोस्",
+    "submit": "पेश गर्नुहोस्",
+    "nextArticle": "अर्को समाचार",
+    "prevArticle": "अघिल्लो समाचार"
+  },
+  "category": {
+    "latest": "ताजा समाचार",
+    "featured": "विशेष समाचार",
+    "trending": "ट्रेन्डिङ",
+    "mostRead": "धेरै पढिएको",
+    "viewAll": "सबै हेर्नुहोस्"
+  },
+  "search": {
+    "placeholder": "समाचार खोज्नुहोस्...",
+    "results": "खोजी परिणाम",
+    "noResults": "कुनै परिणाम भेटिएन",
+    "filters": "फिल्टरहरू",
+    "clearFilters": "फिल्टर हटाउनुहोस्",
+    "searchButton": "खोजी गर्नुहोस्"
+  },
+  "user": {
+    "login": "लगइन",
+    "register": "दर्ता गर्नुहोस्",
+    "logout": "लगआउट",
+    "profile": "प्रोफाइल",
+    "bookmarks": "बुकमार्कहरू",
+    "email": "इमेल",
+    "password": "पासवर्ड",
+    "name": "नाम",
+    "forgotPassword": "पासवर्ड बिर्सनुभयो?",
+    "noAccount": "खाता छैन?",
+    "hasAccount": "पहिले नै खाता छ?",
+    "bookmarkAdded": "बुकमार्क थपियो",
+    "bookmarkRemoved": "बुकमार्क हटाइयो"
+  },
+  "footer": {
+    "about": "हाम्रोबारे",
+    "categories": "श्रेणीहरू",
+    "quickLinks": "द्रुत लिंकहरू",
+    "contact": "सम्पर्क गर्नुहोस्",
+    "followUs": "हामीलाई फलो गर्नुहोस्",
+    "newsletter": "न्युजलेटर",
+    "subscribe": "सदस्यता लिनुहोस्",
+    "emailPlaceholder": "तपाईंको इमेल प्रविष्ट गर्नुहोस्",
+    "rights": "सर्वाधिकार सुरक्षित।",
+    "privacy": "गोपनीयता नीति",
+    "terms": "प्रयोगका सर्तहरू",
+    "contactUs": "सम्पर्क",
+    "aboutUs": "हाम्रोबारे"
+  },
+  "breakingNews": "ब्रेकिङ न्युज",
+  "weather": {
+    "temperature": "तापक्रम",
+    "humidity": "आर्द्रता",
+    "wind": "हावाको गति",
+    "condition": "अवस्था"
+  },
+  "market": {
+    "gold": "सुन",
+    "silver": "चाँदी",
+    "forex": "विदेशी मुद्रा",
+    "nepse": "नेप्से",
+    "perTola": "प्रति तोला",
+    "per10g": "प्रति १० ग्राम"
+  },
+  "sports": {
+    "live": "प्रत्यक्ष",
+    "upcoming": "आगामी",
+    "finished": "सम्पन्न",
+    "score": "स्कोर"
+  },
+  "language": {
+    "toggle": "भाषा परिवर्तन गर्नुहोस्",
+    "nepali": "नेपाली",
+    "english": "English"
+  },
+  "date": {
+    "today": "आज",
+    "yesterday": "हिजो",
+    "daysAgo": "दिन अघि"
+  },
+  "errors": {
+    "404": "पृष्ठ भेटिएन",
+    "404Message": "तपाईंले खोज्नुभएको पृष्ठ अवस्थित छैन।",
+    "goHome": "गृहपृष्ठमा जानुहोस्",
+    "generic": "केही गलत भयो",
+    "tryAgain": "कृपया पछि फेरि प्रयास गर्नुहोस्"
+  },
+  "auth": {
+    "welcomeBack": "स्वागत छ",
+    "loginSubtitle": "आफ्नो खातामा साइन इन गर्नुहोस्",
+    "createAccount": "खाता बनाउनुहोस्",
+    "registerSubtitle": "हामीसँग जोडिनुहोस् र सूचित रहनुहोस्",
+    "loginFailed": "लगइन असफल भयो। कृपया आफ्नो प्रमाणहरू जाँच गर्नुहोस्।",
+    "registerFailed": "दर्ता असफल भयो। कृपया पुनः प्रयास गर्नुहोस्।",
+    "passwordMismatch": "पासवर्ड मेल खाँदैन",
+    "passwordTooShort": "पासवर्ड कम्तिमा ८ अक्षरको हुनुपर्छ",
+    "confirmPassword": "पासवर्ड पुष्टि गर्नुहोस्",
+    "registerSuccess": "दर्ता सफल",
+    "verifyEmailSent": "तपाईंको खाता बनाइयो। कृपया लगइन गर्नुहोस्।",
+    "forgotPassword": "पासवर्ड बिर्सनुभयो",
+    "forgotPasswordDesc": "रीसेट लिंक प्राप्त गर्न आफ्नो इमेल प्रविष्ट गर्नुहोस्",
+    "forgotPasswordFailed": "रीसेट लिंक पठाउन असफल भयो। कृपया पुनः प्रयास गर्नुहोस्।",
+    "checkEmail": "आफ्नो इमेल जाँच गर्नुहोस्",
+    "resetLinkSent": "हामीले तपाईंको इमेलमा पासवर्ड रीसेट लिंक पठाएका छौं।",
+    "sendResetLink": "रीसेट लिंक पठाउनुहोस्",
+    "backToLogin": "लगइनमा फर्कनुहोस्",
+    "resetPassword": "पासवर्ड रीसेट गर्नुहोस्",
+    "resetPasswordDesc": "आफ्नो नयाँ पासवर्ड प्रविष्ट गर्नुहोस्",
+    "newPassword": "नयाँ पासवर्ड",
+    "resetPasswordFailed": "पासवर्ड रीसेट गर्न असफल भयो। लिंकको म्याद सकिएको हुन सक्छ।",
+    "invalidToken": "अवैध लिंक",
+    "invalidTokenDesc": "यो पासवर्ड रीसेट लिंक अवैध वा म्याद सकिएको छ।",
+    "requestNewLink": "नयाँ लिंक अनुरोध गर्नुहोस्",
+    "passwordResetSuccess": "पासवर्ड रीसेट सफल",
+    "passwordResetSuccessDesc": "तपाईंको पासवर्ड अपडेट भयो। कृपया लगइन गर्नुहोस्।",
+    "verifying": "तपाईंको इमेल प्रमाणित गर्दै...",
+    "emailVerified": "इमेल प्रमाणित भयो",
+    "emailVerifiedDesc": "तपाईंको इमेल सफलतापूर्वक प्रमाणित भयो।",
+    "verificationFailed": "प्रमाणीकरण असफल भयो",
+    "verificationResent": "प्रमाणीकरण इमेल पठाइयो। आफ्नो इमेल जाँच गर्नुहोस्।",
+    "resendFailed": "पुनः पठाउन असफल भयो। कृपया पुनः प्रयास गर्नुहोस्।",
+    "verifyYourEmail": "आफ्नो इमेल प्रमाणित गर्नुहोस्",
+    "verifyEmailDesc": "कृपया समाचारमा टिप्पणी गर्न आफ्नो इमेल प्रमाणित गर्नुहोस्।",
+    "resendVerification": "प्रमाणीकरण इमेल पुनः पठाउनुहोस्"
+  },
+  "polls": {
+    "vote": "मतदान",
+    "votes": "मतहरू",
+    "expired": "म्याद सकिएको",
+    "loginToVote": "मतदान गर्न लगइन वा दर्ता गर्नुहोस्"
+  },
+  "ads": {
+    "advertisement": "विज्ञापन"
+  },
+  "common": {
+    "loading": "लोड हुँदैछ...",
+    "submit": "पेश गर्नुहोस्",
+    "cancel": "रद्द गर्नुहोस्",
+    "save": "सेभ गर्नुहोस्",
+    "delete": "मेटाउनुहोस्",
+    "edit": "सम्पादन गर्नुहोस्",
+    "confirm": "पुष्टि गर्नुहोस्"
+  }
+}
