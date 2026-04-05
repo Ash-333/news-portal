@@ -6,6 +6,7 @@ import { ItemListJsonLd, BreadcrumbListJsonLd } from '@/lib/jsonLd';
 import { ArticleCard } from '@/components/ArticleCard';
 import { PopularArticles } from '@/components/article/PopularArticles';
 import { deriveTagsFromArticles, fetchPublishedArticles } from '@/lib/api';
+import { getServerLanguage } from '@/lib/utils/language';
 
 interface TagPageProps {
   params: { slug: string };
@@ -63,9 +64,11 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
     notFound();
   }
 
-  // Determine language from URL parameter
-  const requestedLang = searchParams?.lang;
-  const isNepali = requestedLang === 'ne' || (!requestedLang && !!tag.nameNe);
+  // URL param takes precedence for shareability, otherwise use cookie-based server language
+  const urlLang = searchParams?.lang;
+  const serverLang = await getServerLanguage();
+  const userLang = urlLang || serverLang;
+  const isNepali = userLang === 'ne' || !userLang;
 
   const articles = allArticles.filter((article) => article.tags.some((articleTag) => articleTag.slug === params.slug));
   const popularArticles = [...allArticles].sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0)).slice(0, 5);

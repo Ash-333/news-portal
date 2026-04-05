@@ -16,7 +16,7 @@ interface PollCardProps {
 
 export function PollCard({ poll, showResults = false, className }: PollCardProps) {
   const { isNepali, t } = useLanguage();
-  const { isAuthenticated, isEmailVerified } = useAuth();
+  const { isAuthenticated } = useAuth();
   const voteMutation = useVotePoll();
 
   // Check if user has voted either from poll data or localStorage

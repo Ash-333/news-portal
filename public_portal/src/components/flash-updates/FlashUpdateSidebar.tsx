@@ -47,7 +47,7 @@ export function FlashUpdateSidebar() {
       <div className="space-y-4">
         {updates.map((update) => (
           <div key={update.id} className="group border-b border-gray-100 dark:border-gray-800 last:border-0 pb-4 last:pb-0">
-            <Link href={`/flash-updates#${update.slug}`} className="block">
+            <Link href={`/flash-updates/${update.slug}`} className="block">
               <h4 className={cn(
                 "text-sm font-semibold text-gray-800 dark:text-gray-200 group-hover:text-news-red transition-colors line-clamp-2",
                 isNepali ? "font-nepali" : ""

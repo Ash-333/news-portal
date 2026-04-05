@@ -9,6 +9,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { getArticleImage } from '@/lib/utils/image';
 import { cn } from '@/lib/utils';
 import { useCategoriesQuery, usePublishedArticlesQuery } from '@/hooks/useNewsQueries';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface SearchResult {
   id: string;
@@ -155,29 +156,31 @@ export function SearchClient() {
             </div>
 
             {/* Category Filter */}
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-            >
-              <option value="">{t('search.allCategories')}</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.slug}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
+            <Select value={selectedCategory || 'all'} onValueChange={(val) => setSelectedCategory(val === 'all' ? '' : val)}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder={t('search.allCategories')} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t('search.allCategories')}</SelectItem>
+                {categories.map((category) => (
+                  <SelectItem key={category.id} value={category.slug}>
+                    {category.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
             {/* Sort By */}
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-            >
-              <option value="relevance">{t('search.sortRelevance')}</option>
-              <option value="date">{t('search.sortDate')}</option>
-              <option value="title">{t('search.sortTitle')}</option>
-            </select>
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger className="w-[160px]">
+                <SelectValue placeholder={t('search.sortRelevance')} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="relevance">{t('search.sortRelevance')}</SelectItem>
+                <SelectItem value="date">{t('search.sortDate')}</SelectItem>
+                <SelectItem value="title">{t('search.sortTitle')}</SelectItem>
+              </SelectContent>
+            </Select>
 
             {/* Clear Filters */}
             {(searchQuery || selectedCategory || sortBy !== 'relevance') && (

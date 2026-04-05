@@ -3,7 +3,7 @@ import { HeroSection } from '@/components/sections/HeroSection';
 import { CategorySection } from '@/components/sections/CategorySection';
 import { LatestNewsSection } from '@/components/sections/LatestNewsSection';
 import { LatestUpdatesSidebar } from '@/components/sections/LatestUpdatesSidebar';
-import { MarketWidget } from '@/components/sections/MarketWidget';
+
 import { SportsSection } from '@/components/sections/SportsSection';
 import { FullWidthArticlesSection } from '@/components/sections/FullWidthArticlesSection';
 import { AdBox } from '@/components/ads/AdBox';
@@ -217,9 +217,6 @@ export default async function HomePage() {
             />
           ) : null}
         </div>
-
-        {/* Market Widget full-width strip */}
-        <MarketWidget />
 
         {/* Sports Section with Live Scores */}
         <SportsSection articles={sportsArticles} />

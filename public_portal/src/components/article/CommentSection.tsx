@@ -21,11 +21,12 @@ import {
 
 interface CommentSectionProps {
   articleId: string;
+  articleSlug: string;
 }
 
-export function CommentSection({ articleId }: CommentSectionProps) {
+export function CommentSection({ articleId, articleSlug }: CommentSectionProps) {
   const { isNepali, t } = useLanguage();
-  const { isAuthenticated, isEmailVerified, login } = useAuth();
+  const { isAuthenticated, login } = useAuth();
   const [newComment, setNewComment] = useState('');
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [loginEmail, setLoginEmail] = useState('');
@@ -34,7 +35,7 @@ export function CommentSection({ articleId }: CommentSectionProps) {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   
-  const { data: comments = [], isLoading, error } = useComments(articleId);
+  const { data: comments = [], isLoading, error } = useComments(articleSlug);
   const createComment = usePostComment();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -42,7 +43,7 @@ export function CommentSection({ articleId }: CommentSectionProps) {
     if (!newComment.trim()) return;
 
     try {
-      await createComment.mutateAsync({ articleId, content: newComment });
+      await createComment.mutateAsync({ articleId, articleSlug, content: newComment });
       setNewComment('');
     } catch {}
   };
@@ -66,7 +67,7 @@ export function CommentSection({ articleId }: CommentSectionProps) {
   };
 
   // Check if user can comment
-  const canComment = isAuthenticated && isEmailVerified;
+  const canComment = isAuthenticated;
 
   return (
     <div id="comments" className="mt-12 pt-8 border-t border-news-border dark:border-news-border-dark">

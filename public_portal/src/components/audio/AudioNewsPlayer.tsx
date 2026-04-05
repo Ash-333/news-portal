@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { Play, Pause, Volume2, VolumeX } from 'lucide-react';
+import { Play, Pause, Volume2, VolumeX, Headphones } from 'lucide-react';
 
 interface AudioNewsPlayerProps {
   audioUrl: string;
@@ -28,7 +29,6 @@ export function AudioNewsPlayer({
   const [currentTime, setCurrentTime] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
 
-  // Construct full audio URL (prepend hostname only, not the full API URL)
   const getAudioSourceUrl = (url: string): string => {
     if (url.startsWith('http')) return url;
     const baseUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api').replace('/api', '');
@@ -69,9 +69,7 @@ export function AudioNewsPlayer({
 
   useEffect(() => {
     if (autoPlay && audioRef.current) {
-      audioRef.current.play().catch(() => {
-        // Autoplay was prevented
-      });
+      audioRef.current.play().catch(() => {});
       setIsPlaying(true);
     }
   }, [autoPlay]);
@@ -79,13 +77,10 @@ export function AudioNewsPlayer({
   const togglePlay = () => {
     const audio = audioRef.current;
     if (!audio) return;
-
     if (isPlaying) {
       audio.pause();
     } else {
-      audio.play().catch(() => {
-        // Play was prevented
-      });
+      audio.play().catch(() => {});
     }
     setIsPlaying(!isPlaying);
   };
@@ -93,7 +88,6 @@ export function AudioNewsPlayer({
   const toggleMute = () => {
     const audio = audioRef.current;
     if (!audio) return;
-
     audio.muted = !isMuted;
     setIsMuted(!isMuted);
   };
@@ -101,14 +95,10 @@ export function AudioNewsPlayer({
   const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const audio = audioRef.current;
     if (!audio || !duration) return;
-
     const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const percentage = x / rect.width;
-    const newTime = percentage * duration;
-
-    audio.currentTime = newTime;
-    setCurrentTime(newTime);
+    const percentage = (e.clientX - rect.left) / rect.width;
+    audio.currentTime = percentage * duration;
+    setCurrentTime(percentage * duration);
     setProgress(percentage * 100);
   };
 
@@ -124,28 +114,40 @@ export function AudioNewsPlayer({
       <audio ref={audioRef} src={getAudioSourceUrl(audioUrl)} preload="metadata" />
 
       <div className="flex items-center gap-4">
-        {/* Thumbnail / Play button */}
+        <div className="relative w-12 h-12 shrink-0 rounded-full overflow-hidden bg-gray-200">
+          {thumbnailUrl ? (
+            <Image
+              src={thumbnailUrl}
+              alt={titleNe || title}
+              fill
+              className="object-cover"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-news-red text-white">
+              <Headphones className="w-5 h-5" />
+            </div>
+          )}
+        </div>
+
         <button
           onClick={togglePlay}
-          className="w-12 h-12 flex items-center justify-center rounded-full bg-news-red text-white hover:bg-news-red-dark transition-colors shrink-0"
+          className="w-10 h-10 flex items-center justify-center rounded-full bg-news-red text-white hover:bg-news-red-dark transition-colors shrink-0"
           aria-label={isPlaying ? 'Pause' : 'Play'}
         >
           {isPlaying ? (
-            <Pause className="w-5 h-5" />
+            <Pause className="w-4 h-4" />
           ) : (
-            <Play className="w-5 h-5 ml-0.5" />
+            <Play className="w-4 h-4 ml-0.5" />
           )}
         </button>
 
-        {/* Title and progress */}
         <div className="flex-1 min-w-0">
-          <h4 className="font-medium text-gray-900 dark:text-white truncate">
+          <h4 className="font-medium text-gray-900 dark:text-white truncate text-sm">
             {titleNe || title}
           </h4>
 
-          {/* Progress bar */}
           <div
-            className="mt-2 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full cursor-pointer group"
+            className="mt-2 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full cursor-pointer"
             onClick={handleProgressClick}
           >
             <div
@@ -156,31 +158,24 @@ export function AudioNewsPlayer({
             </div>
           </div>
 
-          {/* Time display */}
           <div className="flex justify-between mt-1">
             <span className="text-xs text-gray-500">{formatTime(currentTime)}</span>
             <span className="text-xs text-gray-500">{formatTime(duration)}</span>
           </div>
         </div>
 
-        {/* Mute button */}
         <button
           onClick={toggleMute}
           className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400"
           aria-label={isMuted ? 'Unmute' : 'Mute'}
         >
-          {isMuted ? (
-            <VolumeX className="w-5 h-5" />
-          ) : (
-            <Volume2 className="w-5 h-5" />
-          )}
+          {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
         </button>
       </div>
     </div>
   );
 }
 
-// Loading skeleton
 export function AudioNewsPlayerSkeleton({ className }: { className?: string }) {
   return (
     <div className={cn('bg-white dark:bg-news-card-dark rounded-lg shadow-sm border border-news-border dark:border-news-border-dark p-4 animate-pulse', className)}>

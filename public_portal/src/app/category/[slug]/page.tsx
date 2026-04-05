@@ -11,6 +11,7 @@ import { getCategories } from '@/lib/api/categories';
 import { getVideos } from '@/lib/api/videos';
 import { getArticleImage } from '@/lib/utils/image';
 import { getTitle, getExcerpt } from '@/lib/utils/lang';
+import { getServerLanguage } from '@/lib/utils/language';
 import { HoroscopeSection } from '@/components/horoscopes/HoroscopeSection';
 import { AudioNewsSection } from '@/components/audio/AudioNewsList';
 
@@ -78,9 +79,11 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
     notFound();
   }
 
-  // Determine language from URL parameter
-  const requestedLang = searchParams?.lang;
-  const isNepali = requestedLang === 'ne' || (!requestedLang && !!category.nameNe);
+  // URL param takes precedence for shareability, otherwise use cookie-based server language
+  const urlLang = searchParams?.lang;
+  const serverLang = await getServerLanguage();
+  const userLang = urlLang || serverLang;
+  const isNepali = userLang === 'ne' || !userLang;
 
   const articles = articlesRes.success ? articlesRes.data : [];
   const featuredArticle = articles[0];

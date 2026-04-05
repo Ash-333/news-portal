@@ -7,6 +7,7 @@ import { ArticleStatus } from '@prisma/client'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Select } from '@/components/ui/select'
 import { PageHeader } from '@/components/ui/page-header'
 import { StatusBadge } from '@/components/ui/status-badge'
 import { DataTable, Column } from '@/components/ui/data-table'
@@ -235,18 +236,12 @@ export default function ArticlesPage() {
           />
         </div>
         <div className="flex items-center gap-2">
-          <select
+          <Select
+            options={[{ value: '', label: 'All Categories' }, ...flatCategories.map((c) => ({ value: c.id, label: c.name }))]}
             value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-            className="p-2 border rounded-md bg-background text-sm min-w-[180px]"
-          >
-            <option value="">All Categories</option>
-            {flatCategories.map((cat) => (
-              <option key={cat.id} value={cat.id}>
-                {cat.name}
-              </option>
-            ))}
-          </select>
+            onChange={setCategoryFilter}
+            className="min-w-[180px]"
+          />
           {categoryFilter && (
             <Button
               variant="ghost"

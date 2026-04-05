@@ -8,12 +8,12 @@ A comprehensive Next.js-based news portal application with full bilingual suppor
 
 - **Article Listing**: Paginated article lists with filtering by category, author, tag
 - **Featured Articles**: Hero/Banner articles on homepage
-- **Breaking News**: Special标记 for breaking news articles
-- **Popular Articles**: View-count based popular articles (today/week/month periods)
+- **Breaking News**: Special marking for breaking news articles
+- **Popular Articles**: View-count based popular articles
 - **Latest News**: Most recent articles feed
 - **Related Articles**: Contextually related article suggestions
 - **Article Search**: Full-text search across articles
-- **View Tracking**: Automatic view count increment with deduplication (localStorage-based)
+- **View Tracking**: Automatic view count increment
 - **Social Sharing**: Share buttons for social media platforms
 - **Article Tags**: Tag-based article organization
 
@@ -40,10 +40,11 @@ A comprehensive Next.js-based news portal application with full bilingual suppor
 
 - **User Registration**: Email/password registration
 - **Login**: JWT-based authentication with access/refresh tokens
-- **Email Verification**: Token-based email verification flow
 - **Password Reset**: Forgot password and reset password flows
 - **Token Management**: Automatic token refresh
 - **Session Persistence**: localStorage-based session management
+
+Note: Email verification was removed as it's not implemented in the backend.
 
 ## 3. Media Features
 
@@ -56,7 +57,6 @@ A comprehensive Next.js-based news portal application with full bilingual suppor
 
 - Audio news list with category filtering
 - Audio playback support
-- Search functionality
 
 ### Images
 
@@ -98,14 +98,13 @@ A comprehensive Next.js-based news portal application with full bilingual suppor
 - **Ad Management**: Backend ad management
 - **Ad Click Tracking**: Track ad clicks
 - **Random Ad Selection**: Random ad display per position
-- **Ad Slot Components**: Pre-built ad slot components
 
 ## 6. Bilingual Support
 
 - **Language Context**: React context for language state
 - **English/Nepali**: Full bilingual content support
 - **Language Switcher**: In-header language toggle
-- **Localized Content**: Both English and Nepali text throughout
+- **Server-Side Language**: Language selection works for server-rendered pages via URL params and cookies
 
 ## 7. SEO Features
 
@@ -142,7 +141,7 @@ A comprehensive Next.js-based news portal application with full bilingual suppor
 - `/register` - Registration page
 - `/forgot-password` - Forgot password
 - `/reset-password` - Reset password
-- `/verify-email` - Email verification
+- `/verify-email` - Email verification (placeholder)
 
 ## 9. UI Components
 
@@ -173,7 +172,6 @@ A comprehensive Next.js-based news portal application with full bilingual suppor
 - CategorySection - Category blocks
 - LatestNewsSection - News list
 - LatestUpdatesSidebar - Sidebar updates
-- MarketWidget - Stock market data
 - SportsSection - Sports news
 - FullWidthArticlesSection - Wide articles
 - VideoSection - Video grid
@@ -187,7 +185,7 @@ A comprehensive Next.js-based news portal application with full bilingual suppor
 - Table, Pagination
 - Tooltip, Popover
 - Avatar, Badge
-- And more...
+- **Select**: Custom dropdown select component
 
 ## 10. API Endpoints
 
@@ -196,20 +194,22 @@ A comprehensive Next.js-based news portal application with full bilingual suppor
 - `GET /api/articles` - List articles
 - `GET /api/articles/:slug` - Get article
 - `POST /api/articles/:slug/view` - Increment view
-- `GET /api/articles/popular` - Popular articles
 
 ### Auth
 
 - `POST /api/auth/login` - Login
 - `POST /api/auth/register` - Register
-- `POST /api/auth/verify-email` - Verify email
 - `POST /api/auth/forgot-password` - Forgot password
 - `POST /api/auth/reset-password` - Reset password
 - `POST /api/auth/refresh-token` - Refresh token
+- `GET /api/auth/me` - Get current user
+- `POST /api/auth/logout` - Logout
+- `PUT /api/auth/profile` - Update profile
+- `POST /api/auth/change-password` - Change password
 
 ### Comments
 
-- `GET /api/articles/:id/comments` - Get comments
+- `GET /api/articles/:slug/comments` - Get comments (by slug)
 - `POST /api/comments` - Post comment
 - `POST /api/comments/:id/like` - Like comment
 - `POST /api/comments/:id/report` - Report comment
@@ -254,3 +254,12 @@ A comprehensive Next.js-based news portal application with full bilingual suppor
 - Videos with thumbnails
 - Audio with transcripts
 - Ads with positioning
+
+## Recent Updates (2026-04-05)
+
+- Added server-side language selection support via middleware
+- Added auth endpoints: /api/auth/me, /api/auth/logout, /api/auth/profile, /api/auth/change-password
+- Fixed comment auth - now shows correct user
+- Removed mock data (weather, market widgets)
+- Added tag management and tag selection in article forms
+- Created custom Select component for better UX

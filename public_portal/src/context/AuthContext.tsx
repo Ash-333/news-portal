@@ -8,7 +8,6 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  isEmailVerified: boolean;
   login: (credentials: LoginCredentials) => Promise<void>;
   register: (data: RegisterData) => Promise<void>;
   logout: () => Promise<void>;
@@ -75,7 +74,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   const refreshUser = useCallback(async () => {
-    // Load user from localStorage (no API call needed since /api/auth/me doesn't exist)
     const token = getStoredToken();
     if (!token) {
       setUser(null);
@@ -83,15 +81,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
     
-    // Try to get user from localStorage
-    const storedUser = getStoredUser();
-    if (storedUser) {
-      setUser(storedUser);
-    } else {
-      // No stored user but token exists - clear token
-      setStoredToken(null);
-      setStoredRefreshToken(null);
-      setUser(null);
+    // Try to fetch user from API
+    try {
+      const response = await getCurrentUser();
+      if (response.success && response.data) {
+        setUser(response.data);
+      } else {
+        // Token invalid or expired - clear tokens
+        setStoredToken(null);
+        setStoredRefreshToken(null);
+        setUser(null);
+      }
+    } catch {
+      // API call failed - fallback to localStorage
+      const storedUser = getStoredUser();
+      if (storedUser) {
+        setUser(storedUser);
+      } else {
+        setStoredToken(null);
+        setStoredRefreshToken(null);
+        setUser(null);
+      }
     }
     setIsLoading(false);
   }, []);
@@ -116,7 +126,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         profilePhoto: response.data.profilePhoto,
         bio: null,
         language: 'ENGLISH',
-        emailVerified: true,
         createdAt: new Date().toISOString()
       };
       setUser(user);
@@ -147,7 +156,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const isAuthenticated = !!user;
-  const isEmailVerified = user?.emailVerified ?? false;
 
   return (
     <AuthContext.Provider
@@ -155,7 +163,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         isLoading,
         isAuthenticated,
-        isEmailVerified,
         login,
         register,
         logout,
@@ -182,8 +189,3 @@ export function useRequireAuth() {
   return { isAuthenticated, isLoading };
 }
 
-// Helper hook for routes that need verified email
-export function useRequireVerifiedEmail() {
-  const { isAuthenticated, isEmailVerified, isLoading } = useAuth();
-  return { isAuthenticated, isEmailVerified, isLoading };
-}

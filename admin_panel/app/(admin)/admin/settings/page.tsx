@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Save, AlertTriangle } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -13,16 +13,98 @@ import { PageHeader } from '@/components/ui/page-header'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { toast } from 'sonner'
 
+interface SettingsData {
+  siteName: string
+  siteLogo: string
+  favicon: string
+  defaultLanguage: string
+  smtpHost: string
+  smtpPort: string
+  smtpUser: string
+  smtpPassword: string
+  smtpFrom: string
+  facebookUrl: string
+  twitterUrl: string
+  youtubeUrl: string
+  instagramUrl: string
+  contactEmail: string
+  contactPhone: string
+  contactAddress: string
+  contactAddressNe: string
+  autoApprove: boolean
+  bannedWords: string
+  maxReports: number
+  force2FA: boolean
+  ipWhitelist: string
+  sessionTimeout: number
+}
+
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('general')
   const [showClearCacheConfirm, setShowClearCacheConfirm] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
+  const [settings, setSettings] = useState<SettingsData>({
+    siteName: 'News Portal',
+    siteLogo: '',
+    favicon: '',
+    defaultLanguage: 'en',
+    smtpHost: '',
+    smtpPort: '',
+    smtpUser: '',
+    smtpPassword: '',
+    smtpFrom: '',
+    facebookUrl: '',
+    twitterUrl: '',
+    youtubeUrl: '',
+    instagramUrl: '',
+    contactEmail: '',
+    contactPhone: '',
+    contactAddress: '',
+    contactAddressNe: '',
+    autoApprove: false,
+    bannedWords: '',
+    maxReports: 5,
+    force2FA: false,
+    ipWhitelist: '',
+    sessionTimeout: 60,
+  })
+
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const response = await fetch('/api/admin/settings')
+        if (response.ok) {
+          const data = await response.json()
+          if (data.data) {
+            setSettings(prev => ({
+              ...prev,
+              ...data.data,
+            }))
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load settings:', error)
+      }
+    }
+    loadSettings()
+  }, [])
 
   const handleSave = async () => {
     setIsSaving(true)
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    toast.success('Settings saved successfully')
+    try {
+      const response = await fetch('/api/admin/settings', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(settings),
+      })
+      if (response.ok) {
+        toast.success('Settings saved successfully')
+      } else {
+        toast.error('Failed to save settings')
+      }
+    } catch (error) {
+      toast.error('Failed to save settings')
+    }
     setIsSaving(false)
   }
 
@@ -59,6 +141,7 @@ export default function SettingsPage() {
           <TabsTrigger value="general">General</TabsTrigger>
           <TabsTrigger value="email">Email</TabsTrigger>
           <TabsTrigger value="social">Social Media</TabsTrigger>
+          <TabsTrigger value="contact">Contact</TabsTrigger>
           <TabsTrigger value="comments">Comments</TabsTrigger>
           <TabsTrigger value="security">Security</TabsTrigger>
           <TabsTrigger value="danger">Danger Zone</TabsTrigger>
@@ -72,19 +155,38 @@ export default function SettingsPage() {
             <CardContent className="space-y-4">
               <div>
                 <Label htmlFor="siteName">Site Name</Label>
-                <Input id="siteName" defaultValue="News Portal" />
+                <Input 
+                  id="siteName" 
+                  value={settings.siteName}
+                  onChange={(e) => setSettings({ ...settings, siteName: e.target.value })}
+                />
               </div>
               <div>
                 <Label htmlFor="siteLogo">Site Logo URL</Label>
-                <Input id="siteLogo" placeholder="https://example.com/logo.png" />
+                <Input 
+                  id="siteLogo" 
+                  placeholder="https://example.com/logo.png"
+                  value={settings.siteLogo}
+                  onChange={(e) => setSettings({ ...settings, siteLogo: e.target.value })}
+                />
               </div>
               <div>
                 <Label htmlFor="favicon">Favicon URL</Label>
-                <Input id="favicon" placeholder="https://example.com/favicon.ico" />
+                <Input 
+                  id="favicon" 
+                  placeholder="https://example.com/favicon.ico"
+                  value={settings.favicon}
+                  onChange={(e) => setSettings({ ...settings, favicon: e.target.value })}
+                />
               </div>
               <div className="flex items-center justify-between">
                 <Label htmlFor="defaultLanguage">Default Language</Label>
-                <select id="defaultLanguage" className="p-2 border rounded-md">
+                <select 
+                  id="defaultLanguage" 
+                  className="p-2 border rounded-md"
+                  value={settings.defaultLanguage}
+                  onChange={(e) => setSettings({ ...settings, defaultLanguage: e.target.value })}
+                >
                   <option value="en">English</option>
                   <option value="ne">Nepali</option>
                 </select>
@@ -132,19 +234,88 @@ export default function SettingsPage() {
             <CardContent className="space-y-4">
               <div>
                 <Label htmlFor="facebookUrl">Facebook URL</Label>
-                <Input id="facebookUrl" placeholder="https://facebook.com/yourpage" />
+                <Input 
+                  id="facebookUrl" 
+                  placeholder="https://facebook.com/yourpage"
+                  value={settings.facebookUrl}
+                  onChange={(e) => setSettings({ ...settings, facebookUrl: e.target.value })}
+                />
               </div>
               <div>
                 <Label htmlFor="twitterUrl">Twitter/X URL</Label>
-                <Input id="twitterUrl" placeholder="https://twitter.com/yourhandle" />
+                <Input 
+                  id="twitterUrl" 
+                  placeholder="https://twitter.com/yourhandle"
+                  value={settings.twitterUrl}
+                  onChange={(e) => setSettings({ ...settings, twitterUrl: e.target.value })}
+                />
               </div>
               <div>
                 <Label htmlFor="youtubeUrl">YouTube URL</Label>
-                <Input id="youtubeUrl" placeholder="https://youtube.com/yourchannel" />
+                <Input 
+                  id="youtubeUrl" 
+                  placeholder="https://youtube.com/yourchannel"
+                  value={settings.youtubeUrl}
+                  onChange={(e) => setSettings({ ...settings, youtubeUrl: e.target.value })}
+                />
               </div>
               <div>
                 <Label htmlFor="instagramUrl">Instagram URL</Label>
-                <Input id="instagramUrl" placeholder="https://instagram.com/yourhandle" />
+                <Input 
+                  id="instagramUrl" 
+                  placeholder="https://instagram.com/yourhandle"
+                  value={settings.instagramUrl}
+                  onChange={(e) => setSettings({ ...settings, instagramUrl: e.target.value })}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="contact" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Contact Information</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="contactEmail">Email Address</Label>
+                <Input 
+                  id="contactEmail" 
+                  type="email"
+                  placeholder="contact@example.com"
+                  value={settings.contactEmail}
+                  onChange={(e) => setSettings({ ...settings, contactEmail: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="contactPhone">Phone Number</Label>
+                <Input 
+                  id="contactPhone" 
+                  placeholder="+977 1 4XXXXXX"
+                  value={settings.contactPhone}
+                  onChange={(e) => setSettings({ ...settings, contactPhone: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="contactAddress">Address (English)</Label>
+                <Textarea 
+                  id="contactAddress" 
+                  placeholder="Enter address in English"
+                  value={settings.contactAddress}
+                  onChange={(e) => setSettings({ ...settings, contactAddress: e.target.value })}
+                  rows={3}
+                />
+              </div>
+              <div>
+                <Label htmlFor="contactAddressNe">Address (Nepali)</Label>
+                <Textarea 
+                  id="contactAddressNe" 
+                  placeholder="नेपालीमा ठेगाना प्रविष्टि गर्नुहोस्"
+                  value={settings.contactAddressNe}
+                  onChange={(e) => setSettings({ ...settings, contactAddressNe: e.target.value })}
+                  rows={3}
+                />
               </div>
             </CardContent>
           </Card>

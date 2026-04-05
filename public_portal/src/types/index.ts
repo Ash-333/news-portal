@@ -158,7 +158,6 @@ export interface User {
   bio: string | null;
   role: string;
   language: "NEPALI" | "ENGLISH";
-  emailVerified: boolean;
   createdAt: string;
 }
 
@@ -172,6 +171,10 @@ export interface FlashUpdate {
   excerptEn: string | null;
   slug: string;
   featuredImageId: string | null;
+  featuredImage: {
+    id: string;
+    url: string;
+  } | null;
   isPublished: boolean;
   publishedAt: string;
   expiresAt: string | null;
@@ -186,7 +189,6 @@ export interface FlashUpdate {
     name: string;
     profilePhoto: string | null;
   };
-  featuredImage: FeaturedImage | null;
 }
 
 export interface VideoUpdate {

@@ -6,19 +6,30 @@ import { Facebook, Twitter, Youtube, Instagram, Mail, Phone, MapPin } from 'luci
 import { useLanguage } from '@/context/LanguageContext';
 import { cn } from '@/lib/utils';
 import { useCategoriesQuery } from '@/hooks/useNewsQueries';
+import { getSocialLinks } from '@/lib/api/settings';
+import { useQuery } from '@tanstack/react-query';
 
 export function Footer() {
   const { isNepali, t } = useLanguage();
   const { data: categories = [] } = useCategoriesQuery();
+  const { data: socialLinksResponse } = useQuery({
+    queryKey: ['social-links'],
+    queryFn: getSocialLinks,
+    staleTime: 1000 * 60 * 60,
+  });
+  const socialLinks = socialLinksResponse?.data;
 
   const quickLinks = [
     { label: 'About Us', labelNe: 'हाम्रोबारे', href: '/about' },
     { label: 'Contact', labelNe: 'सम्पर्क', href: '/contact' },
     { label: 'Privacy Policy', labelNe: 'गोपनीयता नीति', href: '/privacy' },
     { label: 'Terms of Use', labelNe: 'प्रयोगका सर्तहरू', href: '/terms' },
-    { label: 'Advertise', labelNe: 'विज्ञापन', href: '/advertise' },
-    { label: 'Careers', labelNe: 'करियर', href: '/careers' },
   ];
+
+  const facebookUrl = socialLinks?.facebookUrl || 'https://facebook.com';
+  const twitterUrl = socialLinks?.twitterUrl || 'https://twitter.com';
+  const youtubeUrl = socialLinks?.youtubeUrl || 'https://youtube.com';
+  const instagramUrl = socialLinks?.instagramUrl || 'https://instagram.com';
 
   return (
     <footer className="bg-gray-900 text-gray-300">
@@ -47,42 +58,50 @@ export function Footer() {
             </p>
             {/* Social Links */}
             <div className="flex items-center gap-3">
-              <a
-                href="https://facebook.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-9 h-9 bg-gray-800 rounded-full flex items-center justify-center hover:bg-news-red transition-colors"
-                aria-label="Facebook"
-              >
-                <Facebook className="h-4 w-4" />
-              </a>
-              <a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-9 h-9 bg-gray-800 rounded-full flex items-center justify-center hover:bg-news-red transition-colors"
-                aria-label="Twitter"
-              >
-                <Twitter className="h-4 w-4" />
-              </a>
-              <a
-                href="https://youtube.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-9 h-9 bg-gray-800 rounded-full flex items-center justify-center hover:bg-news-red transition-colors"
-                aria-label="YouTube"
-              >
-                <Youtube className="h-4 w-4" />
-              </a>
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-9 h-9 bg-gray-800 rounded-full flex items-center justify-center hover:bg-news-red transition-colors"
-                aria-label="Instagram"
-              >
-                <Instagram className="h-4 w-4" />
-              </a>
+              {socialLinks?.facebookUrl && (
+                <a
+                  href={facebookUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 bg-gray-800 rounded-full flex items-center justify-center hover:bg-news-red transition-colors"
+                  aria-label="Facebook"
+                >
+                  <Facebook className="h-4 w-4" />
+                </a>
+              )}
+              {socialLinks?.twitterUrl && (
+                <a
+                  href={twitterUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 bg-gray-800 rounded-full flex items-center justify-center hover:bg-news-red transition-colors"
+                  aria-label="Twitter"
+                >
+                  <Twitter className="h-4 w-4" />
+                </a>
+              )}
+              {socialLinks?.youtubeUrl && (
+                <a
+                  href={youtubeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 bg-gray-800 rounded-full flex items-center justify-center hover:bg-news-red transition-colors"
+                  aria-label="YouTube"
+                >
+                  <Youtube className="h-4 w-4" />
+                </a>
+              )}
+              {socialLinks?.instagramUrl && (
+                <a
+                  href={instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 bg-gray-800 rounded-full flex items-center justify-center hover:bg-news-red transition-colors"
+                  aria-label="Instagram"
+                >
+                  <Instagram className="h-4 w-4" />
+                </a>
+              )}
             </div>
           </div>
 

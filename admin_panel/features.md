@@ -78,9 +78,11 @@ This document describes all features implemented in the News Portal Admin (CMS).
 | -------------- | ------------------------------------------------------ |
 | Tag Management | Create and manage article tags                         |
 | Dual Language  | English and Nepali tag names                           |
-| Tag Assignment | Tags can be assigned via API (tagIds field in Article) |
+| Tag Assignment | Tags can be assigned via API or UI in article forms     |
 
-**Note**: Tag selection UI is NOT currently exposed in article create/edit pages - tags can only be assigned via API calls.
+**Admin Pages**:
+
+- [`app/(admin)/admin/tags/page.tsx`](app/(admin)/admin/tags/page.tsx)
 
 **API Endpoints**:
 
@@ -202,10 +204,6 @@ This document describes all features implemented in the News Portal Admin (CMS).
 | Bio                 | User biography                            |
 | Language Preference | English or Nepali interface               |
 | Last Login          | Track last login time (lastLoginAt field) |
-
-**Pending Implementation**:
-
-- Tag Selection UI - Add tag selection in article create/edit pages (API supports tagIds but no UI)
 
 **Admin Pages**:
 
@@ -481,7 +479,8 @@ This document describes all features implemented in the News Portal Admin (CMS).
 | Skeleton       | Loading placeholders |
 | Confirm Dialog | Confirmation dialogs |
 | Empty State    | No data display      |
-| Page Header    | Page titles          |
+| Page Header    | Page titles           |
+| Select         | Custom dropdown select |
 
 ### 10.2 Specialized Components
 
@@ -576,5 +575,15 @@ This document describes all features implemented in the News Portal Admin (CMS).
 | `/[...nextauth]`   | NextAuth handlers      |
 
 ---
+
+## Recent Updates (2026-04-05)
+
+- Added Tags management page (`/admin/tags`)
+- Added Tag selection in article create/edit forms
+- Created custom Select component for better UX
+- Fixed auth middleware to use NextAuth sessions
+- Added auth endpoints: /api/auth/me, /api/auth/logout, /api/auth/profile, /api/auth/change-password
+- Fixed comment posting to show correct user
+- Fixed server-side language selection for public portal
 
 _Document generated from codebase analysis_

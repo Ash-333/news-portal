@@ -77,6 +77,9 @@ export async function apiFetch<T>(
 
     if (withAuth && token) {
       headers["Authorization"] = `Bearer ${token}`;
+    } else if (withAuth && !token) {
+      // No token available, still include header to trigger 401
+      headers["Authorization"] = "Bearer ";
     }
 
     return fetch(url, {

@@ -30,7 +30,7 @@ export async function authMiddleware(
 
     // Verify user exists in database to prevent stale session issues
     const user = await prisma.user.findUnique({
-      where: { id: token.id as string },
+      where: { id: token.sub as string },
       select: { id: true, email: true, name: true, role: true, status: true }
     })
 

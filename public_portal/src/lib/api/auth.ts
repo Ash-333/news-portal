@@ -79,7 +79,11 @@ export function logout(): Promise<ApiResponse<{ message: string }>> {
   });
 }
 
-export function getCurrentUser(): Promise<ApiResponse<User>> {
+export async function getCurrentUser(): Promise<ApiResponse<User>> {
+  const token = getStoredRefreshToken();
+  if (!token) {
+    return { success: false, data: {} as User, message: 'No token' };
+  }
   return apiFetch<User>('/api/auth/me', {
     method: 'GET',
   });

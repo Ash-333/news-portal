@@ -19,8 +19,11 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(redirects[pathname], request.url), 301);
   }
 
-  // Get language from cookie or use default
-  let language = request.cookies.get(LANGUAGE_COOKIE)?.value || DEFAULT_LANGUAGE;
+  // Get language from URL parameter first (for shareable links), then cookie
+  const urlLang = request.nextUrl.searchParams.get('lang');
+  const cookieLang = request.cookies.get(LANGUAGE_COOKIE)?.value;
+  
+  let language = urlLang || cookieLang || DEFAULT_LANGUAGE;
   
   // Validate language (only 'ne' or 'en' are valid)
   if (language !== 'ne' && language !== 'en') {

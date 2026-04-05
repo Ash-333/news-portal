@@ -9,8 +9,6 @@ interface ArticleViewTrackerProps {
 }
 
 export function ArticleViewTracker({ slug, children }: ArticleViewTrackerProps) {
-  console.log(`[VIEW TRACKER] Rendering ArticleViewTracker for slug: ${slug}`);
   useArticleView(slug);
-  console.log(`[VIEW TRACKER] After useArticleView call for slug: ${slug}`);
   return <>{children}</>;
 }

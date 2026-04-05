@@ -27,6 +27,7 @@ enum ArticleStatus {
   APPROVED
   PUBLISHED
   ARCHIVED
+  SCHEDULED
 }
 
 enum MediaType {

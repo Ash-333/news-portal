@@ -16,6 +16,7 @@ import { CommentSection } from '@/components/article/CommentSection';
 import { ArticleNavigation } from '@/components/article/ArticleNavigation';
 import { ArticleViewTracker } from '@/components/article/ArticleViewTracker';
 import { fetchArticleBySlug, fetchPublishedArticles } from '@/lib/api';
+import { getServerLanguage } from '@/lib/utils/language';
 import { InArticleAd } from '@/components/ads/AdSlot';
 
 interface ArticlePageProps {
@@ -26,7 +27,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://yoursite.com';
 
 export const revalidate = 300;
 
-function resolveArticleLanguage(article: Awaited<ReturnType<typeof fetchArticleBySlug>>) {
+function resolveArticleLanguage(article: Awaited<ReturnType<typeof fetchArticleBySlug>>, userLang: 'ne' | 'en') {
   if (!article) {
     return true;
   }
@@ -34,7 +35,11 @@ function resolveArticleLanguage(article: Awaited<ReturnType<typeof fetchArticleB
   const hasContentEn = !!article.contentEn;
   const hasContentNe = !!article.contentNe;
 
-  return hasContentNe || !hasContentEn;
+  if (userLang === 'ne') {
+    return hasContentNe || !hasContentEn;
+  } else {
+    return hasContentEn || !hasContentNe;
+  }
 }
 
 export async function generateStaticParams() {
@@ -57,7 +62,8 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   }
 
   const url = `${SITE_URL}/article/${article.slug}`;
-  const isNepali = resolveArticleLanguage(article);
+  const userLang = await getServerLanguage();
+  const isNepali = resolveArticleLanguage(article, userLang);
 
   return {
     title: isNepali ? article.titleNe : (article.titleEn || article.titleNe || article.title),
@@ -112,7 +118,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     notFound();
   }
 
-  const isNepali = resolveArticleLanguage(article);
+  const userLang = await getServerLanguage();
+  const isNepali = resolveArticleLanguage(article, userLang);
 
   const content = isNepali ? (article.contentNe || article.contentEn || '') : (article.contentEn || article.contentNe || '');
   const lang = isNepali ? 'ne' : 'en';
@@ -236,7 +243,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
               <ArticleNavigation prevArticle={prevArticle} nextArticle={nextArticle} />
 
-              <CommentSection articleId={article.id} />
+              <CommentSection articleId={article.id} articleSlug={article.slug} />
             </div>
 
             {/* Sidebar */}

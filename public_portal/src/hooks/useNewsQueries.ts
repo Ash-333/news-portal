@@ -11,8 +11,6 @@ import {
 import { getFlashUpdates } from '@/lib/api/flash-updates';
 import { getVideos } from '@/lib/api/videos';
 import { getAds } from '@/lib/api/ads';
-import { getWeather, getMatches, getMarketData } from '@/lib/api/external';
-
 export const newsQueryKeys = {
   articles: ['articles'] as const,
   article: (slug: string) => ['articles', slug] as const,
@@ -21,9 +19,6 @@ export const newsQueryKeys = {
   flashUpdates: ['flash-updates'] as const,
   videos: ['videos'] as const,
   ads: ['ads'] as const,
-  weather: ['weather'] as const,
-  matches: ['matches'] as const,
-  marketData: ['market-data'] as const,
 };
 
 export function usePublishedArticlesQuery() {
@@ -88,23 +83,4 @@ export function useAdsQuery() {
   });
 }
 
-export function useWeatherQuery() {
-  return useQuery({
-    queryKey: newsQueryKeys.weather,
-    queryFn: () => getWeather(),
-  });
-}
 
-export function useMatchesQuery() {
-  return useQuery({
-    queryKey: newsQueryKeys.matches,
-    queryFn: () => getMatches(),
-  });
-}
-
-export function useMarketDataQuery() {
-  return useQuery({
-    queryKey: newsQueryKeys.marketData,
-    queryFn: () => getMarketData(),
-  });
-}

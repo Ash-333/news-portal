@@ -8,6 +8,7 @@ import {
   LayoutDashboard,
   FileText,
   Image,
+  Tag,
   FolderTree,
   Users,
   BarChart3,
@@ -63,7 +64,8 @@ const navItems: NavItem[] = [
     ]
   },
   { label: 'Media Manager', href: '/admin/media', icon: Image, permission: permissions.mediaView },
-  { label: 'Categories & Tags', href: '/admin/categories', icon: FolderTree, permission: permissions.categoriesView },
+  { label: 'Categories', href: '/admin/categories', icon: FolderTree, permission: permissions.categoriesView },
+  { label: 'Tags', href: '/admin/tags', icon: Tag, permission: permissions.categoriesView },
   { label: 'Videos', href: '/admin/videos', icon: Video, permission: permissions.videosView },
   { label: 'Ads', href: '/admin/ads', icon: Megaphone, permission: permissions.adsView },
   {

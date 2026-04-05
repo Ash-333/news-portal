@@ -8,14 +8,14 @@ export const commentKeys = {
   list: (articleId: string) => ['comments', articleId] as const,
 };
 
-export function useComments(articleId: string) {
+export function useComments(articleSlug: string) {
   return useQuery({
-    queryKey: commentKeys.list(articleId),
+    queryKey: commentKeys.list(articleSlug),
     queryFn: async () => {
-      const res = await getComments(articleId);
+      const res = await getComments(articleSlug);
       return res.data as Comment[];
     },
-    enabled: !!articleId,
+    enabled: !!articleSlug,
   });
 }
 
@@ -23,17 +23,17 @@ export function usePostComment() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (variables: { articleId: string; content: string }) => 
-      postComment({ articleId: variables.articleId, content: variables.content }),
+    mutationFn: (variables: { articleId: string; articleSlug: string; content: string }) => 
+      postComment({ articleId: variables.articleId, articleSlug: variables.articleSlug, content: variables.content }),
     onMutate: async (newComment) => {
       // Cancel any outgoing refetches for this article's comments
       await queryClient.cancelQueries({ 
-        queryKey: commentKeys.list(newComment.articleId) 
+        queryKey: commentKeys.list(newComment.articleSlug) 
       });
 
       // Get the previous comments for this article
       const previousComments = queryClient.getQueryData<Comment[]>(
-        commentKeys.list(newComment.articleId)
+        commentKeys.list(newComment.articleSlug)
       );
 
       // Create optimistic comment with temporary ID
@@ -55,7 +55,7 @@ export function usePostComment() {
       // Optimistically update the cache
       if (previousComments) {
         queryClient.setQueryData<Comment[]>(
-          commentKeys.list(newComment.articleId),
+          commentKeys.list(newComment.articleSlug),
           [optimisticComment, ...previousComments]
         );
       }
@@ -67,7 +67,7 @@ export function usePostComment() {
       // Rollback to previous data on error
       if (context?.previousComments) {
         queryClient.setQueryData(
-          commentKeys.list(newComment.articleId),
+          commentKeys.list(newComment.articleSlug),
           context.previousComments
         );
       }
@@ -75,7 +75,7 @@ export function usePostComment() {
     onSettled: (data, error, variables) => {
       // Always refetch after mutation settles
       queryClient.invalidateQueries({ 
-        queryKey: commentKeys.list(variables.articleId) 
+        queryKey: commentKeys.list(variables.articleSlug) 
       });
     },
   });

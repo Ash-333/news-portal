@@ -89,7 +89,18 @@ export async function POST(req: NextRequest) {
     const validation = await validationMiddleware(commentSchema)(req)
     if (validation instanceof NextResponse) return validation
 
-    const { articleId, parentId, content } = validation as any
+    let { articleId, parentId, content } = validation as any
+
+    // If articleSlug provided, get articleId from slug
+    if (!articleId && (validation as any).articleSlug) {
+      const article = await prisma.article.findUnique({
+        where: { slug: (validation as any).articleSlug },
+        select: { id: true }
+      })
+      if (article) {
+        articleId = article.id
+      }
+    }
 
     // Check if article exists
     const article = await prisma.article.findUnique({

@@ -7,6 +7,7 @@ import { JsonLd } from '@/components/JsonLd';
 import { PersonJsonLd, BreadcrumbListJsonLd } from '@/lib/jsonLd';
 import { ArticleCard } from '@/components/ArticleCard';
 import { deriveAuthorsFromArticles, fetchPublishedArticles } from '@/lib/api';
+import { getServerLanguage } from '@/lib/utils/language';
 
 interface AuthorPageProps {
   params: { slug: string };
@@ -63,9 +64,11 @@ export default async function AuthorPage({ params, searchParams }: AuthorPagePro
     notFound();
   }
 
-  // Determine language from URL parameter
-  const requestedLang = searchParams?.lang;
-  const isNepali = requestedLang === 'ne' || (!requestedLang && !!author.nameNe);
+  // URL param takes precedence for shareability, otherwise use cookie-based server language
+  const urlLang = searchParams?.lang;
+  const serverLang = await getServerLanguage();
+  const userLang = urlLang || serverLang;
+  const isNepali = userLang === 'ne' || !userLang;
 
   const articles = allArticles.filter((article) => article.author.slug === params.slug);
   const url = `${SITE_URL}/author/${author.slug}`;

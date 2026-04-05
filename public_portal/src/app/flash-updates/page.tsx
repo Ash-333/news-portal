@@ -5,6 +5,8 @@ import { useLanguage } from '@/context/LanguageContext';
 import { FlashUpdateCard } from '@/components/flash-updates/FlashUpdateCard';
 import { AdBox } from '@/components/ads/AdBox';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 
 export default function FlashUpdatesPage() {
   const { isNepali, t } = useLanguage();
@@ -42,9 +44,7 @@ export default function FlashUpdatesPage() {
             ) : updates.length > 0 ? (
               <div className="grid gap-6">
                 {updates.map((update) => (
-                  <div key={update.id} id={update.slug}>
-                    <FlashUpdateCard update={update} />
-                  </div>
+                  <FlashUpdateCard key={update.id} update={update} />
                 ))}
               </div>
             ) : (

@@ -136,7 +136,7 @@ export function ArticlePageBody({ article, url, prevArticle, nextArticle }: Arti
       <ArticleNavigation prevArticle={prevArticle} nextArticle={nextArticle} />
 
       {/* Comments Section */}
-      <CommentSection articleId={article.id} />
+      <CommentSection articleId={article.id} articleSlug={article.slug} />
     </div>
     </ArticleViewTracker>
   );

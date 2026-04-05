@@ -4,7 +4,8 @@ import { FlashUpdate } from '@/types';
 import { useLanguage } from '@/context/LanguageContext';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
-import { Calendar, User } from 'lucide-react';
+import { Calendar, User, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 interface FlashUpdateCardProps {
   update: FlashUpdate;
@@ -34,7 +35,9 @@ export function FlashUpdateCard({ update }: FlashUpdateCardProps) {
           "text-xl font-bold text-gray-900 dark:text-white mb-3 hover:text-news-red transition-colors",
           isNepali ? "font-nepali" : ""
         )}>
-          {title}
+          <Link href={`/flash-updates/${update.slug}`}>
+            {title}
+          </Link>
         </h3>
         
         <div className={cn(
@@ -49,6 +52,13 @@ export function FlashUpdateCard({ update }: FlashUpdateCardProps) {
             <User className="h-3.5 w-3.5" />
             <span>{authorName}</span>
           </div>
+          <Link 
+            href={`/flash-updates/${update.slug}`}
+            className="text-xs font-medium text-news-red hover:underline flex items-center gap-1"
+          >
+            {isNepali ? 'थप हेर्नुहोस्' : 'Read more'}
+            <ArrowRight className="h-3 w-3" />
+          </Link>
         </div>
       </div>
     </div>

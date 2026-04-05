@@ -14,10 +14,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Switch } from '@/components/ui/switch'
 import { PageHeader } from '@/components/ui/page-header'
 import { useCategories } from '@/hooks/use-categories'
+import { useTags } from '@/hooks/use-tags'
 import { useCreateArticle } from '@/hooks/use-articles'
 import { TipTapEditor } from '@/components/tiptap-editor'
 import { FeaturedImageSelector } from '@/components/featured-image-selector'
 import { MediaLibraryModal } from '@/components/media-library-modal'
+import { Select } from '@/components/ui/select'
 import type { Media } from '@/types'
 import { toast } from 'sonner'
 
@@ -29,6 +31,7 @@ const articleSchema = z.object({
   excerptNe: z.string().optional(),
   excerptEn: z.string().optional(),
   categoryId: z.string().min(1, 'Category is required'),
+  tagIds: z.array(z.string()).optional(),
   metaTitle: z.string().optional(),
   metaDescription: z.string().optional(),
   isBreaking: z.boolean().default(false),
@@ -45,7 +48,9 @@ export default function NewArticlePage() {
   const [featuredMedia, setFeaturedMedia] = useState<Media | null>(null)
   const [isMediaLibraryOpen, setIsMediaLibraryOpen] = useState(false)
   const [pendingImageInsert, setPendingImageInsert] = useState<((url: string) => void) | null>(null)
+  const [selectedTags, setSelectedTags] = useState<string[]>([])
   const { data: categories } = useCategories()
+  const { data: tags } = useTags()
   const createArticle = useCreateArticle()
 
   const {
@@ -69,7 +74,8 @@ export default function NewArticlePage() {
 
   const onSubmit = async (data: ArticleFormData) => {
     try {
-      await createArticle.mutateAsync(data)
+      const articleData = { ...data, tagIds: selectedTags }
+      await createArticle.mutateAsync(articleData)
       toast.success('Article created successfully')
       router.push('/admin/articles')
     } catch (error: unknown) {
@@ -80,7 +86,8 @@ export default function NewArticlePage() {
 
   const onSubmitForReview = async (data: ArticleFormData) => {
     try {
-      await createArticle.mutateAsync(data)
+      const articleData = { ...data, tagIds: selectedTags }
+      await createArticle.mutateAsync(articleData)
       // Then submit for review
       toast.success('Article created and submitted for review')
       router.push('/admin/articles')
@@ -128,6 +135,47 @@ export default function NewArticlePage() {
                     {errors.titleEn && (
                       <p className="text-sm text-red-600 mt-1">{errors.titleEn.message}</p>
                     )}
+                  </div>
+
+                  {/* Tags - English */}
+                  <div>
+                    <Label>Tags</Label>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {/* Selected tags - red badges with X */}
+                      {selectedTags.map((tagId) => {
+                        const tag = tags?.find((t) => t.id === tagId)
+                        return tag ? (
+                          <span
+                            key={tag.id}
+                            className="inline-flex items-center gap-1 px-3 py-1 bg-red-500 text-white text-sm rounded-full"
+                          >
+                            {tag.nameEn}
+                            <button
+                              type="button"
+                              onClick={() => setSelectedTags(selectedTags.filter((id) => id !== tag.id))}
+                              className="text-white hover:text-red-200 font-bold"
+                            >
+                              ×
+                            </button>
+                          </span>
+                        ) : null
+                      })}
+                      {/* Available tags */}
+                      {selectedTags.length > 0 && <span className="text-sm text-gray-400 my-auto">+</span>}
+                      {tags?.map((tag) => {
+                        if (selectedTags.includes(tag.id)) return null
+                        return (
+                          <button
+                            key={tag.id}
+                            type="button"
+                            onClick={() => setSelectedTags([...selectedTags, tag.id])}
+                            className="px-2 py-1 text-sm rounded-full border border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-colors"
+                          >
+                            + {tag.nameEn}
+                          </button>
+                        )
+                      })}
+                    </div>
                   </div>
 
                   <div>
@@ -243,17 +291,12 @@ export default function NewArticlePage() {
               <CardTitle className="text-sm font-medium">Category</CardTitle>
             </CardHeader>
             <CardContent>
-              <select
-                {...register('categoryId')}
-                className="w-full p-2 border rounded-md bg-background"
-              >
-                <option value="">Select category</option>
-                {categories?.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.nameEn}
-                  </option>
-                ))}
-              </select>
+              <Select
+                options={categories?.map((c) => ({ value: c.id, label: c.nameEn })) || []}
+                value={watch('categoryId') || ''}
+                onChange={(val) => setValue('categoryId', val)}
+                placeholder="Select category"
+              />
               {errors.categoryId && (
                 <p className="text-sm text-red-600 mt-1">{errors.categoryId.message}</p>
               )}
