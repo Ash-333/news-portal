@@ -17,19 +17,6 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://yoursite.com';
 
 export const revalidate = 120;
 
-export async function generateStaticParams() {
-  try {
-    const articles = await fetchPublishedArticles({ revalidate: 120 });
-    const tags = deriveTagsFromArticles(articles);
-    return tags.map((tag) => ({
-      slug: tag.slug,
-    }));
-  } catch (error) {
-    // During build, API might not be available, return empty array
-    return [];
-  }
-}
-
 export async function generateMetadata({ params }: TagPageProps): Promise<Metadata> {
   const articles = await fetchPublishedArticles({ revalidate: 120 });
   const tags = deriveTagsFromArticles(articles);
