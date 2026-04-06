@@ -18,18 +18,6 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://yoursite.com';
 
 export const revalidate = 3600;
 
-export async function generateStaticParams() {
-  try {
-    const authors = deriveAuthorsFromArticles(await fetchPublishedArticles({ revalidate: 300 }));
-    return authors.map((author) => ({
-      slug: author.slug,
-    }));
-  } catch (error) {
-    // During build, API might not be available, return empty array
-    return [];
-  }
-}
-
 export async function generateMetadata({ params }: AuthorPageProps): Promise<Metadata> {
   const authors = deriveAuthorsFromArticles(await fetchPublishedArticles({ revalidate: 300 }));
   const author = authors.find((a) => a.slug === params.slug);

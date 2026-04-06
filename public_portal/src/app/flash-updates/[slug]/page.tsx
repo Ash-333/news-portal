@@ -18,17 +18,6 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://yoursite.com';
 
 export const dynamic = 'force-dynamic';
 
-export async function generateStaticParams() {
-  try {
-    const updates = await getFlashUpdates({ limit: 100 });
-    return updates.data.map((update) => ({
-      slug: update.slug,
-    }));
-  } catch (error) {
-    return [];
-  }
-}
-
 export async function generateMetadata({ params }: FlashUpdatePageProps): Promise<Metadata> {
   const flashUpdate = await fetchFlashUpdateBySlug(params.slug);
 

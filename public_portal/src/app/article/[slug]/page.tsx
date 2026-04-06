@@ -42,18 +42,6 @@ function resolveArticleLanguage(article: Awaited<ReturnType<typeof fetchArticleB
   }
 }
 
-export async function generateStaticParams() {
-  try {
-    const articles = await fetchPublishedArticles({ revalidate: 300 });
-    return articles.map((article) => ({
-      slug: article.slug,
-    }));
-  } catch (error) {
-    // During build, API might not be available, return empty array
-    return [];
-  }
-}
-
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
   const article = await fetchArticleBySlug(params.slug, { revalidate: 300 });
 

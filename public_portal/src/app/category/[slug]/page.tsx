@@ -25,19 +25,6 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://yoursite.com';
 
 export const revalidate = 120;
 
-export async function generateStaticParams() {
-  try {
-    const res = await getCategories();
-    const categories = res.success ? res.data : [];
-    return categories.map((category) => ({
-      slug: category.slug,
-    }));
-  } catch (error) {
-    // During build, API might not be available, return empty array
-    return [];
-  }
-}
-
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
   const res = await getCategories();
   const categories = res.success ? res.data : [];
