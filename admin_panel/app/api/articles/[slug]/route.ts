@@ -99,7 +99,7 @@ export async function GET(
       )
     }
 
-    const origin = req.nextUrl.origin
+    const origin = process.env.APP_URL || req.nextUrl.origin
 
     // Flatten tags and convert image URLs inside content and featured image URL to absolute URLs
     const absoluteContentNe = article.contentNe

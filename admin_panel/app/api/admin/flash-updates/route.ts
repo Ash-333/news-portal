@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
       ]
     }
 
-    const origin = req.nextUrl.origin
+    const origin = process.env.APP_URL || req.nextUrl.origin
 
     const [updates, total] = await Promise.all([
       prisma.flashUpdate.findMany({

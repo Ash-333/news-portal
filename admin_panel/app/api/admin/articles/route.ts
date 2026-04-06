@@ -139,7 +139,7 @@ export async function GET(req: NextRequest) {
       prisma.article.count({ where }),
     ]);
 
-    const origin = req.nextUrl.origin;
+    const origin = process.env.APP_URL || req.nextUrl.origin;
 
     // Flatten tags and convert featured image URL to absolute URL
     const formattedArticles = articles.map((article) => ({

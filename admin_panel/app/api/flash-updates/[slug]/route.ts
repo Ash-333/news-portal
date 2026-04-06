@@ -63,7 +63,7 @@ export async function GET(
       )
     }
 
-    const origin = req.nextUrl.origin
+    const origin = process.env.APP_URL || req.nextUrl.origin
 
     // Convert image URLs to absolute URLs
     const absoluteContentNe = flashUpdate.contentNe
