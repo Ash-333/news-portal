@@ -1,6 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "standalone",
+  images: {
+    unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "localhost",
+      },
+      {
+        protocol: "https",
+        hostname: "another-domain.com",
+      },
+    ],
+  },
   async headers() {
     const corsAllowedOrigin =
       process.env.CORS_ALLOWED_ORIGIN?.trim() || "http://localhost:3001";
@@ -23,22 +36,6 @@ const nextConfig = {
         ],
       },
     ];
-  },
-  images: {
-    remotePatterns: [
-      {
-        protocol: "http", // or 'http' if needed
-        hostname: "localhost",
-        // Optional: be more restrictive
-        // pathname: '/images/**',   // only allow specific paths
-        // port: '',                // if needed
-      },
-      {
-        protocol: "https",
-        hostname: "another-domain.com",
-      },
-      // Add all the hostnames you were using in domains here
-    ],
   },
 };
 

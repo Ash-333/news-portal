@@ -34,7 +34,7 @@ async function uploadFile(file: File, folder: string): Promise<string> {
   const buffer = Buffer.from(bytes);
 
   // Create uploads directory if it doesn't exist
-  const uploadDir = path.join(process.cwd(), "public", "uploads", folder);
+  const uploadDir = path.join(process.env.UPLOAD_PATH || process.cwd(), "public", "uploads", folder);
   await mkdir(uploadDir, { recursive: true });
 
   // Generate unique filename

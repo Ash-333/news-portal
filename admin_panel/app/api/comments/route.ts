@@ -81,10 +81,7 @@ export async function POST(req: NextRequest) {
     if (authResult instanceof NextResponse) return authResult
     const authenticatedReq = authResult as AuthenticatedRequest
 
-    // DEBUG: Log the user ID being used
-    console.log('[DEBUG] Comment submission - User ID:', authenticatedReq.user?.id)
-    console.log('[DEBUG] Comment submission - User role:', authenticatedReq.user?.role)
-    console.log('[DEBUG] Comment submission - User email:', authenticatedReq.user?.email)
+
 
     const validation = await validationMiddleware(commentSchema)(req)
     if (validation instanceof NextResponse) return validation

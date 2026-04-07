@@ -23,7 +23,6 @@ export function useArticleView(slug: string | undefined) {
   const hasTrackedRef = useRef(false);
 
   useEffect(() => {
-    console.log(`[VIEW TRACK] useArticleView hook called with slug: ${slug}`);
     if (!slug || hasTrackedRef.current) return;
 
     const viewedArticles = getViewedArticles();
@@ -35,19 +34,13 @@ export function useArticleView(slug: string | undefined) {
 
     // Track the view
     const trackView = async () => {
-      console.log(
-        `[VIEW TRACK] Triggering view count request for article: ${slug}`,
-      );
-      console.log(
-        `[VIEW TRACK] Full URL would be: http://localhost:3000/api/articles/${slug}/view`,
-      );
+
 
       try {
-        console.log(`[VIEW TRACK] Making POST request now...`);
         const response = await apiFetch(`/api/articles/${slug}/view`, {
           method: "POST",
         });
-        console.log(`[VIEW TRACK] Response for ${slug}:`, response);
+
         markArticleAsViewed(slug);
         hasTrackedRef.current = true;
       } catch (error: any) {

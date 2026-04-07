@@ -117,7 +117,6 @@ export async function PATCH(
 
     // Debug: Log the id value
     const { id } = await params;
-    console.log("PATCH article - id:", id);
 
     // Get existing article
     const existingArticle = await prisma.article.findUnique({

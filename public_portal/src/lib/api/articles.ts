@@ -35,15 +35,10 @@ export function getArticleBySlug(slug: string): Promise<ApiResponse<Article>> {
 }
 
 export async function incrementView(slug: string): Promise<void> {
-  console.log(`[INCREMENT VIEW] Starting incrementView for slug: ${slug}`);
   try {
-    console.log(
-      `[INCREMENT VIEW] Making POST request to /api/articles/${slug}/view`,
-    );
     const response = await apiFetch<null>(`/api/articles/${slug}/view`, {
       method: "POST",
     });
-    console.log(`[INCREMENT VIEW] Response for ${slug}:`, response);
   } catch (error) {
     console.error(
       `[INCREMENT VIEW] Error incrementing view for ${slug}:`,

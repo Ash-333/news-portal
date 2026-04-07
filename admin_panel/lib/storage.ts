@@ -1,7 +1,7 @@
 import { unlink } from 'fs/promises'
 import path from 'path'
 
-const PUBLIC_ROOT = path.join(process.cwd(), 'public')
+const PUBLIC_ROOT = process.env.UPLOAD_PATH || path.join(process.cwd(), 'public')
 
 function sanitizePath(targetPath: string): string {
   return targetPath

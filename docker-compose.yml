@@ -10,7 +10,7 @@ services:
     env_file:
       - ./admin_panel/.env.production
     volumes:
-      - admin_uploads:/app/public/uploads
+      - ./admin_panel/uploads:/app/public/uploads
 
   public_portal:
     build:
@@ -24,6 +24,3 @@ services:
       - "3001:3001"
     env_file:
       - ./public_portal/.env.production
-
-volumes:
-  admin_uploads:

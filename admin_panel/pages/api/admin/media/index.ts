@@ -46,7 +46,7 @@ type AuthedRequest = NextApiRequest & {
   file?: UploadedFile
 }
 
-const publicRoot = path.join(process.cwd(), 'public')
+const publicRoot = process.env.UPLOAD_PATH || path.join(process.cwd(), 'public')
 const uploadBaseDirectory = path.join(publicRoot, 'uploads', 'news')
 
 const storage = multer.diskStorage({
