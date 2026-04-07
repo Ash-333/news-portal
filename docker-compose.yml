@@ -10,7 +10,7 @@ services:
     env_file:
       - ./admin_panel/.env.production
     volumes:
-      - ./admin_panel/uploads:/app/public/uploads
+      - ./admin_panel/uploads:/app/public/uploads:rw
 
   public_portal:
     build:
