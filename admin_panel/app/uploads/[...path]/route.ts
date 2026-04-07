@@ -4,10 +4,10 @@ import path from 'path'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ '*': string }> }
+  { params }: { params: Promise<{ path: string[] }> }
 ) {
   try {
-    const segments = (await params)['*']
+    const segments = (await params).path.join('/')
     if (!segments) {
       return NextResponse.json({ error: 'No file specified' }, { status: 400 })
     }
