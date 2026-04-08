@@ -209,7 +209,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               {/* Featured Image */}
               <div className="relative aspect-video rounded-xl overflow-hidden mb-8">
                 <Image
-                  src={(typeof article.featuredImage === 'object' && article.featuredImage?.url) ? article.featuredImage.url.replace('http://localhost:3000', '') : (typeof article.featuredImage === 'string' ? article.featuredImage.replace('http://localhost:3000', '') : '/images/placeholder.jpg')}
+                  src={getArticleImage(article as any)}
                   alt={isNepali ? article.titleNe : (article.titleEn || article.titleNe || article.title || '')}
                   fill
                   className="object-cover"

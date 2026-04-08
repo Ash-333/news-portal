@@ -39,6 +39,14 @@ const nextConfig = {
     ],
   },
   trailingSlash: true,
+  async rewrites() {
+    return [
+      {
+        source: '/uploads/:path*',
+        destination: `${process.env.API_URL || 'http://localhost:3000'}/uploads/:path*`,
+      },
+    ];
+  },
   async headers() {
     return [
       {
