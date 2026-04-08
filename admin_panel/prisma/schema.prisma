@@ -83,6 +83,8 @@ model User {
   horoscopes     Horoscope[]
   audioNews      AudioNews[]
 
+  @@index([status])
+  @@index([deletedAt])
   @@map("users")
 }
 
@@ -102,6 +104,8 @@ model Category {
   articles Article[]
   audioNews AudioNews[]
 
+  @@index([parentId])
+  @@index([deletedAt])
   @@map("categories")
 }
 
@@ -150,6 +154,15 @@ model Article {
   comments  Comment[]
   bookmarks Bookmark[]
 
+  @@index([status])
+  @@index([publishedAt])
+  @@index([authorId])
+  @@index([categoryId])
+  @@index([isBreaking])
+  @@index([isFeatured])
+  @@index([deletedAt])
+  @@index([status, deletedAt, publishedAt])
+  @@index([status, deletedAt, authorId])
   @@map("articles")
 }
 
@@ -161,6 +174,8 @@ model ArticleTag {
   tag     Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@id([articleId, tagId])
+  @@index([articleId])
+  @@index([tagId])
   @@map("article_tags")
 }
 
@@ -180,6 +195,8 @@ model Media {
   featuredInArticles Article[]
   featuredInFlashUpdates FlashUpdate[]
 
+  @@index([uploadedBy])
+  @@index([type])
   @@map("media")
 }
 
@@ -203,6 +220,10 @@ model Comment {
   parent  Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
   replies Comment[] @relation("CommentReplies")
 
+  @@index([articleId])
+  @@index([status])
+  @@index([userId])
+  @@index([deletedAt])
   @@map("comments")
 }
 
@@ -217,6 +238,8 @@ model Bookmark {
   article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
 
   @@unique([userId, articleId])
+  @@index([userId])
+  @@index([articleId])
   @@map("bookmarks")
 }
 
@@ -233,6 +256,9 @@ model AuditLog {
   // Relations
   user User @relation(fields: [userId], references: [id])
 
+  @@index([userId])
+  @@index([targetType, targetId])
+  @@index([createdAt])
   @@map("audit_logs")
 }
 
@@ -247,6 +273,8 @@ model Notification {
   // Relations
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId])
+  @@index([isRead])
   @@map("notifications")
 }
 
@@ -276,6 +304,9 @@ model Video {
   // Relations
   author User @relation(fields: [authorId], references: [id])
 
+  @@index([authorId])
+  @@index([isPublished])
+  @@index([deletedAt])
   @@map("videos")
 }
 
@@ -298,6 +329,10 @@ model Advertisement {
   // Relations
   creator User @relation(fields: [createdBy], references: [id])
 
+  @@index([isActive])
+  @@index([position])
+  @@index([deletedAt])
+  @@index([createdBy])
   @@map("advertisements")
 }
 
@@ -326,6 +361,10 @@ model FlashUpdate {
   author        User   @relation(fields: [authorId], references: [id])
   featuredImage Media? @relation(fields: [featuredImageId], references: [id])
 
+  @@index([authorId])
+  @@index([isPublished])
+  @@index([publishedAt])
+  @@index([deletedAt])
   @@map("flash_updates")
 }
 
@@ -347,6 +386,8 @@ model Poll {
   options PollOption[]
   votes  PollVote[]
 
+  @@index([isActive])
+  @@index([deletedAt])
   @@map("polls")
 }
 
@@ -363,6 +404,7 @@ model PollOption {
   poll  Poll     @relation(fields: [pollId], references: [id], onDelete: Cascade)
   votes PollVote[]
 
+  @@index([pollId])
   @@map("poll_options")
 }
 
@@ -380,6 +422,10 @@ model PollVote {
   user   User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@unique([pollId, userId]) // One vote per user per poll (for single choice)
+  @@index([pollId])
+  @@index([optionId])
+  @@index([userId])
+  @@index([ipAddress])
   @@map("poll_votes")
 }
 
@@ -401,6 +447,10 @@ model Horoscope {
   // Relations
   author User @relation(fields: [authorId], references: [id])
 
+  @@index([zodiacSign])
+  @@index([date])
+  @@index([isPublished])
+  @@index([authorId])
   @@map("horoscopes")
 }
 
@@ -425,5 +475,9 @@ model AudioNews {
   author   User      @relation(fields: [authorId], references: [id])
   category Category? @relation(fields: [categoryId], references: [id])
 
+  @@index([authorId])
+  @@index([categoryId])
+  @@index([isPublished])
+  @@index([publishedAt])
   @@map("audio_news")
 }
