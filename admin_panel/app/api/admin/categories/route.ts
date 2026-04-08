@@ -3,6 +3,7 @@ import { Role } from '@prisma/client'
 import { prisma } from '@/lib/prisma'
 import { categorySchema } from '@/lib/validations'
 import { authMiddleware, roleMiddleware, validationMiddleware, errorHandler, AuthenticatedRequest } from '@/lib/middleware'
+import { deleteCachedPattern } from '@/lib/redis'
 
 // GET /api/admin/categories - List all categories (Author+)
 export async function GET(req: NextRequest) {
@@ -67,6 +68,9 @@ export async function POST(req: NextRequest) {
         userAgent: req.headers.get('user-agent') || null,
       },
     })
+
+    // Invalidate categories cache
+    await deleteCachedPattern('categories:')
 
     return NextResponse.json({
       success: true,

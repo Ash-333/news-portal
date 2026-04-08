@@ -9,6 +9,7 @@ import {
   errorHandler,
   AuthenticatedRequest,
 } from "@/lib/middleware";
+import { deleteCachedPattern } from "@/lib/redis";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 
@@ -237,7 +238,10 @@ export async function POST(req: NextRequest) {
         ipAddress: req.headers.get("x-forwarded-for") || null,
         userAgent: req.headers.get("user-agent") || null,
       },
-    });
+    })
+
+    // Invalidate audio news cache
+    await deleteCachedPattern('audio-news:')
 
     return NextResponse.json(
       {

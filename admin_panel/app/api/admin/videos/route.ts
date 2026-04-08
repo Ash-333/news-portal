@@ -10,6 +10,7 @@ import {
   errorHandler,
   AuthenticatedRequest
 } from '@/lib/middleware'
+import { deleteCachedPattern } from '@/lib/redis'
 
 function extractYouTubeId(url: string): string | null {
   const patterns = [
@@ -137,6 +138,9 @@ export async function POST(req: NextRequest) {
         userAgent: req.headers.get('user-agent') || null,
       },
     })
+
+    // Invalidate videos cache
+    await deleteCachedPattern('videos:')
 
     return NextResponse.json({
       success: true,

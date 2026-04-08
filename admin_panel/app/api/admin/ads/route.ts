@@ -10,6 +10,7 @@ import {
   errorHandler,
   AuthenticatedRequest,
 } from "@/lib/middleware";
+import { deleteCachedPattern } from "@/lib/redis";
 
 // GET /api/admin/ads
 export async function GET(req: NextRequest) {
@@ -112,7 +113,10 @@ export async function POST(req: NextRequest) {
         ipAddress: req.headers.get("x-forwarded-for") || null,
         userAgent: req.headers.get("user-agent") || null,
       },
-    });
+    })
+
+    // Invalidate ads cache
+    await deleteCachedPattern('ads:')
 
     return NextResponse.json(
       {

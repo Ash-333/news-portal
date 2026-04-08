@@ -1,147 +1,105 @@
-type CacheEntry = {
-  value: string
-  expiresAt: number | null
+import { LRUCache } from 'lru-cache'
+
+interface CacheValue {
+  [key: string]: unknown
 }
 
-type CounterEntry = {
-  value: number
-  expiresAt: number | null
+const globalForLruCache = globalThis as unknown as {
+  __lruCache?: LRUCache<string, CacheValue>
+  __lruCounters?: LRUCache<string, { value: number; expiresAt: number }>
 }
 
-class MemoryRedis {
-  private store = new Map<string, CacheEntry>()
-  private counters = new Map<string, CounterEntry>()
+const MAX_CACHE_ITEMS = parseInt(process.env.LRU_MAX_ITEMS || '500')
+const MAX_CACHE_AGE_MS = parseInt(process.env.LRU_MAX_AGE_MS || '300000')
 
-  private isExpired(expiresAt: number | null): boolean {
-    return expiresAt !== null && expiresAt <= Date.now()
-  }
+export const cache = globalForLruCache.__lruCache ?? new LRUCache<string, CacheValue>({
+  max: MAX_CACHE_ITEMS,
+  ttl: MAX_CACHE_AGE_MS,
+  allowStale: false,
+  updateAgeOnGet: true,
+})
 
-  private pruneValue(key: string): void {
-    const entry = this.store.get(key)
-    if (entry && this.isExpired(entry.expiresAt)) {
-      this.store.delete(key)
-    }
-  }
-
-  private pruneCounter(key: string): void {
-    const entry = this.counters.get(key)
-    if (entry && this.isExpired(entry.expiresAt)) {
-      this.counters.delete(key)
-    }
-  }
-
-  private getMatchingKeys(pattern: string): string[] {
-    const regex = new RegExp(
-      `^${pattern.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*')}$`
-    )
-
-    const keys = new Set<string>()
-
-    for (const key of Array.from(this.store.keys())) {
-      this.pruneValue(key)
-      if (this.store.has(key)) {
-        keys.add(key)
-      }
-    }
-
-    for (const key of Array.from(this.counters.keys())) {
-      this.pruneCounter(key)
-      if (this.counters.has(key)) {
-        keys.add(key)
-      }
-    }
-
-    return Array.from(keys).filter((key) => regex.test(key))
-  }
-
-  async get(key: string): Promise<string | null> {
-    this.pruneValue(key)
-    return this.store.get(key)?.value ?? null
-  }
-
-  async setex(key: string, ttlSeconds: number, value: string): Promise<void> {
-    this.store.set(key, {
-      value,
-      expiresAt: Date.now() + ttlSeconds * 1000,
-    })
-  }
-
-  async del(...keys: string[]): Promise<number> {
-    let deleted = 0
-
-    for (const key of keys) {
-      const removedValue = this.store.delete(key)
-      const removedCounter = this.counters.delete(key)
-      if (removedValue || removedCounter) {
-        deleted += 1
-      }
-    }
-
-    return deleted
-  }
-
-  async keys(pattern: string): Promise<string[]> {
-    return this.getMatchingKeys(pattern)
-  }
-
-  async incr(key: string): Promise<number> {
-    this.pruneCounter(key)
-    const current = this.counters.get(key)
-    const nextValue = (current?.value ?? 0) + 1
-
-    this.counters.set(key, {
-      value: nextValue,
-      expiresAt: current?.expiresAt ?? null,
-    })
-
-    return nextValue
-  }
-
-  async expire(key: string, ttlSeconds: number): Promise<number> {
-    const expiresAt = Date.now() + ttlSeconds * 1000
-
-    const valueEntry = this.store.get(key)
-    if (valueEntry) {
-      valueEntry.expiresAt = expiresAt
-      this.store.set(key, valueEntry)
-      return 1
-    }
-
-    const counterEntry = this.counters.get(key)
-    if (counterEntry) {
-      counterEntry.expiresAt = expiresAt
-      this.counters.set(key, counterEntry)
-      return 1
-    }
-
-    return 0
-  }
-
-  async ttl(key: string): Promise<number> {
-    this.pruneValue(key)
-    this.pruneCounter(key)
-
-    const entry = this.store.get(key) ?? this.counters.get(key)
-    if (!entry) {
-      return -2
-    }
-
-    if (entry.expiresAt === null) {
-      return -1
-    }
-
-    return Math.max(0, Math.ceil((entry.expiresAt - Date.now()) / 1000))
-  }
-}
-
-const globalForMemoryRedis = globalThis as typeof globalThis & {
-  __memoryRedis?: MemoryRedis
-}
-
-export const redis = globalForMemoryRedis.__memoryRedis ?? new MemoryRedis()
+const counters = globalForLruCache.__lruCounters ?? new LRUCache<string, { value: number; expiresAt: number }>({
+  max: 1000,
+  ttl: 3600000,
+})
 
 if (process.env.NODE_ENV !== 'production') {
-  globalForMemoryRedis.__memoryRedis = redis
+  globalForLruCache.__lruCache = cache
+  globalForLruCache.__lruCounters = counters
+}
+
+function buildCacheKey(prefix: string, params: Record<string, unknown> = {}): string {
+  const sorted = Object.keys(params)
+    .sort()
+    .filter(k => params[k] !== undefined && params[k] !== null && params[k] !== '')
+    .map(k => `${k}=${String(params[k])}`)
+    .join('&')
+  return sorted ? `${prefix}?${sorted}` : prefix
+}
+
+export async function getCached<T>(key: string): Promise<T | null> {
+  try {
+    const value = cache.get(key)
+    if (value === undefined) return null
+    return value as T
+  } catch (error) {
+    console.error('[CACHE] Get error:', error)
+    return null
+  }
+}
+
+export async function setCached<T>(key: string, data: T, ttlSeconds: number = 300): Promise<void> {
+  try {
+    cache.set(key, data as unknown as CacheValue, { ttl: ttlSeconds * 1000 })
+  } catch (error) {
+    console.error('[CACHE] Set error:', error)
+  }
+}
+
+export async function deleteCached(key: string): Promise<void> {
+  try {
+    cache.delete(key)
+  } catch (error) {
+    console.error('[CACHE] Delete error:', error)
+  }
+}
+
+export async function deleteCachedPattern(pattern: string): Promise<number> {
+  let deleted = 0
+  const prefix = pattern.replace('*', '')
+  
+  for (const key of cache.keys()) {
+    if (key.startsWith(prefix)) {
+      if (cache.delete(key)) deleted++
+    }
+  }
+  
+  return deleted
+}
+
+export async function clearAllCache(): Promise<void> {
+  cache.clear()
+}
+
+export async function cachedApi<T>(
+  prefix: string,
+  params: Record<string, unknown>,
+  fetchFn: () => Promise<T>,
+  ttlSeconds: number = 300
+): Promise<T> {
+  const key = buildCacheKey(prefix, params)
+  
+  const cached = await getCached<T>(key)
+  if (cached !== null) {
+    return cached
+  }
+  
+  const data = await fetchFn()
+  
+  await setCached(key, data, ttlSeconds)
+  
+  return data
 }
 
 export async function checkRateLimit(
@@ -151,58 +109,53 @@ export async function checkRateLimit(
 ): Promise<{ allowed: boolean; remaining: number; resetTime: number }> {
   const now = Math.floor(Date.now() / 1000)
   const windowKey = Math.floor(now / windowSeconds)
-  const redisKey = `ratelimit:${key}:${windowKey}`
+  const rateKey = `ratelimit:${key}:${windowKey}`
 
-  const current = await redis.incr(redisKey)
+  const existing = counters.get(rateKey)
+  const current = (existing?.value ?? 0) + 1
+  const expiresAt = existing?.expiresAt ?? (Date.now() + windowSeconds * 1000)
 
-  if (current === 1) {
-    await redis.expire(redisKey, windowSeconds)
-  }
-
-  const ttl = await redis.ttl(redisKey)
-  const safeTtl = ttl > 0 ? ttl : windowSeconds
+  counters.set(rateKey, { value: current, expiresAt }, { ttl: windowSeconds * 1000 })
 
   return {
     allowed: current <= limit,
     remaining: Math.max(0, limit - current),
-    resetTime: now + safeTtl,
+    resetTime: now + windowSeconds,
   }
 }
 
 export async function storeSession(sessionId: string, data: unknown, expirySeconds: number = 86400): Promise<void> {
-  await redis.setex(`session:${sessionId}`, expirySeconds, JSON.stringify(data))
+  await setCached(`session:${sessionId}`, data, expirySeconds)
 }
 
 export async function getSession<T>(sessionId: string): Promise<T | null> {
-  const data = await redis.get(`session:${sessionId}`)
-  if (!data) return null
-  return JSON.parse(data) as T
+  return getCached<T>(`session:${sessionId}`)
 }
 
 export async function deleteSession(sessionId: string): Promise<void> {
-  await redis.del(`session:${sessionId}`)
+  await deleteCached(`session:${sessionId}`)
 }
 
 export async function getCache<T>(key: string): Promise<T | null> {
-  const data = await redis.get(`cache:${key}`)
-  if (!data) return null
-  return JSON.parse(data) as T
+  return getCached<T>(`cache:${key}`)
 }
 
 export async function setCache(key: string, data: unknown, expirySeconds: number = 3600): Promise<void> {
-  await redis.setex(`cache:${key}`, expirySeconds, JSON.stringify(data))
+  await setCached(`cache:${key}`, data, expirySeconds)
 }
 
 export async function deleteCache(key: string): Promise<void> {
-  await redis.del(`cache:${key}`)
+  await deleteCached(`cache:${key}`)
 }
 
 export async function clearCachePattern(pattern: string): Promise<number> {
-  const keys = await redis.keys(`cache:${pattern}`)
-  if (keys.length === 0) {
-    return 0
-  }
+  return deleteCachedPattern(`cache:${pattern}`)
+}
 
-  await redis.del(...keys)
-  return keys.length
+export function getCacheStats() {
+  return {
+    size: cache.size,
+    max: MAX_CACHE_ITEMS,
+    ttl: MAX_CACHE_AGE_MS,
+  }
 }

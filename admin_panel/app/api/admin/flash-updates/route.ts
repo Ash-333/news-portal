@@ -10,6 +10,7 @@ import {
   errorHandler,
   AuthenticatedRequest
 } from '@/lib/middleware'
+import { deleteCachedPattern } from '@/lib/redis'
 
 // GET /api/admin/flash-updates
 export async function GET(req: NextRequest) {
@@ -143,6 +144,9 @@ export async function POST(req: NextRequest) {
         userAgent: req.headers.get('user-agent') || null,
       },
     })
+
+    // Invalidate flash updates cache
+    await deleteCachedPattern('flash-updates:')
 
     return NextResponse.json({
       success: true,

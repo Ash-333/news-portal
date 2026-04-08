@@ -9,6 +9,7 @@ import {
   errorHandler,
   AuthenticatedRequest,
 } from "@/lib/middleware";
+import { deleteCachedPattern } from "@/lib/redis";
 import { z } from "zod";
 
 const pollSchema = z.object({
@@ -169,7 +170,10 @@ export async function POST(req: NextRequest) {
         ipAddress: req.headers.get('x-forwarded-for') || null,
         userAgent: req.headers.get("user-agent") || null,
       },
-    });
+    })
+
+    // Invalidate polls cache
+    await deleteCachedPattern('polls:')
 
     return NextResponse.json(
       {

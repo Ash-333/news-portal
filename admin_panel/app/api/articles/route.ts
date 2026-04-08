@@ -3,11 +3,26 @@ import { ArticleStatus } from '@prisma/client'
 import { prisma } from '@/lib/prisma'
 import { paginationSchema } from '@/lib/validations'
 import { validateQueryParams, errorHandler } from '@/lib/middleware'
+import { cachedApi, deleteCachedPattern } from '@/lib/redis'
+
+const CACHE_TTL = 300 // 5 minutes
+
+function formatArticles(articles: any[], origin: string) {
+  return articles.map(article => ({
+    ...article,
+    tags: article.tags.map((t: any) => t.tag),
+    featuredImage: article.featuredImage
+      ? {
+          ...article.featuredImage,
+          url: `${origin}${article.featuredImage.url}`,
+        }
+      : null,
+  }))
+}
 
 // GET /api/articles - List published articles (public)
 export async function GET(req: NextRequest) {
   try {
-    // Parse query params
     const { searchParams } = new URL(req.url)
     const pagination = validateQueryParams(searchParams, paginationSchema)
 
@@ -27,125 +42,100 @@ export async function GET(req: NextRequest) {
     const isBreaking = searchParams.get('isBreaking')
     const isFeatured = searchParams.get('isFeatured')
 
-    // Build where clause - only published articles
-    const where: Record<string, unknown> = { 
-      status: ArticleStatus.PUBLISHED,
-      deletedAt: null,
-      publishedAt: { lte: new Date() },
-    }
-
-    if (search) {
-      where.OR = [
-        { titleNe: { contains: search, mode: 'insensitive' } },
-        { titleEn: { contains: search, mode: 'insensitive' } },
-        { excerptNe: { contains: search, mode: 'insensitive' } },
-        { excerptEn: { contains: search, mode: 'insensitive' } },
-      ]
-    }
-
-    if (categorySlug) {
-      ;(where as any).category = { slug: categorySlug }
-    } else if (categoryId) {
-      where.categoryId = categoryId
-    }
-    if (isBreaking === 'true') where.isBreaking = true
-    if (isFeatured === 'true') where.isFeatured = true
-
-    if (tagId) {
-      where.tags = {
-        some: { tagId }
-      }
-    }
-
-    // Get articles with pagination
-    const [articles, total] = await Promise.all([
-      prisma.article.findMany({
-        where,
-        select: {
-          id: true,
-          titleNe: true,
-          titleEn: true,
-          excerptNe: true,
-          excerptEn: true,
-          slug: true,
-          isBreaking: true,
-          isFeatured: true,
-          publishedAt: true,
-          viewCount: true,
-          ogImage: true,
-          featuredImage: {
-            select: {
-              id: true,
-              url: true,
-            },
-          },
-          author: {
-            select: {
-              id: true,
-              name: true,
-              profilePhoto: true,
-            },
-          },
-          category: {
-            select: {
-              id: true,
-              nameNe: true,
-              nameEn: true,
-              slug: true,
-            },
-          },
-          tags: {
-            select: {
-              tag: {
-                select: {
-                  id: true,
-                  nameNe: true,
-                  nameEn: true,
-                  slug: true,
-                },
-              },
-            },
-          },
-          _count: {
-            select: {
-              comments: true,
-            },
-          },
-        },
-        orderBy: sortBy ? { [sortBy]: order } : { publishedAt: 'desc' },
-        skip: (page - 1) * limit,
-        take: limit,
-      }),
-      prisma.article.count({ where }),
-    ])
+    const cacheParams = { page, limit, search, sortBy, order, categoryId, categorySlug, tagId, isBreaking, isFeatured }
 
     const origin = process.env.APP_URL || req.nextUrl.origin
 
-    // Flatten tags and convert featured image URL to absolute URL
-    const formattedArticles = articles.map(article => ({
-      ...article,
-      tags: article.tags.map(t => t.tag),
-      featuredImage: article.featuredImage
-        ? {
-            ...article.featuredImage,
-            url: `${origin}${article.featuredImage.url}`,
-          }
-        : null,
-    }))
+    const result = await cachedApi(
+      'articles:list',
+      cacheParams,
+      async () => {
+        const where: Record<string, unknown> = {
+          status: ArticleStatus.PUBLISHED,
+          deletedAt: null,
+          publishedAt: { lte: new Date() },
+        }
 
-    return NextResponse.json(
-      {
-        success: true,
-        data: formattedArticles,
-        message: 'Articles retrieved successfully',
-        pagination: {
-          page,
-          limit,
+        if (search) {
+          where.OR = [
+            { titleNe: { contains: search, mode: 'insensitive' } },
+            { titleEn: { contains: search, mode: 'insensitive' } },
+            { excerptNe: { contains: search, mode: 'insensitive' } },
+            { excerptEn: { contains: search, mode: 'insensitive' } },
+          ]
+        }
+
+        if (categorySlug) {
+          ;(where as any).category = { slug: categorySlug }
+        } else if (categoryId) {
+          where.categoryId = categoryId
+        }
+        if (isBreaking === 'true') where.isBreaking = true
+        if (isFeatured === 'true') where.isFeatured = true
+
+        if (tagId) {
+          where.tags = {
+            some: { tagId }
+          }
+        }
+
+        const [articles, total] = await Promise.all([
+          prisma.article.findMany({
+            where,
+            select: {
+              id: true,
+              titleNe: true,
+              titleEn: true,
+              excerptNe: true,
+              excerptEn: true,
+              slug: true,
+              isBreaking: true,
+              isFeatured: true,
+              publishedAt: true,
+              viewCount: true,
+              ogImage: true,
+              featuredImage: {
+                select: { id: true, url: true },
+              },
+              author: {
+                select: { id: true, name: true, profilePhoto: true },
+              },
+              category: {
+                select: { id: true, nameNe: true, nameEn: true, slug: true },
+              },
+              tags: {
+                select: {
+                  tag: {
+                    select: { id: true, nameNe: true, nameEn: true, slug: true },
+                  },
+                },
+              },
+              _count: {
+                select: { comments: true },
+              },
+            },
+            orderBy: sortBy ? { [sortBy]: order } : { publishedAt: 'desc' },
+            skip: (page - 1) * limit,
+            take: limit,
+          }),
+          prisma.article.count({ where }),
+        ])
+
+        return {
+          articles: formatArticles(articles, origin),
           total,
-          totalPages: Math.ceil(total / limit),
-        },
-      }
+          pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
+        }
+      },
+      CACHE_TTL
     )
+
+    return NextResponse.json({
+      success: true,
+      data: result.articles,
+      message: 'Articles retrieved successfully',
+      pagination: result.pagination,
+    })
   } catch (error) {
     return errorHandler(error)
   }

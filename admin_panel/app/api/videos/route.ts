@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { cachedApi } from '@/lib/redis'
+
+const CACHE_TTL = 300 // 5 minutes
 
 export async function GET(request: Request) {
   try {
@@ -8,38 +11,45 @@ export async function GET(request: Request) {
     const page = parseInt(searchParams.get('page') || '1')
     const search = searchParams.get('search') || ''
 
-    const where = {
-      isPublished: true,
-      deletedAt: null,
-      OR: search ? [
-        { titleNe: { contains: search, mode: 'insensitive' } },
-        { titleEn: { contains: search, mode: 'insensitive' } },
-      ] : undefined
-    }
-
-    const [videos, total] = await Promise.all([
-      prisma.video.findMany({
-        where: where as any,
-        orderBy: { publishedAt: 'desc' },
-        skip: (page - 1) * limit,
-        take: limit,
-        include: {
-          author: {
-            select: { name: true, profilePhoto: true }
-          }
+    const result = await cachedApi(
+      'videos:list',
+      { limit, page, search },
+      async () => {
+        const where = {
+          isPublished: true,
+          deletedAt: null,
+          OR: search ? [
+            { titleNe: { contains: search, mode: 'insensitive' } },
+            { titleEn: { contains: search, mode: 'insensitive' } },
+          ] : undefined
         }
-      }),
-      prisma.video.count({ where: where as any })
-    ])
+
+        const [videos, total] = await Promise.all([
+          prisma.video.findMany({
+            where: where as any,
+            orderBy: { publishedAt: 'desc' },
+            skip: (page - 1) * limit,
+            take: limit,
+            include: {
+              author: { select: { name: true, profilePhoto: true } }
+            }
+          }),
+          prisma.video.count({ where: where as any })
+        ])
+
+        return { videos, total }
+      },
+      CACHE_TTL
+    )
 
     return NextResponse.json({
       success: true,
-      data: videos,
+      data: result.videos,
       pagination: {
         page,
         limit,
-        total,
-        totalPages: Math.ceil(total / limit)
+        total: result.total,
+        totalPages: Math.ceil(result.total / limit)
       }
     })
   } catch (error) {

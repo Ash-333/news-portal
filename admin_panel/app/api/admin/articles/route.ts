@@ -14,6 +14,7 @@ import {
   errorHandler,
   AuthenticatedRequest,
 } from "@/lib/middleware";
+import { deleteCachedPattern } from "@/lib/redis";
 
 // GET /api/admin/articles - List all articles (Admin+)
 export async function GET(req: NextRequest) {
@@ -264,6 +265,9 @@ export async function POST(req: NextRequest) {
         createdAt: true,
       },
     });
+
+    // Invalidate public articles cache
+    await deleteCachedPattern('articles:')
 
     // Create audit log
     await prisma.auditLog.create({

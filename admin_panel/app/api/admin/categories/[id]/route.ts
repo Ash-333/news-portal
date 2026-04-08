@@ -3,6 +3,7 @@ import { Role } from '@prisma/client'
 import { prisma } from '@/lib/prisma'
 import { categorySchema } from '@/lib/validations'
 import { authMiddleware, roleMiddleware, validationMiddleware, errorHandler, AuthenticatedRequest } from '@/lib/middleware'
+import { deleteCachedPattern } from '@/lib/redis'
 
 // PATCH /api/admin/categories/:id - Update category (Admin+)
 export async function PATCH(
@@ -50,6 +51,9 @@ export async function PATCH(
         userAgent: req.headers.get('user-agent') || null,
       },
     })
+
+    // Invalidate categories cache
+    await deleteCachedPattern('categories:')
 
     return NextResponse.json({
       success: true,
@@ -108,6 +112,9 @@ export async function DELETE(
         userAgent: req.headers.get('user-agent') || null,
       },
     })
+
+    // Invalidate categories cache
+    await deleteCachedPattern('categories:')
 
     return NextResponse.json({
       success: true,
