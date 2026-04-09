@@ -22,16 +22,22 @@ const nextConfig = {
         port: '3000',
         pathname: '/uploads/**',
       },
-      ...(apiHostname
-        ? [
-            {
-              protocol: 'http',
-              hostname: apiHostname,
-              port: '3000',
-              pathname: '/uploads/**',
-            },
-          ]
-        : []),
+      {
+        protocol: 'http',
+        hostname: '182.93.78.30',
+        port: '3000',
+        pathname: '/uploads/**',
+      },
+      // ...(apiHostname
+      //   ? [
+      //       {
+      //         protocol: 'http',
+      //         hostname: apiHostname,
+      //         port: '3000',
+      //         pathname: '/uploads/**',
+      //       },
+      //     ]
+      //   : []),
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
