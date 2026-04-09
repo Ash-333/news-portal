@@ -25,8 +25,9 @@ const nextConfig = {
       ...(apiHostname
         ? [
             {
-              protocol: 'https',
+              protocol: 'http',
               hostname: apiHostname,
+              port: '3000',
               pathname: '/uploads/**',
             },
           ]
