@@ -30,15 +30,22 @@ export function middleware(request: NextRequest) {
     language = DEFAULT_LANGUAGE;
   }
 
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set('x-language', language);
+
   // Add security headers
-  const response = NextResponse.next();
+  const response = NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  });
   
   response.headers.set('X-DNS-Prefetch-Control', 'on');
   response.headers.set('X-Frame-Options', 'SAMEORIGIN');
   response.headers.set('X-Content-Type-Options', 'nosniff');
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   
-  // Pass language to server components via header
+  // Mirror the resolved language on the response for debugging/proxies.
   response.headers.set('x-language', language);
   
   return response;

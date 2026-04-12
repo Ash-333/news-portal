@@ -6,15 +6,25 @@ import { useLanguage } from '@/context/LanguageContext';
 import { cn } from '@/lib/utils';
 
 const STORAGE_KEY = 'floating_button_position';
+const VIEWPORT_PADDING = 20;
+const DEFAULT_BUTTON_WIDTH = 160;
+const DEFAULT_BUTTON_HEIGHT = 52;
 
 interface Position {
     x: number;
     y: number;
 }
 
+function getDefaultPosition(viewportWidth: number, viewportHeight: number): Position {
+    return {
+        x: Math.max(VIEWPORT_PADDING, viewportWidth - DEFAULT_BUTTON_WIDTH - VIEWPORT_PADDING),
+        y: Math.max(VIEWPORT_PADDING, viewportHeight - DEFAULT_BUTTON_HEIGHT - VIEWPORT_PADDING),
+    };
+}
+
 export function FloatingWatchButton() {
     const { isNepali } = useLanguage();
-    const [position, setPosition] = useState<Position>({ x: 20, y: -20 });
+    const [position, setPosition] = useState<Position>({ x: VIEWPORT_PADDING, y: VIEWPORT_PADDING });
     const [isDragging, setIsDragging] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
     const buttonRef = useRef<HTMLAnchorElement>(null);
@@ -25,15 +35,21 @@ export function FloatingWatchButton() {
     // Load position from localStorage on mount
     useEffect(() => {
         const saved = localStorage.getItem(STORAGE_KEY);
+        const defaultPosition = getDefaultPosition(window.innerWidth, window.innerHeight);
+
         if (saved) {
             try {
                 const parsed = JSON.parse(saved);
                 if (typeof parsed.x === 'number' && typeof parsed.y === 'number') {
                     setPosition(parsed);
+                } else {
+                    setPosition(defaultPosition);
                 }
             } catch {
-                // ignore parse errors
+                setPosition(defaultPosition);
             }
+        } else {
+            setPosition(defaultPosition);
         }
         setIsLoaded(true);
     }, []);
@@ -65,9 +81,9 @@ export function FloatingWatchButton() {
             const newY = e.clientY - dragOffset.current.y;
 
             // Clamp to viewport with some padding
-            const padding = 20;
-            const maxX = window.innerWidth - (buttonRef.current?.offsetWidth || 150) - padding;
-            const maxY = window.innerHeight - (buttonRef.current?.offsetHeight || 50) - padding;
+            const padding = VIEWPORT_PADDING;
+            const maxX = window.innerWidth - (buttonRef.current?.offsetWidth || DEFAULT_BUTTON_WIDTH) - padding;
+            const maxY = window.innerHeight - (buttonRef.current?.offsetHeight || DEFAULT_BUTTON_HEIGHT) - padding;
 
             const clampedX = Math.max(padding, Math.min(newX, maxX));
             const clampedY = Math.max(padding, Math.min(newY, maxY));
@@ -108,9 +124,9 @@ export function FloatingWatchButton() {
             const newX = touch.clientX - dragOffset.current.x;
             const newY = touch.clientY - dragOffset.current.y;
 
-            const padding = 20;
-            const maxX = window.innerWidth - (buttonRef.current?.offsetWidth || 150) - padding;
-            const maxY = window.innerHeight - (buttonRef.current?.offsetHeight || 50) - padding;
+            const padding = VIEWPORT_PADDING;
+            const maxX = window.innerWidth - (buttonRef.current?.offsetWidth || DEFAULT_BUTTON_WIDTH) - padding;
+            const maxY = window.innerHeight - (buttonRef.current?.offsetHeight || DEFAULT_BUTTON_HEIGHT) - padding;
 
             const clampedX = Math.max(padding, Math.min(newX, maxX));
             const clampedY = Math.max(padding, Math.min(newY, maxY));

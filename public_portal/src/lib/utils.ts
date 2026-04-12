@@ -21,7 +21,7 @@ export function toEnglishDigits(str: string): string {
 }
 
 // Date formatting
-export function formatDate(date: Date | string, locale: 'ne' | 'en' = 'en'): string {
+export function formatDate(date: Date | string, locale: 'ne' | 'en' = 'ne'): string {
   const d = new Date(date);
   
   if (locale === 'ne') {
@@ -42,7 +42,7 @@ export function formatDate(date: Date | string, locale: 'ne' | 'en' = 'en'): str
   });
 }
 
-export function formatDateTime(date: Date | string, locale: 'ne' | 'en' = 'en'): string {
+export function formatDateTime(date: Date | string, locale: 'ne' | 'en' = 'ne'): string {
   const d = new Date(date);
   
   if (locale === 'ne') {
@@ -66,7 +66,7 @@ export function formatDateTime(date: Date | string, locale: 'ne' | 'en' = 'en'):
 }
 
 // Relative time
-export function getRelativeTime(date: Date | string, locale: 'ne' | 'en' = 'en'): string {
+export function getRelativeTime(date: Date | string, locale: 'ne' | 'en' = 'ne'): string {
   const d = new Date(date);
   const now = new Date();
   const diffInSeconds = Math.floor((now.getTime() - d.getTime()) / 1000);
@@ -210,7 +210,7 @@ export function scrollToElement(elementId: string, offset: number = 80): void {
 }
 
 // Format number with commas
-export function formatNumber(num: number, locale: 'ne' | 'en' = 'en'): string {
+export function formatNumber(num: number, locale: 'ne' | 'en' = 'ne'): string {
   const formatted = num.toLocaleString(locale === 'ne' ? 'ne-NP' : 'en-US');
   return locale === 'ne' ? toNepaliDigits(formatted) : formatted;
 }
@@ -219,7 +219,7 @@ export function formatNumber(num: number, locale: 'ne' | 'en' = 'en'): string {
 export function formatCurrency(
   amount: number,
   currency: string = 'NPR',
-  locale: 'ne' | 'en' = 'en'
+  locale: 'ne' | 'en' = 'ne'
 ): string {
   const formatted = new Intl.NumberFormat(locale === 'ne' ? 'ne-NP' : 'en-US', {
     style: 'currency',

@@ -15,10 +15,9 @@ import { getServerLanguage } from '@/lib/utils/language';
 import { HoroscopeSection } from '@/components/horoscopes/HoroscopeSection';
 import { AudioNewsSection } from '@/components/audio/AudioNewsList';
 
-export const dynamic = 'force-static';
 interface CategoryPageProps {
   params: { slug: string };
-  searchParams: { lang?: string };
+  searchParams?: { lang?: string };
 }
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://yoursite.com';
@@ -68,8 +67,8 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
 
   // URL param takes precedence for shareability, otherwise use cookie-based server language
   const urlLang = searchParams?.lang;
-  const serverLang = await getServerLanguage();
-  const userLang = urlLang || serverLang;
+  const serverLang = getServerLanguage();
+  const userLang = urlLang === 'en' || urlLang === 'ne' ? urlLang : serverLang;
   const isNepali = userLang === 'ne' || !userLang;
 
   const articles = articlesRes.success ? articlesRes.data : [];

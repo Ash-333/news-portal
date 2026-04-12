@@ -21,10 +21,12 @@ import { InArticleAd } from '@/components/ads/AdSlot';
 
 interface ArticlePageProps {
   params: { slug: string };
+  searchParams?: { lang?: string };
 }
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://yoursite.com';
 
+export const dynamic = 'force-dynamic';
 export const revalidate = 300;
 
 function resolveArticleLanguage(article: Awaited<ReturnType<typeof fetchArticleBySlug>>, userLang: 'ne' | 'en') {
@@ -42,7 +44,7 @@ function resolveArticleLanguage(article: Awaited<ReturnType<typeof fetchArticleB
   }
 }
 
-export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: ArticlePageProps): Promise<Metadata> {
   const article = await fetchArticleBySlug(params.slug, { revalidate: 300 });
 
   if (!article) {
@@ -50,7 +52,9 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   }
 
   const url = `${SITE_URL}/article/${article.slug}`;
-  const userLang = await getServerLanguage();
+  const requestedLang = searchParams?.lang;
+  const serverLang = getServerLanguage();
+  const userLang = requestedLang === 'en' || requestedLang === 'ne' ? requestedLang : serverLang;
   const isNepali = resolveArticleLanguage(article, userLang);
 
   return {
@@ -96,7 +100,7 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   };
 }
 
-export default async function ArticlePage({ params }: ArticlePageProps) {
+export default async function ArticlePage({ params, searchParams }: ArticlePageProps) {
   const [article, articles] = await Promise.all([
     fetchArticleBySlug(params.slug, { revalidate: 300 }),
     fetchPublishedArticles({ revalidate: 300 }),
@@ -106,7 +110,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     notFound();
   }
 
-  const userLang = await getServerLanguage();
+  const requestedLang = searchParams?.lang;
+  const serverLang = getServerLanguage();
+  const userLang = requestedLang === 'en' || requestedLang === 'ne' ? requestedLang : serverLang;
   const isNepali = resolveArticleLanguage(article, userLang);
 
   const content = isNepali ? (article.contentNe || article.contentEn || '') : (article.contentEn || article.contentNe || '');
