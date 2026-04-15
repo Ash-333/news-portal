@@ -91,7 +91,6 @@ const navItems: NavItem[] = [
       { label: 'Roles & Permissions', href: '/admin/users/roles', icon: Users, permission: permissions.userRolesManage },
     ]
   },
-  { label: 'Analytics', href: '/admin/analytics', icon: BarChart3, permission: permissions.analyticsView },
   { label: 'Audit Logs', href: '/admin/audit-logs', icon: ClipboardList, permission: permissions.auditView },
   { label: 'Settings', href: '/admin/settings', icon: Settings, permission: permissions.settingsManage },
 ]

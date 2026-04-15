@@ -142,42 +142,9 @@ export async function GET(req: NextRequest) {
           data: formattedTopArticles,
           message: 'Top articles retrieved successfully',
         })
-      }
+}
 
-      case 'authors': {
-        const authors = await prisma.user.findMany({
-          where: {
-            role: { in: [Role.AUTHOR, Role.ADMIN, Role.SUPERADMIN] },
-            deletedAt: null,
-          },
-          select: {
-            id: true,
-            name: true,
-            _count: {
-              select: { articles: true },
-            },
-            articles: {
-              where: { status: ArticleStatus.PUBLISHED },
-              select: { viewCount: true },
-            },
-          },
-        })
-
-        const authorStats = authors.map(author => ({
-          id: author.id,
-          name: author.name,
-          articleCount: author._count.articles,
-          totalViews: author.articles.reduce((sum, a) => sum + a.viewCount, 0),
-        }))
-
-        return NextResponse.json({
-          success: true,
-          data: authorStats,
-          message: 'Author stats retrieved successfully',
-        })
-      }
-
-case 'chart': {
+      case 'chart': {
         const days = parseInt(searchParams.get('days') || '7')
         const chartData = []
         
