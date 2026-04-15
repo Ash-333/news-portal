@@ -20,7 +20,6 @@ import {
   ChevronDown,
   LogOut,
   User,
-  Globe,
   Newspaper,
   Video,
   Megaphone,
@@ -203,12 +202,8 @@ function Sidebar({
 
 function TopNavbar({
   onMenuClick,
-  onLanguageToggle,
-  language
 }: {
   onMenuClick: () => void
-  onLanguageToggle: () => void
-  language: 'ne' | 'en'
 }) {
   const { data: session, status } = useSession()
   const router = useRouter()
@@ -241,23 +236,6 @@ function TopNavbar({
 
         {/* Right side */}
         <div className="flex items-center gap-2">
-          {/* Language toggle */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onLanguageToggle}
-            className="gap-2"
-          >
-            <Globe className="w-4 h-4" />
-            {language === 'en' ? 'English' : 'नेपाली'}
-          </Button>
-
-          {/* Notifications */}
-          <Button variant="ghost" size="icon" className="relative">
-            <Bell className="w-5 h-5" />
-            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
-          </Button>
-
           {/* User menu */}
           {status === 'authenticated' && session?.user && (
             <DropdownMenu>
@@ -277,14 +255,14 @@ function TopNavbar({
                   <p className="text-xs text-slate-500">{session.user.email}</p>
                 </div>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => router.push('/admin/profile')}>
+                {/* <DropdownMenuItem onClick={() => router.push('/admin/profile')}>
                   <User className="w-4 h-4 mr-2" />
                   My Profile
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => router.push('/admin/change-password')}>
                   <Settings className="w-4 h-4 mr-2" />
                   Change Password
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout} className="text-red-600">
                   <LogOut className="w-4 h-4 mr-2" />
@@ -305,7 +283,6 @@ export default function AdminLayout({
   children: React.ReactNode
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [language, setLanguage] = useState<'ne' | 'en'>('en')
   const { data: session, status } = useSession()
   const router = useRouter()
 
@@ -335,8 +312,6 @@ export default function AdminLayout({
 
       <TopNavbar
         onMenuClick={() => setSidebarOpen(true)}
-        onLanguageToggle={() => setLanguage(prev => prev === 'en' ? 'ne' : 'en')}
-        language={language}
       />
 
       <main className="pt-16 lg:pl-64">

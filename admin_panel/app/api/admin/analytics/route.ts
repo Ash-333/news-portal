@@ -68,7 +68,7 @@ export async function GET(req: NextRequest) {
         }
 
         if (!isAuthor) {
-          const [totalUsers, commentsToday, totalVideos, totalAds, totalFlashUpdates] = await Promise.all([
+          const [totalUsers, commentsToday, totalVideos, totalAds, totalFlashUpdates, pageViewsToday] = await Promise.all([
             prisma.user.count({ where: { deletedAt: null } }),
             prisma.comment.count({
               where: {
@@ -79,13 +79,18 @@ export async function GET(req: NextRequest) {
             prisma.video.count({ where: { deletedAt: null } }),
             prisma.advertisement.count({ where: { deletedAt: null } }),
             prisma.flashUpdate.count({ where: { deletedAt: null } }),
+            prisma.pageView.count({
+              where: {
+                createdAt: { gte: today },
+              },
+            }),
           ])
           responseData.totalUsers = totalUsers
           responseData.commentsToday = commentsToday
           responseData.totalVideos = totalVideos
           responseData.totalAds = totalAds
           responseData.totalFlashUpdates = totalFlashUpdates
-          responseData.pageViewsToday = 0
+          responseData.pageViewsToday = pageViewsToday
         }
 
         return NextResponse.json({
@@ -172,7 +177,7 @@ export async function GET(req: NextRequest) {
         })
       }
 
-      case 'chart': {
+case 'chart': {
         const days = parseInt(searchParams.get('days') || '7')
         const chartData = []
         
@@ -186,7 +191,7 @@ export async function GET(req: NextRequest) {
           const nextDate = new Date(date)
           nextDate.setDate(nextDate.getDate() + 1)
           
-          const [articles, comments] = await Promise.all([
+          const [articles, comments, pageViews] = await Promise.all([
             prisma.article.count({
               where: {
                 ...articleWhere,
@@ -203,12 +208,17 @@ export async function GET(req: NextRequest) {
                 deletedAt: null,
               },
             }),
+            prisma.pageView.count({
+              where: {
+                createdAt: { gte: date, lt: nextDate },
+              },
+            }),
           ])
           
           chartData.push({
             date: date.toISOString().split('T')[0],
             articles,
-            views: Math.floor(Math.random() * 500) + 100, // Placeholder - would come from analytics
+            views: pageViews,
             comments,
           })
         }

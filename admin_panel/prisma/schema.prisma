@@ -129,6 +129,8 @@ model Article {
   contentEn       String        @map("content_en")
   excerptNe       String?       @map("excerpt_ne")
   excerptEn       String?       @map("excerpt_en")
+  summaryNe       String?       @map("summary_ne")
+  summaryEn       String?       @map("summary_en")
   slug            String        @unique
   status          ArticleStatus @default(DRAFT)
   isBreaking      Boolean       @default(false) @map("is_breaking")
@@ -153,6 +155,7 @@ model Article {
   tags      ArticleTag[]
   comments  Comment[]
   bookmarks Bookmark[]
+  pageViews PageView[]
 
   @@index([status])
   @@index([publishedAt])
@@ -462,7 +465,7 @@ model AudioNews {
   descriptionNe String?  @map("description_ne")
   descriptionEn String?  @map("description_en")
   audioUrl      String   @map("audio_url")
-  thumbnailUrl  String?  @map("thumbnail_url")
+  thumbnailUrl String?  @map("thumbnail_url")
   categoryId    String?  @map("category_id")
   authorId      String   @map("author_id")
   isPublished   Boolean  @default(false) @map("is_published")
@@ -480,4 +483,23 @@ model AudioNews {
   @@index([isPublished])
   @@index([publishedAt])
   @@map("audio_news")
+}
+
+// Page View Tracking Model
+model PageView {
+  id          String   @id @default(uuid())
+  articleId   String   @map("article_id")
+  slug        String
+  ipAddress   String?  @map("ip_address")
+  userAgent   String?  @map("user_agent")
+  referrer    String?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  // Relations
+  article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@index([articleId])
+  @@index([createdAt])
+  @@index([slug])
+  @@map("page_views")
 }

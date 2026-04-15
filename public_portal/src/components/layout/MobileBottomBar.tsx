@@ -26,7 +26,7 @@ export function MobileBottomBar() {
           url: window.location.href,
         });
       } catch (err) {
-        console.log('Share cancelled');
+        // User cancelled or error
       }
     } else {
       // Fallback: copy to clipboard

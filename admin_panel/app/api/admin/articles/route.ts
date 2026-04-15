@@ -203,17 +203,21 @@ export async function POST(req: NextRequest) {
     };
 
     if (scheduledAt && scheduledAt !== "") {
-      // Ensure datetime has seconds and timezone for proper storage
+      // Convert from Nepali time (UTC+5:45) to UTC
       let dateStr = scheduledAt as string;
       if (dateStr.split(":").length === 2) {
-        // Add seconds if missing (from datetime-local input)
         dateStr = dateStr + ":00";
       }
-      // Add timezone if missing (default to UTC)
       if (!dateStr.endsWith("Z") && !dateStr.includes("+")) {
-        dateStr = dateStr + "Z";
+        const nepalOffset = 5.75 * 60 * 60 * 1000;
+        const nepalDate = new Date(dateStr);
+        const utcDate = new Date(nepalDate.getTime() - nepalOffset);
+        articleData.scheduledAt = utcDate;
+        articleData.status = ArticleStatus.SCHEDULED;
+      } else {
+        articleData.scheduledAt = new Date(dateStr);
+        articleData.status = ArticleStatus.SCHEDULED;
       }
-      articleData.scheduledAt = new Date(dateStr);
     }
 
     if (featuredImageId && featuredImageId !== "") {
@@ -251,7 +255,8 @@ export async function POST(req: NextRequest) {
         isFeatured: articleData.isFeatured as boolean | undefined,
         slug,
         authorId: authenticatedReq.user!.id,
-        status: ArticleStatus.DRAFT, // Authors can only create drafts
+        status: (articleData.status as ArticleStatus) || ArticleStatus.DRAFT,
+        scheduledAt: articleData.scheduledAt as Date | undefined,
         tags: {
           create: tagIds?.map((tagId) => ({ tagId })) || [],
         },
