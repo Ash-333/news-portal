@@ -24,9 +24,26 @@ export async function PATCH(
 
     const { scheduledAt } = validation
 
+    // Convert Nepali time (UTC+5:45) to UTC
+    let dateStr = scheduledAt;
+    if (dateStr.split(":").length === 2) {
+      dateStr = dateStr + ":00";
+    }
+    let utcDate;
+    if (!dateStr.endsWith("Z") && !dateStr.includes("+")) {
+      const nepalOffset = 5.75 * 60 * 60 * 1000;
+      const nepalDate = new Date(dateStr);
+      utcDate = new Date(nepalDate.getTime() - nepalOffset);
+    } else {
+      utcDate = new Date(dateStr);
+    }
+
     const article = await prisma.article.update({
       where: { id, deletedAt: null },
-      data: { scheduledAt: new Date(scheduledAt) },
+      data: { 
+        scheduledAt: utcDate,
+        status: 'SCHEDULED',
+      },
       select: {
         id: true,
         titleNe: true,
