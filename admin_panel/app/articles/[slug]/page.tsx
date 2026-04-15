@@ -1,17 +1,56 @@
 'use client'
 
 import { useParams } from 'next/navigation'
-import { usePublicArticle } from '@/hooks/use-articles'
+import { useQuery } from '@tanstack/react-query'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, Calendar, User, Eye, Tag } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
+import { ApiResponse } from '@/types'
+
+async function fetchArticleBySlug(slug: string, isPreview: boolean) {
+  console.log('Fetching article:', slug, 'isPreview:', isPreview)
+  if (isPreview) {
+    const response = await fetch(`/api/admin/articles?search=${encodeURIComponent(slug)}`, {
+      credentials: 'include',
+    })
+    console.log('Response status:', response.status)
+    if (!response.ok) {
+      const error = await response.json()
+      console.error('API Error:', error)
+      throw new Error(error.message || 'Failed to fetch article')
+    }
+    const result = await response.json()
+    console.log('API Result:', result)
+    if (!result.success) {
+      throw new Error(result.message)
+    }
+    const articles = result.data?.data || result.data || []
+    console.log('Found articles:', articles.length)
+    return articles.find((a: any) => a.slug === slug) || null
+  } else {
+    const response = await fetch(`/api/articles/${slug}`)
+    const result: ApiResponse<any> = await response.json()
+    if (!result.success) {
+      throw new Error(result.message)
+    }
+    return result.data
+  }
+}
 
 export default function ArticlePage() {
   const params = useParams()
   const slug = params?.slug as string
-  const { data: article, isLoading, error } = usePublicArticle(slug)
+  const urlParams = typeof window !== 'undefined' ? new URL(window.location.href).searchParams : null
+  const isPreview = urlParams ? urlParams.get('preview') === 'true' : false
+  
+  const { data: article, isLoading, error } = useQuery({
+    queryKey: ['article', slug, isPreview],
+    queryFn: () => fetchArticleBySlug(slug, isPreview),
+    enabled: !!slug,
+  })
+  
   const [activeContent, setActiveContent] = useState<'en' | 'ne'>('en')
 
   if (isLoading) {
@@ -28,13 +67,24 @@ export default function ArticlePage() {
     return (
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="text-center py-12">
-          <h1 className="text-2xl font-bold mb-4">Article Not Found</h1>
+          <h1 className="text-2xl font-bold mb-4">
+            {isPreview ? 'Preview Unavailable' : 'Article Not Found'}
+          </h1>
           <p className="text-muted-foreground mb-6">
-            The article you are looking for does not exist or has been removed.
+            {isPreview 
+              ? 'This article is not yet published. Go to edit page to preview.'
+              : 'The article you are looking for does not exist or has been removed.'}
           </p>
-          <Button asChild>
-            <Link href="/">Go Home</Link>
-          </Button>
+          {isPreview && (
+            <Button asChild>
+              <Link href={`/admin/articles`}>Go to Articles</Link>
+            </Button>
+          )}
+          {!isPreview && (
+            <Button asChild>
+              <Link href="/">Go Home</Link>
+            </Button>
+          )}
         </div>
       </div>
     )
@@ -128,7 +178,7 @@ export default function ArticlePage() {
           {/* Tags */}
           {article.tags && article.tags.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-4">
-              {article.tags.map((tag) => (
+              {article.tags.map((tag: { id: string; nameNe: string; nameEn: string; slug: string }) => (
                 <Link
                   key={tag.id}
                   href={`/tag/${tag.slug}`}

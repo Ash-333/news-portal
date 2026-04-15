@@ -121,7 +121,7 @@ export async function PATCH(
     // Get existing article
     const existingArticle = await prisma.article.findUnique({
       where: { id, deletedAt: null },
-      select: { authorId: true, status: true },
+      select: { authorId: true, status: true, titleNe: true, titleEn: true },
     });
 
     if (!existingArticle) {
@@ -135,24 +135,12 @@ export async function PATCH(
     const userRole = authenticatedReq.user?.role;
     const isAdmin = userRole === Role.ADMIN || userRole === Role.SUPERADMIN;
 
-    // Authors can only edit their own articles in DRAFT status
-    if (authenticatedReq.user?.role === Role.AUTHOR) {
-      if (!isAuthor) {
-        return NextResponse.json(
-          { success: false, data: null, message: "Forbidden" },
-          { status: 403 },
-        );
-      }
-      if (existingArticle.status !== ArticleStatus.DRAFT) {
-        return NextResponse.json(
-          {
-            success: false,
-            data: null,
-            message: "Cannot edit article after submission",
-          },
-          { status: 403 },
-        );
-      }
+    // Authors can only edit their own articles
+    if (authenticatedReq.user?.role === Role.AUTHOR && !isAuthor) {
+      return NextResponse.json(
+        { success: false, data: null, message: "Forbidden" },
+        { status: 403 },
+      );
     }
 
     const body = await req.json();
@@ -172,11 +160,12 @@ export async function PATCH(
 
       const validation = articleStatusSchema.safeParse(body);
       if (!validation.success) {
+        const firstError = validation.error.errors[0];
         return NextResponse.json(
           {
             success: false,
             data: { errors: validation.error.errors },
-            message: "Validation failed",
+            message: firstError ? firstError.message : "Validation failed",
           },
           { status: 422 },
         );
@@ -236,11 +225,12 @@ export async function PATCH(
 
       const validation = scheduleArticleSchema.safeParse(body);
       if (!validation.success) {
+        const firstError = validation.error.errors[0];
         return NextResponse.json(
           {
             success: false,
             data: { errors: validation.error.errors },
-            message: "Validation failed",
+            message: firstError ? firstError.message : "Validation failed",
           },
           { status: 422 },
         );
@@ -268,11 +258,12 @@ export async function PATCH(
     // Use the already-parsed body from line 150 instead of reading again
     const validation = articleSchema.safeParse(body);
     if (!validation.success) {
+      const firstError = validation.error.errors[0];
       return NextResponse.json(
         {
           success: false,
           data: { errors: validation.error.errors },
-          message: "Validation failed",
+          message: firstError ? firstError.message : "Validation failed",
         },
         { status: 422 },
       );
@@ -291,7 +282,6 @@ export async function PATCH(
     };
 
     if (scheduledAt && scheduledAt !== "") {
-      // Convert from Nepali time (UTC+5:45) to UTC
       let dateStr = scheduledAt as string;
       if (dateStr.split(":").length === 2) {
         dateStr = dateStr + ":00";
@@ -312,16 +302,29 @@ export async function PATCH(
       articleData.featuredImageId = featuredImageId;
     }
 
+    // Regenerate slug if title changed
+    const titleNeChanged = rest.titleNe && rest.titleNe !== existingArticle.titleNe;
+    const titleEnChanged = rest.titleEn && rest.titleEn !== existingArticle.titleEn;
+    if (titleNeChanged || titleEnChanged) {
+      const newTitle = (rest.titleEn as string) || existingArticle.titleEn;
+      articleData.slug = newTitle
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '');
+    }
+
     // Update article
     const article = await prisma.article.update({
       where: { id },
       data: {
         ...(articleData as typeof articleData),
-        tags: {
-          deleteMany: {},
-          create: tagIds?.map((tagId) => ({ tagId })) || [],
-        },
-      },
+        tags: tagIds && tagIds.length > 0
+          ? {
+              deleteMany: {},
+              create: tagIds.map((tagId: string) => ({ tagId })),
+            }
+          : undefined,
+      } as any,
       select: {
         id: true,
         titleNe: true,

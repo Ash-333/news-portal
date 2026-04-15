@@ -45,12 +45,13 @@ export function validationMiddleware<T>(schema: ZodSchema<T>) {
           field: err.path.join("."),
           message: err.message,
         }));
+        const firstError = error.errors[0];
 
         return NextResponse.json(
           {
             success: false,
             data: { errors },
-            message: "Validation failed",
+            message: firstError ? firstError.message : "Validation failed",
           },
           { status: 422 },
         );

@@ -113,8 +113,8 @@ export const articleSchema = z.object({
   scheduledAt: z
     .string()
     .regex(
-      /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?:\.\d+)?(?:[+-]\d{2}:?\d{2}|Z)?$/,
-      "Invalid datetime format",
+      /^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}(?::\d{2})?(?:\.\d+)?(?:[+-]\d{2}:?\d{2}|Z)?$/,
+      "Invalid datetime format. Use format like: YYYY-MM-DDTHH:MM",
     )
     .optional()
     .or(z.literal("")),
@@ -139,8 +139,8 @@ export const scheduleArticleSchema = z.object({
   scheduledAt: z
     .string()
     .regex(
-      /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?:\.\d+)?(?:[+-]\d{2}:?\d{2}|Z)?$/,
-      "Invalid datetime format",
+      /^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}(?::\d{2})?(?:\.\d+)?(?:[+-]\d{2}:?\d{2}|Z)?$/,
+      "Invalid datetime format. Use format like: YYYY-MM-DDTHH:MM",
     ),
 });
 

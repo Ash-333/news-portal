@@ -152,13 +152,13 @@ export default function ArticlesPage() {
                 size="icon"
                 onClick={(e) => {
                   e.stopPropagation()
-                  window.open(`/articles/${article.slug}`, '_blank')
+                  window.open(`/articles/${article.slug}?preview=true`, '_blank')
                 }}
               >
                 <Eye className="w-4 h-4" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>View published article</TooltipContent>
+            <TooltipContent>Preview article</TooltipContent>
           </Tooltip>
           {canReviewArticles && article.status !== ArticleStatus.PUBLISHED && (
             <Tooltip>

@@ -5,7 +5,7 @@ import { useRouter, useParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { ArrowLeft, Save, Send } from 'lucide-react'
+import { ArrowLeft, Save, Send, Eye } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -68,6 +68,9 @@ export default function EditArticlePage() {
     formState: { errors },
   } = useForm<ArticleFormData>({
     resolver: zodResolver(articleSchema),
+    defaultValues: {
+      featuredImageId: '',
+    },
   })
 
   // Reset form when article loads
@@ -85,7 +88,7 @@ export default function EditArticlePage() {
         metaDescription: article.metaDescription || '',
         isBreaking: article.isBreaking,
         isFeatured: article.isFeatured,
-        featuredImageId: article.featuredImageId,
+        featuredImageId: article.featuredImageId || '',
       })
       // Set selected tags from article
       const articleTags = article.tags || []
@@ -137,6 +140,14 @@ export default function EditArticlePage() {
             <Button variant="outline" onClick={() => router.push('/admin/articles')}>
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back
+            </Button>
+            <Button variant="outline" onClick={() => {
+              if (article?.slug) {
+                window.open(`/articles/${article.slug}?preview=true`, '_blank')
+              }
+            }} disabled={!article?.slug}>
+              <Eye className="w-4 h-4 mr-2" />
+              Preview
             </Button>
           </div>
         }
@@ -297,7 +308,6 @@ export default function EditArticlePage() {
               <Button 
                 type="submit" 
                 className="w-full"
-                disabled={updateArticle.isPending}
               >
                 <Save className="w-4 h-4 mr-2" />
                 Save Changes

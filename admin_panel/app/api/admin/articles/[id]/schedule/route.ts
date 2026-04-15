@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { Role } from '@prisma/client'
+import { Role, ArticleStatus } from '@prisma/client'
 import { prisma } from '@/lib/prisma'
 import { scheduleArticleSchema } from '@/lib/validations'
 import { authMiddleware, roleMiddleware, validationMiddleware, errorHandler, AuthenticatedRequest } from '@/lib/middleware'
@@ -42,7 +42,7 @@ export async function PATCH(
       where: { id, deletedAt: null },
       data: { 
         scheduledAt: utcDate,
-        status: 'SCHEDULED',
+        status: ArticleStatus.SCHEDULED,
       },
       select: {
         id: true,
