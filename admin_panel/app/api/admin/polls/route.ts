@@ -92,6 +92,11 @@ export async function GET(req: NextRequest) {
           options: {
             orderBy: { order: "asc" },
           },
+          _count: {
+            select: {
+              votes: true,
+            },
+          },
         },
         orderBy: { createdAt: "desc" },
         skip,
@@ -100,9 +105,17 @@ export async function GET(req: NextRequest) {
       prisma.poll.count({ where }),
     ]);
 
+    const formattedPolls = polls.map(poll => ({
+      ...poll,
+      _count: {
+        votes: poll._count.votes,
+        options: poll.options?.length || 0,
+      },
+    }));
+
     return NextResponse.json({
       success: true,
-      data: polls,
+      data: formattedPolls,
       message: "Polls retrieved successfully",
       pagination: {
         page,
