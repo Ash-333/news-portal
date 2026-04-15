@@ -146,47 +146,82 @@ export async function GET(req: NextRequest) {
 
       case 'chart': {
         const days = parseInt(searchParams.get('days') || '7')
-        const chartData = []
         
         // Build where clause for author's own articles
         const articleWhere = isAuthor ? { authorId, deletedAt: null } : { deletedAt: null }
+        const commentWhere = isAuthor ? { article: { authorId }, deletedAt: null } : { deletedAt: null }
         
+        const now = new Date()
+        const startDate = new Date(now)
+        startDate.setDate(startDate.getDate() - days)
+        startDate.setHours(0, 0, 0, 0)
+        
+        // Fetch all data in parallel using groupBy (3 queries instead of 3*days)
+        const [articlesByDay, commentsByDay, pageViewsByDay] = await Promise.all([
+          prisma.article.groupBy({
+            by: ['createdAt'],
+            where: {
+              ...articleWhere,
+              createdAt: { gte: startDate },
+            },
+            _count: true,
+          }),
+          prisma.comment.groupBy({
+            by: ['createdAt'],
+            where: {
+              ...commentWhere,
+              createdAt: { gte: startDate },
+            },
+            _count: true,
+          }),
+          prisma.pageView.groupBy({
+            by: ['createdAt'],
+            where: {
+              createdAt: { gte: startDate },
+            },
+            _count: true,
+          }),
+        ])
+        
+        // Helper to get date key from datetime
+        const getDateKey = (date: Date | null) => {
+          if (!date) return startDate.toISOString().split('T')[0]
+          return date.toISOString().split('T')[0]
+        }
+        
+        // Aggregate counts by day using Maps for O(1) lookups
+        const articlesMap = new Map<string, number>()
+        const commentsMap = new Map<string, number>()
+        const viewsMap = new Map<string, number>()
+        
+        articlesByDay.forEach(item => {
+          const key = getDateKey(item.createdAt)
+          articlesMap.set(key, (articlesMap.get(key) || 0) + item._count)
+        })
+        
+        commentsByDay.forEach(item => {
+          const key = getDateKey(item.createdAt)
+          commentsMap.set(key, (commentsMap.get(key) || 0) + item._count)
+        })
+        
+        pageViewsByDay.forEach(item => {
+          const key = getDateKey(item.createdAt)
+          viewsMap.set(key, (viewsMap.get(key) || 0) + item._count)
+        })
+        
+        // Build chart data for each day in range
+        const chartData = []
         for (let i = days - 1; i >= 0; i--) {
-          const date = new Date()
+          const date = new Date(now)
           date.setDate(date.getDate() - i)
           date.setHours(0, 0, 0, 0)
-          const nextDate = new Date(date)
-          nextDate.setDate(nextDate.getDate() + 1)
-          
-          const [articles, comments, pageViews] = await Promise.all([
-            prisma.article.count({
-              where: {
-                ...articleWhere,
-                createdAt: { gte: date, lt: nextDate },
-              },
-            }),
-            prisma.comment.count({
-              where: isAuthor ? {
-                article: { authorId },
-                createdAt: { gte: date, lt: nextDate },
-                deletedAt: null,
-              } : {
-                createdAt: { gte: date, lt: nextDate },
-                deletedAt: null,
-              },
-            }),
-            prisma.pageView.count({
-              where: {
-                createdAt: { gte: date, lt: nextDate },
-              },
-            }),
-          ])
+          const dateKey = date.toISOString().split('T')[0]
           
           chartData.push({
-            date: date.toISOString().split('T')[0],
-            articles,
-            views: pageViews,
-            comments,
+            date: dateKey,
+            articles: articlesMap.get(dateKey) || 0,
+            views: viewsMap.get(dateKey) || 0,
+            comments: commentsMap.get(dateKey) || 0,
           })
         }
         
