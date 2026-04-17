@@ -12,6 +12,11 @@ const nextConfig = {
         protocol: "https",
         hostname: "another-domain.com",
       },
+      {
+        protocol: "https",
+        hostname: "pub-0b3a31472a884459a6924728f1b443e3.r2.dev",
+        pathname: "/**",
+      },
     ],
   },
   async headers() {
