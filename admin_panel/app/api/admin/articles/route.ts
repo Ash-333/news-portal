@@ -149,7 +149,7 @@ export async function GET(req: NextRequest) {
       featuredImage: article.featuredImage
         ? {
             ...article.featuredImage,
-            url: `${origin}${article.featuredImage.url}`,
+            url: article.featuredImage.url,
           }
         : null,
     }));
@@ -272,7 +272,7 @@ export async function POST(req: NextRequest) {
     });
 
     // Invalidate public articles cache
-    await deleteCachedPattern('articles:')
+    await deleteCachedPattern("articles:");
 
     // Create audit log
     await prisma.auditLog.create({

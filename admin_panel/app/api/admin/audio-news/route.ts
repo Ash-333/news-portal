@@ -10,8 +10,7 @@ import {
   AuthenticatedRequest,
 } from "@/lib/middleware";
 import { deleteCachedPattern } from "@/lib/redis";
-import { writeFile, mkdir } from "fs/promises";
-import path from "path";
+import { uploadToR2 } from "@/lib/storage";
 
 // Allowed audio file extensions
 const ALLOWED_AUDIO_TYPES = [
@@ -31,22 +30,11 @@ const ALLOWED_IMAGE_TYPES = [
 
 // Helper function to upload file
 async function uploadFile(file: File, folder: string): Promise<string> {
-  const bytes = await file.arrayBuffer();
-  const buffer = Buffer.from(bytes);
-
-  // Create uploads directory if it doesn't exist
-  const uploadDir = path.join(process.env.UPLOAD_PATH || process.cwd(), "public", "uploads", folder);
-  await mkdir(uploadDir, { recursive: true });
-
-  // Generate unique filename
   const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-  const ext = path.extname(file.name);
-  const filename = `${uniqueSuffix}${ext}`;
-  const filepath = path.join(uploadDir, filename);
-
-  await writeFile(filepath, buffer);
-
-  return `/uploads/${folder}/${filename}`;
+  const ext = file.name.includes(".") ? `.${file.name.split(".").pop()}` : "";
+  const key = `uploads/${folder}/${uniqueSuffix}${ext}`;
+  const buffer = Buffer.from(await file.arrayBuffer());
+  return await uploadToR2(buffer, key, file.type || "application/octet-stream");
 }
 
 // GET /api/admin/audio-news
@@ -238,10 +226,10 @@ export async function POST(req: NextRequest) {
         ipAddress: req.headers.get("x-forwarded-for") || null,
         userAgent: req.headers.get("user-agent") || null,
       },
-    })
+    });
 
     // Invalidate audio news cache
-    await deleteCachedPattern('audio-news:')
+    await deleteCachedPattern("audio-news:");
 
     return NextResponse.json(
       {
