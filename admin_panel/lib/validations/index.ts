@@ -6,6 +6,7 @@ import {
   MediaType,
   CommentStatus,
   Language,
+  Province,
 } from "@prisma/client";
 
 const booleanFromInput = z.preprocess((value) => {
@@ -50,6 +51,9 @@ export const resetPasswordSchema = z
 // User Validations
 export const createUserSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
+  nameNe: z.string().optional(),
+  bio: z.string().max(500, "Bio must be less than 500 characters").optional(),
+  profilePhoto: z.string().url("Invalid URL").optional().or(z.literal("")),
   email: z.string().email("Invalid email address"),
   password: z.string().min(8, "Password must be at least 8 characters"),
   role: z.enum([Role.AUTHOR, Role.ADMIN, Role.SUPERADMIN]),
@@ -110,6 +114,15 @@ export const articleSchema = z.object({
   ogImage: z.string().url("Invalid URL").optional().or(z.literal("")),
   isBreaking: booleanFromInput.default(false),
   isFeatured: booleanFromInput.default(false),
+  province: z.enum([
+    Province.PROVINCE_1,
+    Province.PROVINCE_2,
+    Province.PROVINCE_3,
+    Province.PROVINCE_4,
+    Province.PROVINCE_5,
+    Province.PROVINCE_6,
+    Province.PROVINCE_7,
+  ]).optional(),
   scheduledAt: z
     .string()
     .regex(

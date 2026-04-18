@@ -5,6 +5,7 @@ import {
   MediaType,
   CommentStatus,
   Poll,
+  Province,
 } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
@@ -128,6 +129,7 @@ async function main() {
     create: {
       email: "admin@example.com",
       name: "Super Admin",
+      nameNe: "सुपर एडमिन",
       passwordHash: superAdminPassword,
       role: Role.SUPERADMIN,
       status: "ACTIVE",
@@ -143,10 +145,11 @@ async function main() {
     create: {
       email: "rajesh@example.com",
       name: "Rajesh Sharma",
+      nameNe: "राजेश शर्मा",
       passwordHash: authorPassword,
       role: Role.AUTHOR,
       status: "ACTIVE",
-            bio: "Senior political correspondent with over 10 years covering Nepal politics.",
+      bio: "Senior political correspondent with over 10 years covering Nepal politics.",
     },
   });
 
@@ -156,10 +159,11 @@ async function main() {
     create: {
       email: "sita@example.com",
       name: "Sita Thapa",
+      nameNe: "सीता थापा",
       passwordHash: authorPassword,
       role: Role.AUTHOR,
       status: "ACTIVE",
-            bio: "Sports journalist covering cricket, football and athletics across South Asia.",
+      bio: "Sports journalist covering cricket, football and athletics across South Asia.",
     },
   });
 
@@ -169,10 +173,11 @@ async function main() {
     create: {
       email: "bikash@example.com",
       name: "Bikash Karki",
+      nameNe: "विकाश कार्की",
       passwordHash: authorPassword,
       role: Role.AUTHOR,
       status: "ACTIVE",
-            bio: "Technology and startup writer based in Kathmandu.",
+      bio: "Technology and startup writer based in Kathmandu.",
     },
   });
 
@@ -182,10 +187,11 @@ async function main() {
     create: {
       email: "priya@example.com",
       name: "Priya Rai",
+      nameNe: "प्रिया राई",
       passwordHash: authorPassword,
       role: Role.AUTHOR,
       status: "ACTIVE",
-            bio: "Economy and business journalist tracking Nepal financial markets.",
+      bio: "Economy and business journalist tracking Nepal financial markets.",
     },
   });
 
@@ -195,10 +201,11 @@ async function main() {
     create: {
       email: "amit@example.com",
       name: "Amit Gurung",
+      nameNe: "अमित गुरुङ",
       passwordHash: authorPassword,
       role: Role.AUTHOR,
       status: "ACTIVE",
-            bio: "Entertainment and culture writer covering Nepali cinema and music.",
+      bio: "Entertainment and culture writer covering Nepali cinema and music.",
     },
   });
 
@@ -216,22 +223,24 @@ async function main() {
     create: {
       email: "ram@example.com",
       name: "Ram Kumar",
+      nameNe: "राम कुमार",
       passwordHash: publicUserPassword,
       role: Role.PUBLIC_USER,
       status: "ACTIVE",
-          },
+    },
   });
 
   const publicUser2 = await prisma.user.upsert({
-    where: { email: "sita@example.com" },
+    where: { email: "sita2@example.com" },
     update: {},
     create: {
-      email: "sita@example.com",
+      email: "sita2@example.com",
       name: "Sita Devi",
+      nameNe: "सीता देवी",
       passwordHash: publicUserPassword,
       role: Role.PUBLIC_USER,
       status: "ACTIVE",
-          },
+    },
   });
 
   const publicUser3 = await prisma.user.upsert({
@@ -240,10 +249,11 @@ async function main() {
     create: {
       email: "hari@example.com",
       name: "Hari Bahadur",
+      nameNe: "हरि बहादुर",
       passwordHash: publicUserPassword,
       role: Role.PUBLIC_USER,
       status: "ACTIVE",
-          },
+    },
   });
 
   const publicUser4 = await prisma.user.upsert({
@@ -252,10 +262,11 @@ async function main() {
     create: {
       email: "gita@example.com",
       name: "Gita Sharma",
+      nameNe: "गीता शर्मा",
       passwordHash: publicUserPassword,
       role: Role.PUBLIC_USER,
       status: "ACTIVE",
-          },
+    },
   });
 
   console.log("✅ Public Users: 4 created");
@@ -304,7 +315,39 @@ async function main() {
     create: { nameNe: "समाज", nameEn: "Society", slug: "society" },
   });
 
-  console.log("✅ Categories: 7 created");
+  // New categories
+  const news = await prisma.category.upsert({
+    where: { slug: "news" },
+    update: {},
+    create: { nameNe: "समाचार", nameEn: "News", slug: "news" },
+  });
+  const dharmaSanskriti = await prisma.category.upsert({
+    where: { slug: "dharma-sanskriti" },
+    update: {},
+    create: { nameNe: "धर्मसंस्कृति", nameEn: "Dharma & Culture", slug: "dharma-sanskriti" },
+  });
+  const swasthya = await prisma.category.upsert({
+    where: { slug: "swasthya" },
+    update: {},
+    create: { nameNe: "स्वास्थ्य", nameEn: "Health", slug: "swasthya" },
+  });
+  const jeevanShaili = await prisma.category.upsert({
+    where: { slug: "jeevan-shaili" },
+    update: {},
+    create: { nameNe: "जीवनशैली", nameEn: "Lifestyle", slug: "jeevan-shaili" },
+  });
+  const suchanaPrabidhhi = await prisma.category.upsert({
+    where: { slug: "suchana-prabidhhi" },
+    update: {},
+    create: { nameNe: "सूचना प्रविधि", nameEn: "Information Technology", slug: "suchana-prabidhhi" },
+  });
+  const antarvarta = await prisma.category.upsert({
+    where: { slug: "antarvarta" },
+    update: {},
+    create: { nameNe: "अन्तर्वार्ता", nameEn: "Interview", slug: "antarvarta" },
+  });
+
+  console.log("✅ Categories: 13 created");
 
   // ═══════════════════════════════════════════
   // TAGS
@@ -420,6 +463,7 @@ async function main() {
     metaTitle,
     metaDescription,
     publishedAt,
+    province,
   }: {
     slug: string;
     coverImageUrl: string;
@@ -435,6 +479,7 @@ async function main() {
     authorId: string;
     status?: ArticleStatus;
     isFeatured?: boolean;
+    province?: Province;
     isBreaking?: boolean;
     tagIds?: string[];
     metaTitle?: string;
@@ -478,6 +523,7 @@ async function main() {
         status,
         isFeatured,
         isBreaking,
+        province,
         categoryId,
         authorId,
         featuredImageId: media.id,
@@ -496,6 +542,7 @@ async function main() {
         status,
         isFeatured,
         isBreaking,
+        province,
         categoryId,
         authorId,
         featuredImageId: media.id,
@@ -1601,6 +1648,339 @@ ${img(images.society2, "Community health services being expanded to reach the mo
     publishedAt: new Date(Date.now() - 30 * 60 * 60 * 1000),
   });
   console.log("  ✓ Society 2: Health insurance expansion");
+
+  // ═══════════════════════════════════════════
+  // ARTICLES FOR NEW CATEGORIES
+  // ═══════════════════════════════════════════
+
+  console.log("📰 Seeding articles for new categories...\n");
+
+  // News category
+  await createArticle({
+    slug: "daily-news-update-nepal-april-18",
+    coverImageUrl: images.politics1,
+    coverImageFilename: "daily-news-cover.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "दैनिक समाचार: नेपालमा आजका प्रमुख घटनाहरू",
+    titleEn: "Daily News: Major Events in Nepal Today",
+    excerptNe: "आजका प्रमुख समाचारहरूको सारांश: राजनीति, अर्थतन्त्र र सामाजिक क्षेत्रका महत्वपूर्ण घटनाहरू।",
+    excerptEn: "Summary of today's major news: Important events in politics, economy and social sectors.",
+    contentNe: `<p>काठमाडौं, वैशाख १ गते। आजको दिनमा नेपालमा विभिन्न क्षेत्रहरूमा महत्वपूर्ण घटनाहरू भएका छन्।</p>
+    <p>राजनीतिक क्षेत्रमा संसदको कार्यक्रम जारी छ भने अर्थतन्त्रमा बजेट कार्यान्वयनको समीक्षा भइरहेको छ।</p>`,
+    contentEn: `<p>Kathmandu, May 1st. Various important events have taken place in Nepal today across different sectors.</p>
+    <p>In politics, parliament's program is ongoing while budget implementation review is underway in the economy sector.</p>`,
+    categoryId: news.id,
+    authorId: author1.id,
+    isFeatured: false,
+    isBreaking: false,
+    tagIds: [tagNepal.id, tagBreaking.id],
+    publishedAt: new Date(Date.now() - 1 * 60 * 60 * 1000),
+  });
+  console.log("  ✓ News 1: Daily news update");
+
+  // Dharma & Culture category
+  await createArticle({
+    slug: "mahashivratri-celebration-nepal-2082",
+    coverImageUrl: images.entertain1,
+    coverImageFilename: "mahashivratri-cover.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "महाशिवरात्रि उत्सव सम्पन्न, लाखौं भक्तजनको सहभागिता",
+    titleEn: "Mahashivratri Festival Concludes, Lakhs of Devotees Participate",
+    excerptNe: "पशुपतिनाथको मन्दिरमा महाशिवरात्रि उत्सव सम्पन्न भएको छ। लाखौं भक्तजनहरूले दर्शन गरे।",
+    excerptEn: "Mahashivratri festival at Pashupatinath Temple has concluded. Lakhs of devotees took darshan.",
+    contentNe: `<p>काठमाडौं। वैशाख १ गते महाशिवरात्रि पर्व सम्पन्न भयो।</p>
+    <p>पशुपतिनाथ मन्दिरमा लाखौं भक्तजनहरू आएका थिए।</p>`,
+    contentEn: `<p>Kathmandu. Mahashivratri festival concluded on May 1st.</p>
+    <p>Lakhs of devotees visited Pashupatinath Temple.</p>`,
+    categoryId: dharmaSanskriti.id,
+    authorId: author5.id,
+    isFeatured: false,
+    isBreaking: false,
+    tagIds: [tagNepal.id],
+    publishedAt: new Date(Date.now() - 4 * 60 * 60 * 1000),
+  });
+  console.log("  ✓ Dharma & Culture 1: Mahashivratri");
+
+  // Health category
+  await createArticle({
+    slug: "dengue-outbreak-nepal-prevention",
+    coverImageUrl: images.society2,
+    coverImageFilename: "dengue-prevention-cover.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "डेंगु रोग बिरुद्ध सतर्कता, स्वास्थ्य मन्त्रालयको अभियान",
+    titleEn: "Alert Against Dengue Disease, Health Ministry Campaign",
+    excerptNe: "डेंगु रोगको जोखिम बढेपछि स्वास्थ्य मन्त्रालयले सतर्कता अभियान सुरु गरेको छ।",
+    excerptEn: "After the risk of dengue disease has increased, the health ministry has launched an awareness campaign.",
+    contentNe: `<p>काठमाडौं। स्वास्थ्य मन्त्रालयले डेंगु रोग बिरुद्ध सतर्कता अभियान सुरु गरेको छ।</p>
+    <p>मच्छर नियन्त्रण र स्वच्छता कार्यक्रम जारी छ।</p>`,
+    contentEn: `<p>Kathmandu. The health ministry has launched an awareness campaign against dengue disease.</p>
+    <p>Mosquito control and cleanliness programs are ongoing.</p>`,
+    categoryId: swasthya.id,
+    authorId: author4.id,
+    isFeatured: false,
+    isBreaking: false,
+    tagIds: [tagHealth.id, tagNepal.id],
+    publishedAt: new Date(Date.now() - 6 * 60 * 60 * 1000),
+  });
+  console.log("  ✓ Health 1: Dengue prevention");
+
+  // Lifestyle category
+  await createArticle({
+    slug: "yoga-day-celebration-nepal-2082",
+    coverImageUrl: images.sports3,
+    coverImageFilename: "yoga-day-cover.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "अन्तर्राष्ट्रिय योग दिवस: स्वस्थ जीवनको मार्ग",
+    titleEn: "International Day of Yoga: Path to Healthy Life",
+    excerptNe: "अन्तर्राष्ट्रिय योग दिवसको अवसरमा विभिन्न कार्यक्रमहरू आयोजना गरिए।",
+    excerptEn: "Various programs were organized on the occasion of International Day of Yoga.",
+    contentNe: `<p>काठमाडौं। अन्तर्राष्ट्रिय योग दिवसको अवसरमा योग शिविर आयोजना गरियो।</p>
+    <p>हजारौं मानिसहरूले योग अभ्यासमा भाग लिए।</p>`,
+    contentEn: `<p>Kathmandu. Yoga camp was organized on the occasion of International Day of Yoga.</p>
+    <p>Thousands of people participated in yoga practice.</p>`,
+    categoryId: jeevanShaili.id,
+    authorId: author4.id,
+    isFeatured: false,
+    isBreaking: false,
+    tagIds: [tagHealth.id, tagNepal.id],
+    publishedAt: new Date(Date.now() - 8 * 60 * 60 * 1000),
+  });
+  console.log("  ✓ Lifestyle 1: Yoga Day");
+
+  // Information Technology category
+  await createArticle({
+    slug: "digital-nepal-initiatives-2082",
+    coverImageUrl: images.tech1,
+    coverImageFilename: "digital-nepal-cover.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "डिजिटल नेपाल अभियान: सूचना प्रविधिको विकास",
+    titleEn: "Digital Nepal Initiative: Development of Information Technology",
+    excerptNe: "सरकारले डिजिटल नेपाल अभियानअन्तर्गत विभिन्न कार्यक्रमहरू सुरु गरेको छ।",
+    excerptEn: "The government has launched various programs under the Digital Nepal campaign.",
+    contentNe: `<p>काठमाडौं। डिजिटल नेपाल अभियानअन्तर्गत डिजिटल लिटरेसी कार्यक्रम जारी छ।</p>
+    <p>ग्रामीण क्षेत्रमा इन्टरनेट सेवा विस्तार भइरहेको छ।</p>`,
+    contentEn: `<p>Kathmandu. Digital literacy program is ongoing under the Digital Nepal campaign.</p>
+    <p>Internet service is being expanded to rural areas.</p>`,
+    categoryId: suchanaPrabidhhi.id,
+    authorId: author3.id,
+    isFeatured: false,
+    isBreaking: false,
+    tagIds: [tagStartup.id, tagNepal.id],
+    publishedAt: new Date(Date.now() - 10 * 60 * 60 * 1000),
+  });
+  console.log("  ✓ IT 1: Digital Nepal");
+
+  // Interview category
+  await createArticle({
+    slug: "interview-cm-karnali-province",
+    coverImageUrl: images.politics2,
+    coverImageFilename: "cm-interview-cover.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "अन्तर्वार्ता: मुख्यमन्त्रीसँग विकास योजनाबारे कुराकानी",
+    titleEn: "Interview: Talk with Chief Minister about Development Plans",
+    excerptNe: "कर्णाली प्रदेशका मुख्यमन्त्रीसँग विकास योजना र भविष्यका योजनाबारे कुराकानी।",
+    excerptEn: "Conversation with the Chief Minister of Karnali Province about development plans and future initiatives.",
+    contentNe: `<p>प्रश्न: आगामी वर्षको प्राथमिकता के हो?</p>
+    <p>मुख्यमन्त्री: पूर्वाधार विकास र स्वास्थ्य क्षेत्रमा लगानी बढाउने योजना छ।</p>`,
+    contentEn: `<p>Q: What is the priority for the next year?</p>
+    <p>CM: We plan to increase investment in infrastructure development and health sector.</p>`,
+    categoryId: antarvarta.id,
+    authorId: author1.id,
+    isFeatured: false,
+    isBreaking: false,
+    tagIds: [tagNepal.id, tagGovt.id],
+    publishedAt: new Date(Date.now() - 12 * 60 * 60 * 1000),
+  });
+  console.log("  ✓ Interview 1: CM Karnali");
+
+  // ═══════════════════════════════════════════
+  // PROVINCE ARTICLES
+  // ═══════════════════════════════════════════
+
+  console.log("📰 Seeding province articles...\n");
+
+  // Province 1 - Koshi
+  await createArticle({
+    slug: "province-1-new-road-infrastructure",
+    coverImageUrl: images.politics1,
+    coverImageFilename: "province1-road.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "प्रदेश १ मा नयाँ सडक पूर्वाधार निर्माण शुरु",
+    titleEn: "New Road Infrastructure Construction Begins in Province 1",
+    excerptNe: "कोशी प्रदेशमा नयाँ सडक निर्माणका लागि काम शुरु भएको छ।",
+    excerptEn: "New road construction has begun in Koshi Province.",
+    contentNe: `<p>कोशी प्रदेशमा नयाँ सडक पूर्वाधार निर्माण शुरु भएको छ।</p>
+    <p>इलामबाट बझङ्गा सम्मको सडक स्तरोन्नति हुनेछ।</p>`,
+    contentEn: `<p>New road infrastructure construction has begun in Koshi Province.</p>
+    <p>The road from Ilam to Bajhang will be upgraded.</p>`,
+    categoryId: politics.id,
+    authorId: author1.id,
+    province: Province.PROVINCE_1,
+  });
+
+  await createArticle({
+    slug: "province-1-tea-gardens-tourism",
+    coverImageUrl: images.entertain1,
+    coverImageFilename: "province1-tea.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "कोशी प्रदेशको चिया बगानमा पर्यटकीय गतिविधि बढ्यो",
+    titleEn: "Tourist Activities Increase in Koshi Province Tea Gardens",
+    excerptNe: "इलामको चिया बगानहरूमा पर्यटकहरूको आगमन बढेको छ।",
+    excerptEn: "Tourist arrivals have increased in Ilam tea gardens.",
+    contentNe: `<p>इलामको चिया बगान क्षेत्रमा पर्यटकहरूको आगमन बढेको छ।</p>`,
+    contentEn: `<p>Tourist arrivals have increased in Ilam tea garden area.</p>`,
+    categoryId: society.id,
+    authorId: author2.id,
+    province: Province.PROVINCE_1,
+  });
+
+  // Province 2 - Madhesh
+  await createArticle({
+    slug: "province-2-industrial-zone-development",
+    coverImageUrl: images.economy1,
+    coverImageFilename: "province2-industrial.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "प्रदेश २ मा औद्योगिक क्षेत्र विकास योजना",
+    titleEn: "Industrial Zone Development Plan in Province 2",
+    excerptNe: "मधेश प्रदेशमा नयाँ औद्योगिक क्षेत्र विकास योजना घोषणा गरिएको छ।",
+    excerptEn: "New industrial zone development plan announced in Madhesh Province.",
+    contentNe: `<p>मधेश प्रदेशमा नयाँ औद्योगिक क्षेत्र विकास योजना घोषणा गरिएको छ।</p>
+    <p>बिरगञ्जमा नयाँ औद्योगिक पार्क स्थापना हुनेछ।</p>`,
+    contentEn: `<p>New industrial zone development plan announced in Madhesh Province.</p>
+    <p>A new industrial park will be established in Birgunj.</p>`,
+    categoryId: economy.id,
+    authorId: author1.id,
+    province: Province.PROVINCE_2,
+  });
+
+  await createArticle({
+    slug: "province-2-agriculture-rice-production",
+    coverImageUrl: images.politics1,
+    coverImageFilename: "province2-rice.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "प्रदेश २ मा धान उत्पादनमा वृद्धि",
+    titleEn: "Rice Production Increases in Province 2",
+    excerptNe: "मधेश प्रदेशमा यस वर्ष धान उत्पादनमा वृद्धि भएको छ।",
+    excerptEn: "Rice production has increased in Province 2 this year.",
+    contentNe: `<p>मधेश प्रदेशमा धान उत्पादन बढेको छ।</p>`,
+    contentEn: `<p>Rice production has increased in Province 2.</p>`,
+    categoryId: society.id,
+    authorId: author3.id,
+    province: Province.PROVINCE_2,
+  });
+
+  // Province 3 - Bagmati
+  await createArticle({
+    slug: "province-3-kathmandu-metro-rail-study",
+    coverImageUrl: images.politics1,
+    coverImageFilename: "province3-metro.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "काठमाडौंमा मेट्रो रेल सम्भाव्यता अध्ययन शुरु",
+    titleEn: "Metro Rail Feasibility Study Begins in Kathmandu",
+    excerptNe: "बागमती प्रदेशमा मेट्रो रेलको सम्भाव्यता अध्ययन शुरु भएको छ।",
+    excerptEn: "Metro rail feasibility study has begun in Bagmati Province.",
+    contentNe: `<p>काठमाडौंमा मेट्रो रेलको सम्भाव्यता अध्ययन शुरु भएको छ।</p>
+    <p>तीन वर्षभित्र अध्ययन पूरा हुनेछ।</p>`,
+    contentEn: `<p>Metro rail feasibility study has begun in Kathmandu.</p>
+    <p>The study will be completed within three years.</p>`,
+    categoryId: politics.id,
+    authorId: author1.id,
+    province: Province.PROVINCE_3,
+  });
+
+  await createArticle({
+    slug: "province-3-education-reform",
+    coverImageUrl: images.sports1,
+    coverImageFilename: "province3-education.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "बागमती प्रदेशमा शिक्षा सुधार योजना",
+    titleEn: "Education Reform Plan in Bagmati Province",
+    excerptNe: "बागमती प्रदेशमा नयाँ शिक्षा सुधार योजना लागू हुनेछ।",
+    excerptEn: "New education reform plan will be implemented in Bagmati Province.",
+    contentNe: `<p>बागमती प्रदेशमा शिक्षा सुधार योजना लागू हुनेछ।</p>`,
+    contentEn: `<p>New education reform plan will be implemented in Bagmati Province.</p>`,
+    categoryId: society.id,
+    authorId: author2.id,
+    province: Province.PROVINCE_3,
+  });
+
+  // Province 4 - Gandaki
+  await createArticle({
+    slug: "province-4- hydropower-tourism",
+    coverImageUrl: images.economy1,
+    coverImageFilename: "province4-hydro.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "���ण्डकी प्रदेशमा जलविद्युत् र पर्यटन परियोजना",
+    titleEn: "Hydropower and Tourism Projects in Gandaki Province",
+    excerptNe: "गण्डकी प्रदेशमा जलविद्युत् र पर्यटन परियोजनाहरू अघि बढिरहेका छन्।",
+    excerptEn: "Hydropower and tourism projects are progressing in Gandaki Province.",
+    contentNe: `<p>गण्डकी प्रदेशमा जलविद्युत् परियोजनाहरू अघि बढिरहेका छन्।</p>
+    <p>पोखरा क्षेत्रमा पर्यटन विस्तार भइरहेको छ।</p>`,
+    contentEn: `<p>Hydropower projects are progressing in Gandaki Province.</p>
+    <p>Tourism expansion is underway in Pokhara area.</p>`,
+    categoryId: economy.id,
+    authorId: author1.id,
+    province: Province.PROVINCE_4,
+  });
+
+  // Province 5 - Lumbini
+  await createArticle({
+    slug: "province-5-tourism-lumbini",
+    coverImageUrl: images.entertain1,
+    coverImageFilename: "province5-lumbini.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "लुम्बिनी प्रदेशमा पर्यटन विकास",
+    titleEn: "Tourism Development in Lumbini Province",
+    excerptNe: "लुम्बिनी प्रदेशमा पर्यटन विकासका नयाँ योजनाहरू घोषणा गरिएका छन्।",
+    excerptEn: "New tourism development plans announced in Lumbini Province.",
+    contentNe: `<p>लुम्बिनी प्रदेशमा पर्यटन विकासका नयाँ योजनाहरू घोषणा गरिएका छन्।</p>
+    <p>कपिलवस्तुमा होटल निर्माण हुनेछ।</p>`,
+    contentEn: `<p>New tourism development plans announced in Lumbini Province.</p>
+    <p>Hotels will be built in Kapilvastu.</p>`,
+    categoryId: economy.id,
+    authorId: author2.id,
+    province: Province.PROVINCE_5,
+  });
+
+  // Province 6 - Karnali
+  await createArticle({
+    slug: "province-6-mining-exploration",
+    coverImageUrl: images.economy1,
+    coverImageFilename: "province6-mining.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "कर्णाली प्रदेशमा खानी पदार्थ अन्वेषण",
+    titleEn: "Mineral Exploration in Karnali Province",
+    excerptNe: "कर्णाली प्रदेशमा खानी पदार्थ अन्वेषण कार्य शुरु भएको छ।",
+    excerptEn: "Mineral exploration work has begun in Karnali Province.",
+    contentNe: `<p>कर्णाली प्रदेशमा खानी पदार्थ अन्वेषण कार्य शुरु भएको छ।</p>
+    <p>छोरला क्षेत्रमा तामा र सुनको खोजी भइरहेको छ।</p>`,
+    contentEn: `<p>Mineral exploration work has begun in Karnali Province.</p>
+    <p>Exploration for copper and gold is underway in Chhetra area.</p>`,
+    categoryId: economy.id,
+    authorId: author1.id,
+    province: Province.PROVINCE_6,
+  });
+
+  // Province 7 - Sudurpashchim
+  await createArticle({
+    slug: "province-7-border-trade",
+    coverImageUrl: images.economy1,
+    coverImageFilename: "province7-trade.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "सुदूरपश्चिम प्रदेशमा सीमा व्यापार वृद्धि",
+    titleEn: "Border Trade Increases in Sudurpashchim Province",
+    excerptNe: "सुदूरपश्चिम प्रदेशमा ��ा��तसँगको सीमा व्यापार बढेको छ।",
+    excerptEn: "Border trade with India has increased in Sudurpashchim Province.",
+    contentNe: `<p>सुदूरपश्चिम प्रदेशमा भारतसँगको सीमा व्यापार बढेको छ।</p>
+    <p>दार्चुला नाकाबाट आयात निर्यात बढेको छ।</p>`,
+    contentEn: `<p>Border trade with India has increased in Sudurpashchim Province.</p>
+    <p>Import-export has increased through Darcula border point.</p>`,
+    categoryId: economy.id,
+    authorId: author1.id,
+    province: Province.PROVINCE_7,
+  });
+
+  console.log("  ✓ Province articles seeded");
 
   // ═══════════════════════════════════════════
   // COMMENTS

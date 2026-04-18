@@ -137,7 +137,7 @@ export async function POST(req: NextRequest) {
       return validation;
     }
 
-    const { name, email, password, role } = validation;
+    const { name, nameNe, bio, profilePhoto, email, password, role } = validation;
 
     if (!canManageRole(authenticatedReq.user?.role, role)) {
       return NextResponse.json(
@@ -172,6 +172,9 @@ export async function POST(req: NextRequest) {
     const user = await prisma.user.create({
       data: {
         name,
+        nameNe: nameNe || null,
+        bio: bio || null,
+        profilePhoto: profilePhoto || null,
         email,
         passwordHash,
         role,

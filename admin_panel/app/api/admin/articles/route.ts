@@ -253,6 +253,7 @@ export async function POST(req: NextRequest) {
         ogImage: articleData.ogImage as string | undefined,
         isBreaking: articleData.isBreaking as boolean | undefined,
         isFeatured: articleData.isFeatured as boolean | undefined,
+        province: articleData.province,
         slug,
         authorId: authenticatedReq.user!.id,
         status: (articleData.status as ArticleStatus) || ArticleStatus.DRAFT,

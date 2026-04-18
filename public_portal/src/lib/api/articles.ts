@@ -10,6 +10,7 @@ export interface ArticleListParams {
   featured?: boolean;
   breaking?: boolean;
   author?: string;
+  province?: string;
 }
 
 export function getArticles(
@@ -24,6 +25,7 @@ export function getArticles(
   if (params.featured) query.set("isFeatured", "true");
   if (params.breaking) query.set("isBreaking", "true");
   if (params.author) query.set("author", params.author);
+  if (params.province) query.set("province", params.province);
 
   const qs = query.toString();
   const endpoint = `/api/articles${qs ? `?${qs}` : ""}`;

@@ -1,52 +1,33 @@
 /** @type {import('next').NextConfig} */
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || '';
-const apiHostname = process.env.NEXT_PUBLIC_API_HOSTNAME || '';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
+const apiHostname = process.env.NEXT_PUBLIC_API_HOSTNAME || "";
 
 // Build-time validation for production
-if (process.env.NODE_ENV === 'production' && (!siteUrl || siteUrl.includes('yoursite.com'))) {
+if (
+  process.env.NODE_ENV === "production" &&
+  (!siteUrl || siteUrl.includes("yoursite.com"))
+) {
   console.warn(
     '\x1b[33m[WARNING]\x1b[0m NEXT_PUBLIC_SITE_URL is not set or still uses "yoursite.com". ' +
-    'SEO features (sitemaps, canonical URLs, JSON-LD, OpenGraph) will be misconfigured. ' +
-    'Set NEXT_PUBLIC_SITE_URL to your production domain (e.g., https://yoursite.com).'
+      "SEO features (sitemaps, canonical URLs, JSON-LD, OpenGraph) will be misconfigured. " +
+      "Set NEXT_PUBLIC_SITE_URL to your production domain (e.g., https://yoursite.com).",
   );
 }
 
 const nextConfig = {
-  output: 'standalone',
+  output: "standalone",
   images: {
-    formats: ['image/avif', 'image/webp'],
+    formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '3000',
-        pathname: '/uploads/**',
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        pathname: "/**",
       },
       {
-        protocol: 'http',
-        hostname: '182.93.78.30',
-        port: '3000',
-        pathname: '/uploads/**',
-      },
-      // ...(apiHostname
-      //   ? [
-      //       {
-      //         protocol: 'http',
-      //         hostname: apiHostname,
-      //         port: '3000',
-      //         pathname: '/uploads/**',
-      //       },
-      //     ]
-      //   : []),
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'pub-0b3a31472a884459a6924728f1b443e3.r2.dev',
-        pathname: '/**',
+        protocol: "https",
+        hostname: "pub-0b3a31472a884459a6924728f1b443e3.r2.dev",
+        pathname: "/**",
       },
     ],
   },
@@ -54,31 +35,31 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/uploads/:path*',
-        destination: `${process.env.API_URL || 'http://localhost:3000'}/uploads/:path*`,
+        source: "/uploads/:path*",
+        destination: `${process.env.API_URL || "http://localhost:3000"}/uploads/:path*`,
       },
     ];
   },
   async headers() {
     return [
       {
-        source: '/:path*',
+        source: "/:path*",
         headers: [
           {
-            key: 'X-DNS-Prefetch-Control',
-            value: 'on',
+            key: "X-DNS-Prefetch-Control",
+            value: "on",
           },
           {
-            key: 'X-Frame-Options',
-            value: 'SAMEORIGIN',
+            key: "X-Frame-Options",
+            value: "SAMEORIGIN",
           },
           {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
+            key: "X-Content-Type-Options",
+            value: "nosniff",
           },
           {
-            key: 'Referrer-Policy',
-            value: 'strict-origin-when-cross-origin',
+            key: "Referrer-Policy",
+            value: "strict-origin-when-cross-origin",
           },
         ],
       },

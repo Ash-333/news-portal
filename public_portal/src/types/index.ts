@@ -88,6 +88,7 @@ export interface Article {
   isBreaking?: boolean;
   isFeatured?: boolean;
   isOpinion?: boolean;
+  province?: string;
   publishedAt: string;
   viewCount?: number;
   ogImage?: string | null;
@@ -126,6 +127,7 @@ export interface NavItem {
   label: string;
   labelNe: string;
   href: string;
+  hasDropdown?: boolean;
   children?: NavItem[];
 }
 
@@ -365,4 +367,24 @@ export interface AudioNews {
   viewCount: number;
   publishedAt: string | null;
   createdAt: string;
+}
+
+// Team Member Types
+export interface TeamMember {
+  id: string;
+  name: string;
+  nameNe: string;
+  department: string;
+  departmentNe: string;
+  designation: string;
+  designationNe: string;
+  image: string;
+  bio?: string;
+  bioNe?: string;
+  email?: string;
+  phone?: string;
+  order: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 }

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter, Merriweather } from 'next/font/google';
+import { Inter, Merriweather, Mukta } from 'next/font/google';
 import { Suspense } from 'react';
 import './globals.css';
 import { ThemeProvider } from '@/providers/ThemeProvider';
@@ -24,6 +24,13 @@ const merriweather = Merriweather({
   weight: ['400', '700', '900'],
   subsets: ['latin'],
   variable: '--font-merriweather',
+  display: 'swap',
+});
+
+const mukta = Mukta({
+  weight: ['400', '500', '600', '700'],
+  subsets: ['devanagari'],
+  variable: '--font-mukta',
   display: 'swap',
 });
 
@@ -98,7 +105,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className={`${inter.variable} ${merriweather.variable} antialiased`}>
+      <body className={`${inter.variable} ${merriweather.variable} ${mukta.variable} antialiased`}>
         <ThemeProvider>
           <LanguageProvider>
             <QueryProvider>

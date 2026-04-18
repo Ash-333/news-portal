@@ -22,8 +22,19 @@ export function Header() {
   const [searchValue, setSearchValue] = useState('');
   const { data: categories = [] } = useCategoriesQuery();
 
+  const provinces = [
+    { slug: 'koshi', name: 'Koshi', nameNe: 'कोशी प्रदेश' },
+    { slug: 'madhesh', name: 'Madhesh', nameNe: 'मधेश प्रदेश' },
+    { slug: 'bagmati', name: 'Bagmati', nameNe: 'बागमती प्रदेश' },
+    { slug: 'gandaki', name: 'Gandaki', nameNe: 'गण्डकी प्रदेश' },
+    { slug: 'lumbini', name: 'Lumbini', nameNe: 'लुम्बिनी प्रदेश' },
+    { slug: 'karnali', name: 'Karnali', nameNe: 'कर्णाली प्रदेश' },
+    { slug: 'sudurpashchim', name: 'Sudurpashchim', nameNe: 'सुदूरपश्चिम प्रदेश' },
+  ];
+
   const navItems: NavItem[] = [
     { label: 'Home', labelNe: 'होमपेज', href: '/' },
+    { label: 'Provinces', labelNe: 'प्रदेशहरु', href: '/provinces', hasDropdown: true, children: provinces.map((p) => ({ label: p.name, labelNe: p.nameNe, href: `/provinces/${p.slug}` })) },
     { label: '24 hours update', labelNe: '२४ घण्टा अपडेट', href: '/flash-updates' },
     { label: 'Audio news', labelNe: 'अडियो समाचार', href: '/audio' },
     { label: 'Video updates', labelNe: 'भिडियो अपडेट', href: '/videos' },

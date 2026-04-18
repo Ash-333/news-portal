@@ -45,6 +45,7 @@ export async function GET(req: NextRequest) {
     const tagId = searchParams.get("tagId");
     const isBreaking = searchParams.get("isBreaking");
     const isFeatured = searchParams.get("isFeatured");
+    const province = searchParams.get("province");
 
     const cacheParams = {
       page,
@@ -57,6 +58,7 @@ export async function GET(req: NextRequest) {
       tagId,
       isBreaking,
       isFeatured,
+      province,
     };
 
     const result = await cachedApi(
@@ -85,6 +87,7 @@ export async function GET(req: NextRequest) {
         }
         if (isBreaking === "true") where.isBreaking = true;
         if (isFeatured === "true") where.isFeatured = true;
+        if (province) where.province = province;
 
         if (tagId) {
           where.tags = {
@@ -104,6 +107,7 @@ export async function GET(req: NextRequest) {
               slug: true,
               isBreaking: true,
               isFeatured: true,
+              province: true,
               publishedAt: true,
               viewCount: true,
               ogImage: true,

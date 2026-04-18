@@ -54,12 +54,23 @@ enum Language {
   ENGLISH
 }
 
+enum Province {
+  PROVINCE_1
+  PROVINCE_2
+  PROVINCE_3
+  PROVINCE_4
+  PROVINCE_5
+  PROVINCE_6
+  PROVINCE_7
+}
+
 model User {
   id               String     @id @default(uuid())
   email            String     @unique
   passwordHash     String?
-  name             String
-  profilePhoto     String?
+  name             String     @map("name_en")
+  nameNe           String?    @map("name_ne")
+  profilePhoto     String?    @map("profile_photo")
   bio              String?
   role             Role       @default(PUBLIC_USER)
   status           UserStatus @default(ACTIVE)
@@ -135,6 +146,7 @@ model Article {
   status          ArticleStatus @default(DRAFT)
   isBreaking      Boolean       @default(false) @map("is_breaking")
   isFeatured      Boolean       @default(false) @map("is_featured")
+  province       Province?     @map("province")
   scheduledAt     DateTime?     @map("scheduled_at")
   publishedAt     DateTime?     @map("published_at")
   viewCount       Int           @default(0) @map("view_count")
@@ -163,6 +175,7 @@ model Article {
   @@index([categoryId])
   @@index([isBreaking])
   @@index([isFeatured])
+  @@index([province])
   @@index([deletedAt])
   @@index([status, deletedAt, publishedAt])
   @@index([status, deletedAt, authorId])
@@ -502,4 +515,28 @@ model PageView {
   @@index([createdAt])
   @@index([slug])
   @@map("page_views")
+}
+
+// Team Member Model
+model TeamMember {
+  id          String   @id @default(uuid())
+  name       String   @map("name")
+  nameNe     String?  @map("name_ne")
+  department String   @map("department")
+  departmentNe String? @map("department_ne")
+  designation String  @map("designation")
+  designationNe String? @map("designation_ne")
+  image      String?  @map("image")
+  bio        String?
+  bioNe      String?  @map("bio_ne")
+  email      String?
+  phone      String?
+  order      Int      @default(0) @map("order")
+  isActive   Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([order])
+  @@index([isActive])
+  @@map("team_members")
 }

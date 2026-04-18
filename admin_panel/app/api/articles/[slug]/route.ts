@@ -50,6 +50,7 @@ export async function GET(
             slug: true,
             isBreaking: true,
             isFeatured: true,
+            province: true,
             publishedAt: true,
             viewCount: true,
             metaTitle: true,

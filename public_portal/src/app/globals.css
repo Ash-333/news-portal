@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* Google Fonts Import */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@400;700;900&family=Noto+Sans+Devanagari:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@400;700;900&family=Mukta:wght@400;500;600;700&display=swap');
 
 @layer base {
   :root {
@@ -66,7 +66,7 @@
 
 /* Nepali text styles */
 .font-nepali {
-  font-family: 'Noto Sans Devanagari', sans-serif;
+  font-family: var(--font-mukta), 'Mukta', sans-serif;
   line-height: 1.8;
 }
 

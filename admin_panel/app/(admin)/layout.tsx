@@ -80,6 +80,7 @@ const navItems: NavItem[] = [
   { label: 'Polls', href: '/admin/polls', icon: Vote, permission: permissions.pollsView },
   { label: 'Horoscopes', href: '/admin/horoscopes', icon: Sparkles, permission: permissions.videosView },
   { label: 'Audio News', href: '/admin/audio-news', icon: Headphones, permission: permissions.videosView },
+  { label: 'Team Members', href: '/admin/team-members', icon: Users, permission: permissions.usersView },
   {
     label: 'Users',
     href: '/admin/users',

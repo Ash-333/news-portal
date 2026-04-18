@@ -65,7 +65,7 @@ module.exports = {
       },
       fontFamily: {
         // Nepali font
-        nepali: ["Noto Sans Devanagari", "sans-serif"],
+        nepali: ["var(--font-mukta)", "Mukta", "sans-serif"],
         // English fonts
         heading: ["Merriweather", "serif"],
         body: ["Inter", "sans-serif"],

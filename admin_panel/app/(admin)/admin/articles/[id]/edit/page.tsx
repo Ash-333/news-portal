@@ -24,6 +24,16 @@ import { MediaLibraryModal } from '@/components/media-library-modal'
 import { Select } from '@/components/ui/select'
 import type { Media } from '@/types'
 
+const provinces = [
+  { value: 'PROVINCE_1', label: 'Province 1 (Koshi)' },
+  { value: 'PROVINCE_2', label: 'Province 2 (Madhesh)' },
+  { value: 'PROVINCE_3', label: 'Province 3 (Bagmati)' },
+  { value: 'PROVINCE_4', label: 'Province 4 (Gandaki)' },
+  { value: 'PROVINCE_5', label: 'Province 5 (Lumbini)' },
+  { value: 'PROVINCE_6', label: 'Province 6 (Karnali)' },
+  { value: 'PROVINCE_7', label: 'Province 7 (Sudurpashchim)' },
+] as const
+
 const articleSchema = z.object({
   titleNe: z.string().min(1, 'Nepali title is required'),
   titleEn: z.string().min(1, 'English title is required'),
@@ -37,6 +47,7 @@ const articleSchema = z.object({
   metaDescription: z.string().optional(),
   isBreaking: z.boolean().default(false),
   isFeatured: z.boolean().default(false),
+  province: z.enum(['PROVINCE_1', 'PROVINCE_2', 'PROVINCE_3', 'PROVINCE_4', 'PROVINCE_5', 'PROVINCE_6', 'PROVINCE_7']).optional(),
   featuredImageId: z.string().optional(),
   scheduledAt: z.string().optional(),
 })
@@ -88,6 +99,7 @@ export default function EditArticlePage() {
         metaDescription: article.metaDescription || '',
         isBreaking: article.isBreaking,
         isFeatured: article.isFeatured,
+        province: article.province || undefined,
         featuredImageId: article.featuredImageId || '',
       })
       // Set selected tags from article
@@ -99,6 +111,7 @@ export default function EditArticlePage() {
 
   const isBreaking = watch('isBreaking')
   const isFeatured = watch('isFeatured')
+  const province = watch('province')
   const contentEn = watch('contentEn') || ''
   const contentNe = watch('contentNe') || ''
 
@@ -351,6 +364,21 @@ export default function EditArticlePage() {
               {errors.categoryId && (
                 <p className="text-sm text-red-600 mt-1">{errors.categoryId.message}</p>
               )}
+            </CardContent>
+          </Card>
+
+          {/* Province */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm font-medium">Province</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Select
+                options={provinces}
+                value={province || ''}
+                onChange={(val) => setValue('province', val as typeof province)}
+                placeholder="Select province (optional)"
+              />
             </CardContent>
           </Card>
 

@@ -5,6 +5,7 @@ import {
   MediaType,
   CommentStatus,
   Language,
+  Province,
 } from "@prisma/client";
 
 export type {
@@ -14,6 +15,7 @@ export type {
   MediaType,
   CommentStatus,
   Language,
+  Province,
 };
 
 // API Response Types
@@ -64,6 +66,7 @@ export interface Article {
   status: ArticleStatus;
   isBreaking: boolean;
   isFeatured: boolean;
+  province?: Province;
   scheduledAt?: Date;
   publishedAt?: Date;
   viewCount: number;
