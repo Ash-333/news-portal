@@ -2693,6 +2693,115 @@ ${img(images.society2, "Community health services being expanded to reach the mo
   );
 
   // ═══════════════════════════════════════════
+  // SPORTS SUBCATEGORIES
+  // ═══════════════════════════════════════════
+
+  const cricket = await prisma.category.upsert({
+    where: { slug: "cricket" },
+    update: { parentId: sports.id },
+    create: { nameNe: "क्रिकेट", nameEn: "Cricket", slug: "cricket", parentId: sports.id },
+  });
+  const football = await prisma.category.upsert({
+    where: { slug: "football" },
+    update: { parentId: sports.id },
+    create: { nameNe: "फुटबल", nameEn: "Football", slug: "football", parentId: sports.id },
+  });
+  const volleyball = await prisma.category.upsert({
+    where: { slug: "volleyball" },
+    update: { parentId: sports.id },
+    create: { nameNe: "भलिवल", nameEn: "Volleyball", slug: "volleyball", parentId: sports.id },
+  });
+  const basketball = await prisma.category.upsert({
+    where: { slug: "basketball" },
+    update: { parentId: sports.id },
+    create: { nameNe: "बास्केटबल", nameEn: "Basketball", slug: "basketball", parentId: sports.id },
+  });
+  const hockey = await prisma.category.upsert({
+    where: { slug: "hockey" },
+    update: { parentId: sports.id },
+    create: { nameNe: "हक्की", nameEn: "Hockey", slug: "hockey", parentId: sports.id },
+  });
+
+  console.log("✅ Sports Subcategories: 5 created");
+
+  // Sports images
+  const sportsImages = {
+    cricket1: "https://images.unsplash.com/photo-1624526267942-ab0ff8a3e972?w=1200&q=80",
+    cricket2: "https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=1200&q=80",
+    cricket3: "https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=1200&q=80",
+    football1: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=1200&q=80",
+    football2: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1200&q=80",
+    football3: "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=1200&q=80",
+    volleyball1: "https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=1200&q=80",
+    volleyball2: "https://images.unsplash.com/photo-1592655596760-0f3d3270e2e1?w=1200&q=80",
+    basketball1: "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=1200&q=80",
+    hockey1: "https://images.unsplash.com/photo-1515703403366-26c933a60058?w=1200&q=80",
+  };
+
+  // Helper for sports articles
+  async function createSportsArticle({
+    slug, titleNe, titleEn, excerptNe, excerptEn, contentNe, contentEn, categoryId, imageUrl, imageFilename, isFeatured = false
+  }: any) {
+    let media = await prisma.media.findFirst({ where: { filename: imageFilename } });
+    if (!media) {
+      media = await prisma.media.create({
+        data: { filename: imageFilename, url: imageUrl, type: MediaType.IMAGE, altText: titleEn, size: 350000, uploadedBy: superAdmin.id },
+      });
+    }
+    await prisma.article.upsert({
+      where: { slug },
+      update: { titleNe, titleEn, contentNe, contentEn, excerptNe, excerptEn, status: ArticleStatus.PUBLISHED, isFeatured, categoryId, authorId: author2.id, featuredImageId: media.id, publishedAt: new Date() },
+      create: { titleNe, titleEn, contentNe, contentEn, excerptNe, excerptEn, slug, status: ArticleStatus.PUBLISHED, isFeatured, categoryId, authorId: author2.id, featuredImageId: media.id, publishedAt: new Date() },
+    });
+  }
+
+  // Cricket articles
+  await createSportsArticle({ slug: "nepal-cricket-team-qualifies-asia-cup-2082", titleNe: "नेपाली क्रिकेट टोली एसिया कपमा छानिए, ऐतिहासिक उपलब्धि", titleEn: "Nepal Cricket Team Qualifies for Asia Cup, Historic Achievement", excerptNe: "नेपाली क्रिकेट टोली पहिलो पटक एसिया कपमा छानिएको छ।", excerptEn: "The Nepal cricket team has qualified for the Asia Cup for the first time.", contentNe: "<p>काठमाडौं। नेपाली राष्ट्रिय क्रिकेट टोली पहिलो पटक एसिया कपमा छानिएको छ।</p><p>यो नेपाली क्रिकेटको इतिहासमा सबैभन्दा ठूलो उपलब्धि हो।</p>", contentEn: "<p>Kathmandu. The Nepal national cricket team has qualified for the Asia Cup for the first time.</p><p>This is the biggest achievement in Nepal cricket history.</p>", categoryId: cricket.id, imageUrl: sportsImages.cricket1, imageFilename: "asia-cup-qualification.jpg", isFeatured: true });
+  await createSportsArticle({ slug: "sandeep-lamichhane-wpl-draft-2082", titleNe: "सन्दीप लामिछानेले डब्ल्यूपिएल ड्राफ्टमा छनोट भए", titleEn: "Sandeep Lamichhane Selected in WPL Draft", excerptNe: "नेपालका प्रसिद्ध लेग स्पिनर सन्दीप लामिछाने डब्ल्यूपिएल ड्राफ्टमा छानिएका छन्।", excerptEn: "Nepal's leg-spinner Sandeep Lamichhane selected in WPL draft.", contentNe: "<p>सन्दीप लामिछाने डब्ल्यूपिएलमा छानिएका छन्।</p>", contentEn: "<p>Sandeep Lamichhane has been selected in the WPL.</p>", categoryId: cricket.id, imageUrl: sportsImages.cricket2, imageFilename: "lamichhane-wpl.jpg" });
+  await createSportsArticle({ slug: "nepal-u19-cricket-team-wins-tournament", titleNe: "नेपाल यु-१९ क्रिकेट टोलीले टूर्नामेंट जित्यो", titleEn: "Nepal U19 Cricket Team Wins Tournament", excerptNe: "नेपालको यु-१९ क्रिकेट टोलीले टूर्नामेंट जितेको छ।", excerptEn: "Nepal's U19 cricket team has won the tournament.", contentNe: "<p>नेपालको यु-१९ क्रिकेट टोलीले टूर्नामेंट जितेको छ।</p>", contentEn: "<p>Nepal's U19 cricket team has won the tournament.</p>", categoryId: cricket.id, imageUrl: sportsImages.cricket3, imageFilename: "u19-cricket-win.jpg" });
+
+  // Football articles
+  await createSportsArticle({ slug: "nepal-national-football-team-fifa-rankings", titleNe: "नेपाली फुटबल टोलीको फिफा र्याङ्किङ सुधार", titleEn: "Nepal National Football Team FIFA Rankings Improve", excerptNe: "नेपाली फुटबल टोलीको फिफा र्याङ्किङमा सुधार भएको छ।", excerptEn: "Nepal football team's FIFA rankings have improved.", contentNe: "<p>नेपाली फुटबल टोलीको फिफा र्याङ्किङ सुधार भएको छ।</p>", contentEn: "<p>Nepal football team's FIFA rankings have improved.</p>", categoryId: football.id, imageUrl: sportsImages.football1, imageFilename: "football-rankings.jpg", isFeatured: true });
+  await createSportsArticle({ slug: "dashrath-stadium-renovation-complete", titleNe: "दशरथ रङ्गशालाको सुधार कार्य पूरा", titleEn: "Dashrath Stadium Renovation Complete", excerptNe: "दशरथ रङ्गशालाको सुधार कार्य पूरा भएको छ।", excerptEn: "Dashrath Stadium renovation is complete.", contentNe: "<p>दशरथ रङ्गशालाको सुधार कार्य पूरा भएको छ।</p>", contentEn: "<p>Dashrath Stadium renovation is complete.</p>", categoryId: football.id, imageUrl: sportsImages.football2, imageFilename: "dashrath-renovation.jpg" });
+  await createSportsArticle({ slug: "nepal-youth-football-academy-opens", titleNe: "नेपालमा नयाँ युवा फुटबल एकेडेमी खुला", titleEn: "New Youth Football Academy Opens in Nepal", excerptNe: "काठमाडौंमा नयाँ युवा फुटबल एकेडेमी खुला भएको छ।", excerptEn: "A new youth football academy has opened in Kathmandu.", contentNe: "<p>नयाँ युवा फुटबल एकेडेमी खुला भएको छ।</p>", contentEn: "<p>A new youth football academy has opened.</p>", categoryId: football.id, imageUrl: sportsImages.football3, imageFilename: "football-academy.jpg" });
+
+  // Volleyball articles
+  await createSportsArticle({ slug: "nepal-volleyball-team-south-asian-games", titleNe: "नेपाली भलिवल टोली दक्षिण एशियाली खेलहरूमा", titleEn: "Nepal Volleyball Team at South Asian Games", excerptNe: "नेपाली भलिवल टोली दक्षिण एशियाली खेलहरूमा भाग लिन तयार छ।", excerptEn: "Nepal volleyball team ready for South Asian Games.", contentNe: "<p>नेपाली भलिवल टोली तयारीमा छ।</p>", contentEn: "<p>Nepal volleyball team is preparing.</p>", categoryId: volleyball.id, imageUrl: sportsImages.volleyball1, imageFilename: "volleyball-sag.jpg" });
+  await createSportsArticle({ slug: "nepal-womens-volleyball-championship", titleNe: "नेपाल महिला भलिवल च्याम्पियनसिप आयोजना", titleEn: "Nepal Women's Volleyball Championship Organized", excerptNe: "नेपाल महिला भलिवल च्याम्पियनसिप काठमाडौंमा हुनेछ।", excerptEn: "Nepal Women's Volleyball Championship in Kathmandu.", contentNe: "<p>महिला भलिवल च्याम्पियनसिप आयोजना हुनेछ।</p>", contentEn: "<p>Women's volleyball championship to be organized.</p>", categoryId: volleyball.id, imageUrl: sportsImages.volleyball2, imageFilename: "womens-volleyball.jpg" });
+
+  // Basketball articles
+  await createSportsArticle({ slug: "nepal-basketball-league-starts-2082", titleNe: "नेपाल बास्केटबल लिग सुरु", titleEn: "Nepal Basketball League Starts", excerptNe: "नेपाल बास्केटबल लिग सुरु भएको छ।", excerptEn: "The Nepal Basketball League has started.", contentNe: "<p>नेपाल बास्केटबल लिग सुरु भएको छ।</p>", contentEn: "<p>The Nepal Basketball League has started.</p>", categoryId: basketball.id, imageUrl: sportsImages.basketball1, imageFilename: "basketball-league.jpg" });
+
+  // Hockey articles
+  await createSportsArticle({ slug: "nepal-field-hockey-team-training", titleNe: "नेपाल हक्की टोलीको अभ्यास शिविर सुरु", titleEn: "Nepal Hockey Team Training Camp Begins", excerptNe: "नेपाली हक्की टोलीको अभ्यास शिविर सुरु भएको छ।", excerptEn: "Nepal hockey team training camp has begun.", contentNe: "<p>हक्की टोलीको अभ्यास शिविर सुरु भएको छ।</p>", contentEn: "<p>Hockey team training camp has begun.</p>", categoryId: hockey.id, imageUrl: sportsImages.hockey1, imageFilename: "hockey-training.jpg" });
+
+  console.log("✅ Sports Articles: 10 created");
+
+  // ═══════════════════════════════════════════
+  // TEAM MEMBERS
+  // ═══════════════════════════════════════════
+
+  const teamMembers = [
+    { name: "Rajesh Sharma", nameNe: "राजेश शर्मा", department: "Sports", departmentNe: "खेलकुद", designation: "Head Coach - Cricket", designationNe: "प्रमुख प्रशिक्षक - क्रिकेट", image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80", bio: "Former national cricket team captain with 15 years of coaching experience.", bioNe: "पूर्व राष्ट्रिय क्रिकेट कप्तान।", email: "rajesh.sharma@newsportal.com", phone: "+977-9851000001", order: 1 },
+    { name: "Priya Rai", nameNe: "प्रिया राई", department: "Sports", departmentNe: "खेलकुद", designation: "Football Analyst", designationNe: "फुटबल विश्लेषक", image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80", bio: "UEFA certified football analyst.", bioNe: "यूईएफए प्रमाणित फुटबल विश्लेषक।", email: "priya.rai@newsportal.com", phone: "+977-9851000002", order: 2 },
+    { name: "Amit Gurung", nameNe: "अमित गुरुङ", department: "Sports", departmentNe: "खेलकुद", designation: "Volleyball Correspondent", designationNe: "भलिवल संवाददाता", image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80", bio: "Covering volleyball for over 8 years.", bioNe: "भलिवल कवरेज विशेषज्ञ।", email: "amit.gurung@newsportal.com", phone: "+977-9851000003", order: 3 },
+    { name: "Bikash Karki", nameNe: "विकाश कार्की", department: "Sports", departmentNe: "खेलकुद", designation: "Basketball Reporter", designationNe: "बास्केटबल रिपोर्टर", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80", bio: "Former college basketball player.", bioNe: "पूर्व कलेज बास्केटबल खेलाडी।", email: "bikash.karki@newsportal.com", phone: "+977-9851000004", order: 4 },
+    { name: "Sita Thapa", nameNe: "सीता थापा", department: "Sports", departmentNe: "खेलकुद", designation: "Senior Sports Editor", designationNe: "वरिष्ठ खेलकुद सम्पादक", image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80", bio: "Leading sports coverage.", bioNe: "प्रमुख खेलकुद कवरेज।", email: "sita.thapa@newsportal.com", phone: "+977-9851000005", order: 5 },
+    { name: "Deepak Lama", nameNe: "दीपक लामा", department: "Sports", departmentNe: "खेलकुद", designation: "Hockey Expert", designationNe: "हक्की विशेषज्ञ", image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=80", bio: "Former national hockey player.", bioNe: "पूर्व राष्ट्रिय हक्की खेलाडी।", email: "deepak.lama@newsportal.com", phone: "+977-9851000006", order: 6 },
+  ];
+
+  for (const member of teamMembers) {
+    const existing = await prisma.teamMember.findFirst({ where: { email: member.email } });
+    if (existing) {
+      await prisma.teamMember.update({ where: { id: existing.id }, data: member });
+    } else {
+      await prisma.teamMember.create({ data: member });
+    }
+  }
+
+  console.log("✅ Team Members: 6 created");
+
+  // ═══════════════════════════════════════════
   // SUMMARY
   // ═══════════════════════════════════════════
 
@@ -2700,18 +2809,17 @@ ${img(images.society2, "Community health services being expanded to reach the mo
   console.log("🎉 Database seed completed successfully!");
   console.log("═".repeat(50));
   console.log("📊 Summary:");
-  console.log(
-    "   Users:         10  (1 superadmin + 5 authors + 4 public users)",
-  );
-  console.log("   Categories:    7");
+  console.log("   Users:         10  (1 superadmin + 5 authors + 4 public users)");
+  console.log("   Categories:    7 + 5 sports subcategories");
   console.log("   Tags:          15");
-  console.log("   Articles:      20  (with inline images)");
+  console.log("   Articles:      20 + 10 sports articles");
   console.log("   Comments:      20  (with various statuses)");
   console.log("   Flash Updates: 10  (published with expiration)");
   console.log("   Videos:        10  (published)");
   console.log("   Horoscopes:    12  (all zodiac signs)");
   console.log("   Ads:           5");
   console.log("   Poll:          1   (active with 5 options)");
+  console.log("   Team Members:  6");
   console.log("   Settings:      7");
   console.log("");
   console.log("🔑 Login credentials:");

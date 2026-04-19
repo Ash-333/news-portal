@@ -1,17 +1,78 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Plus, Edit, Trash2, Folder } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Select, SelectOption } from '@/components/ui/select'
 import { PageHeader } from '@/components/ui/page-header'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { useCategories, useCreateCategory, useUpdateCategory, useDeleteCategory } from '@/hooks/use-categories'
 import { usePermissions } from '@/hooks/use-permissions'
 import { permissions } from '@/lib/permissions'
 import { toast } from 'sonner'
+
+// Category Tree Item Component
+interface CategoryTreeItemProps {
+  category: any
+  onEdit: (category: any) => void
+  onDelete: (id: string) => void
+  canManage: boolean
+  level: number
+}
+
+function CategoryTreeItem({ category, onEdit, onDelete, canManage, level }: CategoryTreeItemProps) {
+  return (
+    <>
+      <Card>
+        <CardContent className="p-4">
+          <div className="flex items-start justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                <Folder className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              </div>
+              <div className={level === 1 ? 'ml-4' : level === 2 ? 'ml-8' : level === 3 ? 'ml-12' : level >= 4 ? 'ml-16' : ''}>
+                <p className="font-medium">{category.nameEn}</p>
+                <p className="text-sm text-slate-500 font-nepali">{category.nameNe}</p>
+                <p className="text-xs text-slate-400">{category._count?.articles || 0} articles</p>
+                {level > 0 && (
+                  <p className="text-xs text-slate-400">Subcategory</p>
+                )}
+              </div>
+            </div>
+            {canManage && (
+              <div className="flex gap-1">
+                <Button variant="ghost" size="icon" onClick={() => onEdit(category)}>
+                  <Edit className="w-4 h-4" />
+                </Button>
+                <Button variant="ghost" size="icon" onClick={() => onDelete(category.id)}>
+                  <Trash2 className="w-4 h-4 text-red-600" />
+                </Button>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+      {/* Render children */}
+      {category.children && category.children.length > 0 && (
+        <div className="ml-8 space-y-2">
+          {category.children.map((child: any) => (
+            <CategoryTreeItem
+              key={child.id}
+              category={child}
+              onEdit={onEdit}
+              onDelete={onDelete}
+              canManage={canManage}
+              level={level + 1}
+            />
+          ))}
+        </div>
+      )}
+    </>
+  )
+}
 
 export default function CategoriesPage() {
   const [isCreating, setIsCreating] = useState(false)
@@ -25,6 +86,16 @@ export default function CategoriesPage() {
   const createCategory = useCreateCategory()
   const updateCategory = useUpdateCategory()
   const deleteCategory = useDeleteCategory()
+
+  // Scroll to form when it opens
+  useEffect(() => {
+    if (isCreating) {
+      const formElement = document.getElementById('category-form')
+      if (formElement) {
+        formElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+    }
+  }, [isCreating])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -68,6 +139,37 @@ export default function CategoriesPage() {
     setIsCreating(true)
   }
 
+  // Get available parent categories (excluding current category and its descendants)
+  const getAvailableParents = (): SelectOption[] => {
+    const unavailableIds = new Set<string>()
+
+    // Helper function to collect all descendant IDs
+    const collectDescendants = (category: any) => {
+      unavailableIds.add(category.id)
+      if (category.children) {
+        category.children.forEach(collectDescendants)
+      }
+    }
+
+    // If editing, exclude current category and its children
+    if (editingId) {
+      const currentCategory = categories?.find(cat => cat.id === editingId)
+      if (currentCategory) {
+        collectDescendants(currentCategory)
+      }
+    }
+
+    const availableCategories = categories?.filter(cat => !unavailableIds.has(cat.id)) || []
+
+    return [
+      { value: '', label: 'None (Root Category)' },
+      ...availableCategories.map(cat => ({
+        value: cat.id,
+        label: cat.nameEn + (cat.children && cat.children.length > 0 ? ` (${cat.children.length} subcategories)` : ''),
+      }))
+    ]
+  }
+
   return (
     <div className="space-y-6">
       <PageHeader
@@ -82,40 +184,22 @@ export default function CategoriesPage() {
       />
 
       {/* Categories List */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {categories?.map((category) => (
-          <Card key={category.id}>
-            <CardContent className="p-4">
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                    <Folder className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                  </div>
-                  <div>
-                    <p className="font-medium">{category.nameEn}</p>
-                    <p className="text-sm text-slate-500 font-nepali">{category.nameNe}</p>
-                    <p className="text-xs text-slate-400">{category._count?.articles || 0} articles</p>
-                  </div>
-                </div>
-                {canManageCategories && (
-                  <div className="flex gap-1">
-                    <Button variant="ghost" size="icon" onClick={() => startEdit(category)}>
-                      <Edit className="w-4 h-4" />
-                    </Button>
-                    <Button variant="ghost" size="icon" onClick={() => setDeleteId(category.id)}>
-                      <Trash2 className="w-4 h-4 text-red-600" />
-                    </Button>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+      <div className="space-y-2">
+        {categories?.filter(cat => !cat.parentId).map((category) => (
+          <CategoryTreeItem
+            key={category.id}
+            category={category}
+            onEdit={startEdit}
+            onDelete={setDeleteId}
+            canManage={canManageCategories}
+            level={0}
+          />
         ))}
       </div>
 
       {/* Create/Edit Form */}
       {canManageCategories && isCreating && (
-        <Card>
+        <Card id="category-form">
           <CardHeader>
             <CardTitle className="text-lg">{editingId ? 'Edit Category' : 'New Category'}</CardTitle>
           </CardHeader>
@@ -149,6 +233,15 @@ export default function CategoriesPage() {
                   value={formData.slug}
                   onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
                   placeholder="category-slug"
+                />
+              </div>
+              <div>
+                <Label htmlFor="parentId">Parent Category</Label>
+                <Select
+                  options={getAvailableParents()}
+                  value={formData.parentId}
+                  onChange={(value) => setFormData({ ...formData, parentId: value })}
+                  placeholder="Select parent category"
                 />
               </div>
               <div className="flex gap-2">

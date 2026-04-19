@@ -42,6 +42,7 @@ const articleSchema = z.object({
   excerptNe: z.string().optional(),
   excerptEn: z.string().optional(),
   categoryId: z.string().min(1, 'Category is required'),
+  subcategoryId: z.string().optional(),
   tagIds: z.array(z.string()).optional(),
   metaTitle: z.string().optional(),
   metaDescription: z.string().optional(),
@@ -87,6 +88,12 @@ export default function EditArticlePage() {
   // Reset form when article loads
   useEffect(() => {
     if (article) {
+      // Determine if the article's category is a subcategory
+      const category = categories?.find(cat => cat.id === article.categoryId)
+      const isSubcategory = category?.parentId
+      const mainCategoryId = isSubcategory ? category?.parentId : article.categoryId
+      const subcategoryId = isSubcategory ? article.categoryId : ''
+
       reset({
         titleNe: article.titleNe,
         titleEn: article.titleEn,
@@ -94,7 +101,8 @@ export default function EditArticlePage() {
         contentEn: article.contentEn,
         excerptNe: article.excerptNe || '',
         excerptEn: article.excerptEn || '',
-        categoryId: article.categoryId,
+        categoryId: mainCategoryId || '',
+        subcategoryId: subcategoryId,
         metaTitle: article.metaTitle || '',
         metaDescription: article.metaDescription || '',
         isBreaking: article.isBreaking,
@@ -107,7 +115,7 @@ export default function EditArticlePage() {
       setSelectedTags(articleTags.map((t: any) => t.id))
       setFeaturedMedia(article.featuredImage as Media | null)
     }
-  }, [article, reset])
+  }, [article, categories, reset])
 
   const isBreaking = watch('isBreaking')
   const isFeatured = watch('isFeatured')
@@ -115,9 +123,19 @@ export default function EditArticlePage() {
   const contentEn = watch('contentEn') || ''
   const contentNe = watch('contentNe') || ''
 
+  // Get top-level categories only
+  const topLevelCategories = categories?.filter(cat => !cat.parentId) || []
+
+  // Get subcategories for selected category
+  const selectedCategoryId = watch('categoryId')
+  const selectedCategory = categories?.find(cat => cat.id === selectedCategoryId)
+  const subcategories = selectedCategory?.children || []
+
   const onSubmit = async (data: ArticleFormData) => {
     try {
-      await updateArticle.mutateAsync({ id, data: { ...data, tagIds: selectedTags } })
+      // Use subcategoryId if selected, otherwise categoryId
+      const finalCategoryId = data.subcategoryId || data.categoryId
+      await updateArticle.mutateAsync({ id, data: { ...data, categoryId: finalCategoryId, tagIds: selectedTags } })
       toast.success('Article updated successfully')
       router.push('/admin/articles')
     } catch (error: unknown) {
@@ -177,134 +195,141 @@ export default function EditArticlePage() {
                   <TabsTrigger value="nepali">Nepali</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="english" className="space-y-4">
-                  <div>
-                    <Label htmlFor="titleEn">Title (English)</Label>
-                    <Input
-                      id="titleEn"
-                      {...register('titleEn')}
-                      placeholder="Enter article title in English"
-                      className="mt-1"
-                    />
-                    {errors.titleEn && (
-                      <p className="text-sm text-red-600 mt-1">{errors.titleEn.message}</p>
-                    )}
-                  </div>
+                 <TabsContent value="english" className="space-y-4">
+                   <div>
+                     <Label htmlFor="titleEn">Title (English)</Label>
+                     <Input
+                       id="titleEn"
+                       {...register('titleEn')}
+                       placeholder="Enter article title in English"
+                       className="mt-1"
+                     />
+                     {errors.titleEn && (
+                       <p className="text-sm text-red-600 mt-1">{errors.titleEn.message}</p>
+                     )}
+                   </div>
 
-                  {/* Tags - English */}
-                  <div>
-                    <Label>Tags</Label>
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      {/* Selected tags - red badges with X */}
-                      {selectedTags.map((tagId) => {
-                        const tag = tags?.find((t) => t.id === tagId)
-                        return tag ? (
-                          <span
-                            key={tag.id}
-                            className="inline-flex items-center gap-1 px-3 py-1 bg-red-500 text-white text-sm rounded-full"
-                          >
-                            {tag.nameEn}
-                            <button
-                              type="button"
-                              onClick={() => setSelectedTags(selectedTags.filter((id) => id !== tag.id))}
-                              className="text-white hover:text-red-200 font-bold"
-                            >
-                              ×
-                            </button>
-                          </span>
-                        ) : null
-                      })}
-                      {/* Available tags */}
-                      {selectedTags.length > 0 && <span className="text-sm text-gray-400 my-auto">+</span>}
-                      {tags?.map((tag) => {
-                        if (selectedTags.includes(tag.id)) return null
-                        return (
-                          <button
-                            key={tag.id}
-                            type="button"
-                            onClick={() => setSelectedTags([...selectedTags, tag.id])}
-                            className="px-2 py-1 text-sm rounded-full border border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-colors"
-                          >
-                            + {tag.nameEn}
-                          </button>
-                        )
-                      })}
-                    </div>
-                  </div>
+                   <div>
+                     <Label htmlFor="excerptEn">Excerpt (English)</Label>
+                     <textarea
+                       id="excerptEn"
+                       {...register('excerptEn')}
+                       placeholder="Brief summary of the article"
+                       className="mt-1 block w-full rounded-md border bg-background p-2 text-sm"
+                       rows={3}
+                     />
+                   </div>
 
-                  <div>
-                    <Label htmlFor="excerptEn">Excerpt (English)</Label>
-                    <textarea
-                      id="excerptEn"
-                      {...register('excerptEn')}
-                      placeholder="Brief summary of the article"
-                      className="mt-1 block w-full rounded-md border bg-background p-2 text-sm"
-                      rows={3}
-                    />
-                  </div>
+                   {/* SEO Settings - English */}
+                   <div className="space-y-4">
+                     <h4 className="text-sm font-medium text-muted-foreground">SEO Settings</h4>
+                     <div>
+                       <Label htmlFor="metaTitle">Meta Title</Label>
+                       <Input
+                         id="metaTitle"
+                         {...register('metaTitle')}
+                         placeholder="SEO title"
+                         className="mt-1"
+                       />
+                     </div>
+                     <div>
+                       <Label htmlFor="metaDescription">Meta Description</Label>
+                       <textarea
+                         id="metaDescription"
+                         {...register('metaDescription')}
+                         placeholder="SEO description"
+                         className="mt-1 block w-full rounded-md border bg-background p-2 text-sm"
+                         rows={3}
+                       />
+                     </div>
+                   </div>
 
-                  <div>
-                    <Label htmlFor="contentEn">Content (English)</Label>
-                    <div className="mt-1">
-                      <TipTapEditor
-                        value={contentEn}
-                        onChange={(html) => setValue('contentEn', html, { shouldDirty: true })}
-                        placeholder="Write your article content here..."
-                        onRequestImageInsert={(insertFn) => {
-                          setPendingImageInsert(() => insertFn)
-                          setIsMediaLibraryOpen(true)
-                        }}
-                      />
-                    </div>
-                    {errors.contentEn && (
-                      <p className="text-sm text-red-600 mt-1">{errors.contentEn.message}</p>
-                    )}
-                  </div>
-                </TabsContent>
+                   <div>
+                     <Label htmlFor="contentEn">Content (English)</Label>
+                     <div className="mt-1">
+                       <TipTapEditor
+                         value={contentEn}
+                         onChange={(html) => setValue('contentEn', html, { shouldDirty: true })}
+                         placeholder="Write your article content here..."
+                         onRequestImageInsert={(insertFn) => {
+                           setPendingImageInsert(() => insertFn)
+                           setIsMediaLibraryOpen(true)
+                         }}
+                       />
+                     </div>
+                     {errors.contentEn && (
+                       <p className="text-sm text-red-600 mt-1">{errors.contentEn.message}</p>
+                     )}
+                   </div>
+                 </TabsContent>
 
-                <TabsContent value="nepali" className="space-y-4">
-                  <div>
-                    <Label htmlFor="titleNe">Title (Nepali)</Label>
-                    <Input
-                      id="titleNe"
-                      {...register('titleNe')}
-                      placeholder="Enter article title in Nepali"
-                      className="mt-1"
-                    />
-                    {errors.titleNe && (
-                      <p className="text-sm text-red-600 mt-1">{errors.titleNe.message}</p>
-                    )}
-                  </div>
+                 <TabsContent value="nepali" className="space-y-4">
+                   <div>
+                     <Label htmlFor="titleNe">Title (Nepali)</Label>
+                     <Input
+                       id="titleNe"
+                       {...register('titleNe')}
+                       placeholder="Enter article title in Nepali"
+                       className="mt-1"
+                     />
+                     {errors.titleNe && (
+                       <p className="text-sm text-red-600 mt-1">{errors.titleNe.message}</p>
+                     )}
+                   </div>
 
-                  <div>
-                    <Label htmlFor="excerptNe">Excerpt (Nepali)</Label>
-                    <textarea
-                      id="excerptNe"
-                      {...register('excerptNe')}
-                      placeholder="Brief summary of the article"
-                      className="mt-1 block w-full rounded-md border bg-background p-2 text-sm"
-                      rows={3}
-                    />
-                  </div>
+                   <div>
+                     <Label htmlFor="excerptNe">Excerpt (Nepali)</Label>
+                     <textarea
+                       id="excerptNe"
+                       {...register('excerptNe')}
+                       placeholder="Brief summary of the article"
+                       className="mt-1 block w-full rounded-md border bg-background p-2 text-sm"
+                       rows={3}
+                     />
+                   </div>
 
-                  <div>
-                    <Label htmlFor="contentNe">Content (Nepali)</Label>
-                    <div className="mt-1">
-                      <TipTapEditor
-                        value={contentNe}
-                        onChange={(html) => setValue('contentNe', html, { shouldDirty: true })}
-                        placeholder="Write your article content here..."
-                        onRequestImageInsert={(insertFn) => {
-                          setPendingImageInsert(() => insertFn)
-                          setIsMediaLibraryOpen(true)
-                        }}
-                      />
-                    </div>
-                    {errors.contentNe && (
-                      <p className="text-sm text-red-600 mt-1">{errors.contentNe.message}</p>
-                    )}
-                  </div>
-                </TabsContent>
+                   {/* SEO Settings - Nepali */}
+                   <div className="space-y-4">
+                     <h4 className="text-sm font-medium text-muted-foreground">SEO Settings</h4>
+                     <div>
+                       <Label htmlFor="metaTitle">Meta Title</Label>
+                       <Input
+                         id="metaTitle"
+                         {...register('metaTitle')}
+                         placeholder="SEO title"
+                         className="mt-1"
+                       />
+                     </div>
+                     <div>
+                       <Label htmlFor="metaDescription">Meta Description</Label>
+                       <textarea
+                         id="metaDescription"
+                         {...register('metaDescription')}
+                         placeholder="SEO description"
+                         className="mt-1 block w-full rounded-md border bg-background p-2 text-sm"
+                         rows={3}
+                       />
+                     </div>
+                   </div>
+
+                   <div>
+                     <Label htmlFor="contentNe">Content (Nepali)</Label>
+                     <div className="mt-1">
+                       <TipTapEditor
+                         value={contentNe}
+                         onChange={(html) => setValue('contentNe', html, { shouldDirty: true })}
+                         placeholder="Write your article content here..."
+                         onRequestImageInsert={(insertFn) => {
+                           setPendingImageInsert(() => insertFn)
+                           setIsMediaLibraryOpen(true)
+                         }}
+                       />
+                     </div>
+                     {errors.contentNe && (
+                       <p className="text-sm text-red-600 mt-1">{errors.contentNe.message}</p>
+                     )}
+                   </div>
+                 </TabsContent>
               </Tabs>
             </CardContent>
           </Card>
@@ -354,15 +379,34 @@ export default function EditArticlePage() {
             <CardHeader>
               <CardTitle className="text-sm font-medium">Category</CardTitle>
             </CardHeader>
-            <CardContent>
-              <Select
-                options={categories?.map((c) => ({ value: c.id, label: c.nameEn })) || []}
-                value={watch('categoryId') || ''}
-                onChange={(val) => setValue('categoryId', val)}
-                placeholder="Select category"
-              />
-              {errors.categoryId && (
-                <p className="text-sm text-red-600 mt-1">{errors.categoryId.message}</p>
+            <CardContent className="space-y-4">
+              <div>
+                <Label>Main Category</Label>
+                <Select
+                  options={topLevelCategories.map((c) => ({ value: c.id, label: c.nameEn }))}
+                  value={watch('categoryId') || ''}
+                  onChange={(val) => {
+                    setValue('categoryId', val)
+                    // Clear subcategory when main category changes
+                    setValue('subcategoryId', '')
+                  }}
+                  placeholder="Select main category"
+                />
+                {errors.categoryId && (
+                  <p className="text-sm text-red-600 mt-1">{errors.categoryId.message}</p>
+                )}
+              </div>
+
+              {subcategories.length > 0 && (
+                <div>
+                  <Label>Subcategory</Label>
+                  <Select
+                    options={subcategories.map((c) => ({ value: c.id, label: c.nameEn }))}
+                    value={watch('subcategoryId') || ''}
+                    onChange={(val) => setValue('subcategoryId', val)}
+                    placeholder="Select subcategory (optional)"
+                  />
+                </div>
               )}
             </CardContent>
           </Card>
@@ -451,33 +495,51 @@ export default function EditArticlePage() {
             }}
           />
 
-          {/* SEO */}
+          {/* Tags */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm font-medium">SEO Settings</CardTitle>
+              <CardTitle className="text-sm font-medium">Tags</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label htmlFor="metaTitle">Meta Title</Label>
-                <Input
-                  id="metaTitle"
-                  {...register('metaTitle')}
-                  placeholder="SEO title"
-                  className="mt-1"
-                />
-              </div>
-              <div>
-                <Label htmlFor="metaDescription">Meta Description</Label>
-                <textarea
-                  id="metaDescription"
-                  {...register('metaDescription')}
-                  placeholder="SEO description"
-                  className="mt-1 block w-full rounded-md border bg-background p-2 text-sm"
-                  rows={3}
-                />
+            <CardContent>
+              <div className="flex flex-wrap gap-2">
+                {/* Selected tags - red badges with X */}
+                {selectedTags.map((tagId) => {
+                  const tag = tags?.find((t) => t.id === tagId)
+                  return tag ? (
+                    <span
+                      key={tag.id}
+                      className="inline-flex items-center gap-1 px-3 py-1 bg-red-500 text-white text-sm rounded-full"
+                    >
+                      {tag.nameEn}
+                      <button
+                        type="button"
+                        onClick={() => setSelectedTags(selectedTags.filter((id) => id !== tag.id))}
+                        className="text-white hover:text-red-200 font-bold"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ) : null
+                })}
+                {/* Available tags */}
+                {selectedTags.length > 0 && <span className="text-sm text-gray-400 my-auto">+</span>}
+                {tags?.map((tag) => {
+                  if (selectedTags.includes(tag.id)) return null
+                  return (
+                    <button
+                      key={tag.id}
+                      type="button"
+                      onClick={() => setSelectedTags([...selectedTags, tag.id])}
+                      className="px-2 py-1 text-sm rounded-full border border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-colors"
+                    >
+                      + {tag.nameEn}
+                    </button>
+                  )
+                })}
               </div>
             </CardContent>
           </Card>
+
         </div>
       </form>
 

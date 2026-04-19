@@ -20,6 +20,24 @@ function formatArticles(articles: any[]) {
   }));
 }
 
+async function getAllCategoryIds(categoryId: string): Promise<string[]> {
+  const allCategories = await prisma.category.findMany({
+    select: { id: true, parentId: true },
+  });
+  
+  const ids: string[] = [];
+  const findChildren = (parentId: string) => {
+    ids.push(parentId);
+    const children = allCategories.filter((c) => c.parentId === parentId);
+    for (const child of children) {
+      findChildren(child.id);
+    }
+  };
+  
+  findChildren(categoryId);
+  return ids;
+}
+
 // GET /api/articles - List published articles (public)
 export async function GET(req: NextRequest) {
   try {
@@ -81,7 +99,15 @@ export async function GET(req: NextRequest) {
         }
 
         if (categorySlug) {
-          (where as any).category = { slug: categorySlug };
+          const category = await prisma.category.findUnique({
+            where: { slug: categorySlug },
+            select: { id: true },
+          });
+          
+          if (category) {
+            const allCategoryIds = await getAllCategoryIds(category.id);
+            where.categoryId = { in: allCategoryIds };
+          }
         } else if (categoryId) {
           where.categoryId = categoryId;
         }

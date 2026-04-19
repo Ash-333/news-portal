@@ -11,7 +11,7 @@ import { getTitle, getExcerpt, getCategoryName } from '@/lib/utils/lang';
 
 interface ArticleCardProps {
   article: Article;
-  variant?: 'default' | 'horizontal' | 'compact' | 'featured';
+  variant?: 'default' | 'horizontal' | 'compact' | 'featured' | 'province';
   showCategory?: boolean;
   showExcerpt?: boolean;
   showMeta?: boolean;
@@ -83,6 +83,35 @@ export function ArticleCard({
           <h3 className={cn(
             'font-medium text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-news-red transition-colors',
             isNepali ? 'font-nepali text-sm leading-relaxed' : 'text-sm'
+          )}>
+            {title}
+          </h3>
+        </Link>
+        {showMeta && (
+          <span className="text-xs text-gray-500 mt-1 block">
+            {getRelativeTime(article.publishedAt, language)}
+          </span>
+        )}
+      </article>
+    );
+  }
+
+  if (variant === 'province') {
+    return (
+      <article className={cn('group', className)}>
+        <Link href={`/article/${article.slug}`} className="block relative aspect-[16/10] rounded-lg overflow-hidden mb-2">
+          <Image
+            src={getArticleImage(article)}
+            alt={title}
+            fill
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            sizes="(max-width: 768px) 100vw, 300px"
+          />
+        </Link>
+        <Link href={`/article/${article.slug}`}>
+          <h3 className={cn(
+            'font-medium text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-news-red transition-colors',
+            isNepali ? 'font-nepali text-sm' : 'text-sm'
           )}>
             {title}
           </h3>
