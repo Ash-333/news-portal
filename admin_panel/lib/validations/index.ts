@@ -114,15 +114,17 @@ export const articleSchema = z.object({
   ogImage: z.string().url("Invalid URL").optional().or(z.literal("")),
   isBreaking: booleanFromInput.default(false),
   isFeatured: booleanFromInput.default(false),
-  province: z.enum([
-    Province.PROVINCE_1,
-    Province.PROVINCE_2,
-    Province.PROVINCE_3,
-    Province.PROVINCE_4,
-    Province.PROVINCE_5,
-    Province.PROVINCE_6,
-    Province.PROVINCE_7,
-  ]).optional(),
+  province: z
+    .enum([
+      Province.PROVINCE_1,
+      Province.PROVINCE_2,
+      Province.PROVINCE_3,
+      Province.PROVINCE_4,
+      Province.PROVINCE_5,
+      Province.PROVINCE_6,
+      Province.PROVINCE_7,
+    ])
+    .optional(),
   scheduledAt: z
     .string()
     .regex(
@@ -444,3 +446,37 @@ export type AdvertisementFormData = z.infer<typeof advertisementSchema>;
 export type HoroscopeFormData = z.infer<typeof horoscopeSchema>;
 export type AudioNewsFormData = z.infer<typeof audioNewsSchema>;
 export type FlashUpdateFormData = z.infer<typeof flashUpdateSchema>;
+
+// Photo Gallery Validations
+export const photoGallerySchema = z.object({
+  titleNe: z.string().min(1, "Nepali title is required"),
+  titleEn: z.string().min(1, "English title is required"),
+  excerptNe: z
+    .string()
+    .max(500, "Excerpt must be less than 500 characters")
+    .optional()
+    .or(z.literal("")),
+  excerptEn: z
+    .string()
+    .max(500, "Excerpt must be less than 500 characters")
+    .optional()
+    .or(z.literal("")),
+  isPublished: booleanFromInput.default(false),
+  coverImageId: z
+    .string()
+    .uuid("Invalid cover image")
+    .optional()
+    .or(z.literal("")),
+  photos: z
+    .array(
+      z.object({
+        mediaId: z.string().uuid("Invalid media"),
+        captionNe: z.string().optional(),
+        captionEn: z.string().optional(),
+        order: z.number().int().default(0),
+      }),
+    )
+    .min(1, "At least one photo is required"),
+});
+
+export type PhotoGalleryFormData = z.infer<typeof photoGallerySchema>;

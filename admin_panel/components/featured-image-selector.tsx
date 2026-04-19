@@ -18,6 +18,7 @@ export function FeaturedImageSelector({ value, onChange }: FeaturedImageSelector
 
   const handleSelect = (media: Media) => {
     onChange(media)
+    setIsOpen(false)
   }
 
   const handleClear = () => {
@@ -55,10 +56,7 @@ export function FeaturedImageSelector({ value, onChange }: FeaturedImageSelector
         <MediaLibraryModal
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
-          onSelect={(media) => {
-            handleSelect(media)
-            setIsOpen(false)
-          }}
+          onSelect={handleSelect}
         />
       </CardContent>
     </Card>

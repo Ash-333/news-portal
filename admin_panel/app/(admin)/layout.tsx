@@ -7,7 +7,8 @@ import Link from 'next/link'
 import {
   LayoutDashboard,
   FileText,
-  Image,
+Image,
+  Images,
   Tag,
   FolderTree,
   Users,
@@ -63,6 +64,7 @@ const navItems: NavItem[] = [
     ]
   },
   { label: 'Media Manager', href: '/admin/media', icon: Image, permission: permissions.mediaView },
+  { label: 'Photo Galleries', href: '/admin/photo-galleries', icon: Images, permission: permissions.photosView },
   { label: 'Categories', href: '/admin/categories', icon: FolderTree, permission: permissions.categoriesView },
   { label: 'Tags', href: '/admin/tags', icon: Tag, permission: permissions.categoriesView },
   { label: 'Videos', href: '/admin/videos', icon: Video, permission: permissions.videosView },

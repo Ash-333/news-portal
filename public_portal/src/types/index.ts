@@ -388,3 +388,42 @@ export interface TeamMember {
   createdAt: string;
   updatedAt: string;
 }
+
+// Photo Gallery Types
+export interface PhotoGalleryMedia {
+  id: string;
+  filename: string;
+  url: string;
+  type: string;
+  altText?: string;
+}
+
+export interface PhotoGalleryPhoto {
+  id: string;
+  order: number;
+  captionNe?: string;
+  captionEn?: string;
+  media: PhotoGalleryMedia;
+}
+
+export interface PhotoGallery {
+  id: string;
+  titleNe: string;
+  titleEn: string;
+  excerptNe?: string;
+  excerptEn?: string;
+  slug: string;
+  isPublished: boolean;
+  publishedAt?: string;
+  coverImage?: {
+    id: string;
+    url: string;
+    filename: string;
+  } | null;
+  author: {
+    id: string;
+    name: string;
+    profilePhoto?: string;
+  };
+  photos: PhotoGalleryPhoto[];
+}

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { ArticleCard } from '@/components/ArticleCard';
 import { getArticles } from '@/lib/api/articles';
 import { getServerLanguage } from '@/lib/utils/language';
+import { Article } from '@/types';
 
 interface ProvincePageProps {
   searchParams?: { lang?: string };
@@ -18,6 +19,7 @@ const provinceInfo: Record<string, { slug: string; name: string; nameNe: string;
   PROVINCE_7: { slug: 'sudurpashchim', name: 'Sudurpashchim', nameNe: 'सुदूरपश्चिम', image: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=400&q=80' },
 };
 
+export const dynamic = 'force-dynamic';
 export const revalidate = 120;
 
 export async function generateMetadata({}: ProvincePageProps): Promise<Metadata> {
@@ -31,8 +33,15 @@ export default async function ProvincesPage({ searchParams }: ProvincePageProps)
   const lang = getServerLanguage();
 
   // Fetch articles from all provinces
-  const articlesRes = await getArticles({ limit: 50 });
-  const allArticles = articlesRes.success ? articlesRes.data : [];
+  let allArticles: Article[] = [];
+  try {
+    const articlesRes = await getArticles({ limit: 50 });
+    if (articlesRes.success) {
+      allArticles = articlesRes.data;
+    }
+  } catch (error) {
+    console.error('Failed to fetch articles:', error);
+  }
 
   // Filter articles that have province set
   const provinceArticles = allArticles.filter((article) => article.province);

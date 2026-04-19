@@ -1,31 +1,32 @@
-import { Role } from '@prisma/client'
+import { Role } from "@prisma/client";
 
 export const permissions = {
-  dashboardView: 'dashboard.view',
-  articlesView: 'articles.view',
-  articlesCreate: 'articles.create',
-  articlesReview: 'articles.review',
-  mediaView: 'media.view',
-  categoriesView: 'categories.view',
-  categoriesManage: 'categories.manage',
-  commentsManage: 'comments.manage',
-  usersView: 'users.view',
-  usersCreate: 'users.create',
-  userRolesManage: 'users.roles.manage',
-  analyticsView: 'analytics.view',
-  auditView: 'audit.view',
-  settingsManage: 'settings.manage',
-  videosView: 'videos.view',
-  videosCreate: 'videos.create',
-  adsView: 'ads.view',
-  adsManage: 'ads.manage',
-  flashUpdatesView: 'flash-updates.view',
-  flashUpdatesCreate: 'flash-updates.create',
-  pollsView: 'polls.view',
-  pollsManage: 'polls.manage',
-} as const
+  dashboardView: "dashboard.view",
+  articlesView: "articles.view",
+  articlesCreate: "articles.create",
+  articlesReview: "articles.review",
+  mediaView: "media.view",
+  photosView: "photos.view",
+  categoriesView: "categories.view",
+  categoriesManage: "categories.manage",
+  commentsManage: "comments.manage",
+  usersView: "users.view",
+  usersCreate: "users.create",
+  userRolesManage: "users.roles.manage",
+  analyticsView: "analytics.view",
+  auditView: "audit.view",
+  settingsManage: "settings.manage",
+  videosView: "videos.view",
+  videosCreate: "videos.create",
+  adsView: "ads.view",
+  adsManage: "ads.manage",
+  flashUpdatesView: "flash-updates.view",
+  flashUpdatesCreate: "flash-updates.create",
+  pollsView: "polls.view",
+  pollsManage: "polls.manage",
+} as const;
 
-export type Permission = (typeof permissions)[keyof typeof permissions]
+export type Permission = (typeof permissions)[keyof typeof permissions];
 
 const rolePermissions: Record<Role, Permission[]> = {
   [Role.PUBLIC_USER]: [],
@@ -34,6 +35,7 @@ const rolePermissions: Record<Role, Permission[]> = {
     permissions.articlesView,
     permissions.articlesCreate,
     permissions.mediaView,
+    permissions.photosView,
     permissions.categoriesView,
     permissions.videosView,
     permissions.videosCreate,
@@ -46,6 +48,7 @@ const rolePermissions: Record<Role, Permission[]> = {
     permissions.articlesCreate,
     permissions.articlesReview,
     permissions.mediaView,
+    permissions.photosView,
     permissions.categoriesView,
     permissions.categoriesManage,
     permissions.commentsManage,
@@ -67,6 +70,7 @@ const rolePermissions: Record<Role, Permission[]> = {
     permissions.articlesCreate,
     permissions.articlesReview,
     permissions.mediaView,
+    permissions.photosView,
     permissions.categoriesView,
     permissions.categoriesManage,
     permissions.commentsManage,
@@ -85,89 +89,121 @@ const rolePermissions: Record<Role, Permission[]> = {
     permissions.pollsView,
     permissions.pollsManage,
   ],
-}
+};
 
-export function getPermissionsForRole(role: Role | string | undefined): Permission[] {
+export function getPermissionsForRole(
+  role: Role | string | undefined,
+): Permission[] {
   if (!role || !(role in rolePermissions)) {
-    return []
+    return [];
   }
-  return rolePermissions[role as Role]
+  return rolePermissions[role as Role];
 }
 
 export function hasPermission(
   role: Role | string | undefined,
-  permission: Permission
+  permission: Permission,
 ): boolean {
-  return getPermissionsForRole(role).includes(permission)
+  return getPermissionsForRole(role).includes(permission);
 }
 
 export function getAssignableRoles(role: Role | string | undefined): Role[] {
   if (role === Role.SUPERADMIN) {
-    return [Role.AUTHOR, Role.ADMIN, Role.SUPERADMIN]
+    return [Role.AUTHOR, Role.ADMIN, Role.SUPERADMIN];
   }
   if (role === Role.ADMIN) {
-    return [Role.AUTHOR]
+    return [Role.AUTHOR];
   }
-  return []
+  return [];
 }
 
 export function canManageRole(
   actorRole: Role | string | undefined,
-  targetRole: Role
+  targetRole: Role,
 ): boolean {
-  return getAssignableRoles(actorRole).includes(targetRole)
+  return getAssignableRoles(actorRole).includes(targetRole);
 }
 
 export const permissionGroups: Array<{
-  title: string
-  items: Array<{ permission: Permission; label: string }>
+  title: string;
+  items: Array<{ permission: Permission; label: string }>;
 }> = [
   {
-    title: 'Dashboard',
-    items: [{ permission: permissions.dashboardView, label: 'View admin dashboard' }],
-  },
-  {
-    title: 'Articles',
+    title: "Dashboard",
     items: [
-      { permission: permissions.articlesView, label: 'View articles' },
-      { permission: permissions.articlesCreate, label: 'Create and edit articles' },
-      { permission: permissions.articlesReview, label: 'Approve, reject, and publish articles' },
+      { permission: permissions.dashboardView, label: "View admin dashboard" },
     ],
   },
   {
-    title: 'Content',
+    title: "Articles",
     items: [
-      { permission: permissions.mediaView, label: 'Manage media library' },
-      { permission: permissions.categoriesView, label: 'View categories and tags' },
-      { permission: permissions.categoriesManage, label: 'Manage categories and tags' },
-      { permission: permissions.commentsManage, label: 'Moderate comments' },
-      { permission: permissions.videosView, label: 'View videos' },
-      { permission: permissions.videosCreate, label: 'Create and manage videos' },
-      { permission: permissions.flashUpdatesView, label: 'View 24hrs updates' },
-      { permission: permissions.flashUpdatesCreate, label: 'Create and manage 24hrs updates' },
+      { permission: permissions.articlesView, label: "View articles" },
+      {
+        permission: permissions.articlesCreate,
+        label: "Create and edit articles",
+      },
+      {
+        permission: permissions.articlesReview,
+        label: "Approve, reject, and publish articles",
+      },
     ],
   },
   {
-    title: 'Advertising',
+    title: "Content",
     items: [
-      { permission: permissions.adsView, label: 'View advertisements' },
-      { permission: permissions.adsManage, label: 'Create and manage advertisements' },
+      { permission: permissions.mediaView, label: "Manage media library" },
+      { permission: permissions.photosView, label: "Manage photo galleries" },
+      {
+        permission: permissions.categoriesView,
+        label: "View categories and tags",
+      },
+      {
+        permission: permissions.categoriesManage,
+        label: "Manage categories and tags",
+      },
+      { permission: permissions.commentsManage, label: "Moderate comments" },
+      { permission: permissions.videosView, label: "View videos" },
+      {
+        permission: permissions.videosCreate,
+        label: "Create and manage videos",
+      },
+      { permission: permissions.flashUpdatesView, label: "View 24hrs updates" },
+      {
+        permission: permissions.flashUpdatesCreate,
+        label: "Create and manage 24hrs updates",
+      },
     ],
   },
   {
-    title: 'Users',
+    title: "Advertising",
     items: [
-      { permission: permissions.usersView, label: 'View users' },
-      { permission: permissions.usersCreate, label: 'Create users' },
-      { permission: permissions.userRolesManage, label: 'Change user roles and permissions' },
+      { permission: permissions.adsView, label: "View advertisements" },
+      {
+        permission: permissions.adsManage,
+        label: "Create and manage advertisements",
+      },
     ],
   },
   {
-    title: 'Administration',
+    title: "Users",
     items: [
-      { permission: permissions.analyticsView, label: 'View analytics' },
-      { permission: permissions.auditView, label: 'Access audit logs' },
-      { permission: permissions.settingsManage, label: 'Manage system settings' },
+      { permission: permissions.usersView, label: "View users" },
+      { permission: permissions.usersCreate, label: "Create users" },
+      {
+        permission: permissions.userRolesManage,
+        label: "Change user roles and permissions",
+      },
     ],
   },
-]
+  {
+    title: "Administration",
+    items: [
+      { permission: permissions.analyticsView, label: "View analytics" },
+      { permission: permissions.auditView, label: "Access audit logs" },
+      {
+        permission: permissions.settingsManage,
+        label: "Manage system settings",
+      },
+    ],
+  },
+];

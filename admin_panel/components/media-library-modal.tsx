@@ -19,7 +19,10 @@ interface MediaResponse {
 interface MediaLibraryModalProps {
   isOpen: boolean
   onClose: () => void
-  onSelect: (media: Media) => void
+  onSelect?: (media: Media) => void
+  multiSelect?: boolean
+  onMultiSelect?: (media: Media[]) => void
+  selectedMediaIds?: string[]
 }
 
 const fetchImages = async (search?: string): Promise<MediaResponse> => {
@@ -42,9 +45,17 @@ const fetchImages = async (search?: string): Promise<MediaResponse> => {
   }
 }
 
-export function MediaLibraryModal({ isOpen, onClose, onSelect }: MediaLibraryModalProps) {
+export function MediaLibraryModal({
+  isOpen,
+  onClose,
+  onSelect,
+  multiSelect = false,
+  onMultiSelect,
+  selectedMediaIds = [],
+}: MediaLibraryModalProps) {
   const queryClient = useQueryClient()
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [selectedIds, setSelectedIds] = useState<string[]>([...selectedMediaIds])
   const [isUploading, setIsUploading] = useState(false)
   const [uploadTitle, setUploadTitle] = useState("")
   const [searchInput, setSearchInput] = useState("")
@@ -53,11 +64,19 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect }: MediaLibraryMod
 
   useEffect(() => {
     if ((debounceTimer as any).current) clearTimeout((debounceTimer as any).current)
-    ;(debounceTimer as any).current = setTimeout(() => {
-      setDebouncedSearch(searchInput)
-    }, 300)
+      ; (debounceTimer as any).current = setTimeout(() => {
+        setDebouncedSearch(searchInput)
+      }, 300)
     return () => { if ((debounceTimer as any).current) clearTimeout((debounceTimer as any).current) }
   }, [searchInput])
+
+  // Reset selected IDs when modal opens/closes or selectedMediaIds changes
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedIds([...selectedMediaIds])
+      setSelectedId(null)
+    }
+  }, [isOpen])
 
   const { data, isLoading } = useQuery({
     queryKey: ["media", "images", debouncedSearch],
@@ -96,21 +115,43 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect }: MediaLibraryMod
   )
 
   const handleConfirm = () => {
-    if (!selectedId || !data?.data) return
-    const media = data.data.find((m) => m.id === selectedId)
-    if (!media) return
-    onSelect(media)
-    setSelectedId(null)
-    onClose()
+    if (multiSelect && onMultiSelect) {
+      if (!data?.data) return
+      const mediaItems = data.data.filter((m) => selectedIds.includes(m.id))
+      onMultiSelect(mediaItems)
+      setSelectedIds([])
+      onClose()
+    } else {
+      if (!selectedId || !data?.data) return
+      const media = data.data.find((m) => m.id === selectedId)
+      if (!media || !onSelect) return
+      onSelect(media)
+      setSelectedId(null)
+      onClose()
+    }
+  }
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    )
   }
 
   const images = data?.data ?? []
 
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      onClose()
+    }
+  }
+
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-3xl">
         <DialogHeader>
-          <DialogTitle>Media Library</DialogTitle>
+          <DialogTitle>
+            {multiSelect ? 'Select Photos for Gallery' : 'Media Library'}
+          </DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           {/* Search */}
@@ -123,6 +164,7 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect }: MediaLibraryMod
               className="pl-10"
             />
           </div>
+
           {/* Upload */}
           <div className="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-lg p-4 text-center space-y-3">
             <Upload className="w-8 h-8 mx-auto text-slate-400" />
@@ -150,6 +192,13 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect }: MediaLibraryMod
             </Button>
           </div>
 
+          {/* Selection count for multi-select */}
+          {multiSelect && selectedIds.length > 0 && (
+            <p className="text-sm text-slate-600 dark:text-slate-400">
+              {selectedIds.length} photo{selectedIds.length > 1 ? 's' : ''} selected
+            </p>
+          )}
+
           {/* Images grid */}
           {isLoading ? (
             <div className="grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
@@ -168,34 +217,37 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect }: MediaLibraryMod
             />
           ) : (
             <div className="grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 max-h-[360px] overflow-y-auto">
-              {images.map((item) => (
-                <Card
-                  key={item.id}
-                  className={
-                    "cursor-pointer overflow-hidden border-2 " +
-                    (selectedId === item.id
-                      ? "border-primary"
-                      : "border-transparent hover:border-slate-300 dark:hover:border-slate-700")
-                  }
-                  onClick={() => setSelectedId(item.id)}
-                >
-                  <CardContent className="p-1">
-                    <div className="aspect-video bg-slate-100 dark:bg-slate-900 flex items-center justify-center">
-                      {item.type === "IMAGE" ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={item.url}
-                          alt={item.filename}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <ImageIcon className="w-8 h-8 text-slate-400" />
-                      )}
-                    </div>
-                    <p className="mt-1 text-xs font-medium truncate">{item.filename}</p>
-                  </CardContent>
-                </Card>
-              ))}
+              {images.map((item) => {
+                const isSelected = multiSelect ? selectedIds.includes(item.id) : selectedId === item.id
+                return (
+                  <Card
+                    key={item.id}
+                    className={
+                      "cursor-pointer overflow-hidden border-2 " +
+                      (isSelected
+                        ? "border-primary"
+                        : "border-transparent hover:border-slate-300 dark:hover:border-slate-700")
+                    }
+                    onClick={() => multiSelect ? toggleSelect(item.id) : setSelectedId(item.id)}
+                  >
+                    <CardContent className="p-1">
+                      <div className="aspect-video bg-slate-100 dark:bg-slate-900 flex items-center justify-center">
+                        {item.type === "IMAGE" ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={item.url}
+                            alt={item.filename}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <ImageIcon className="w-8 h-8 text-slate-400" />
+                        )}
+                      </div>
+                      <p className="mt-1 text-xs font-medium truncate">{item.filename}</p>
+                    </CardContent>
+                  </Card>
+                )
+              })}
             </div>
           )}
 
@@ -203,8 +255,12 @@ export function MediaLibraryModal({ isOpen, onClose, onSelect }: MediaLibraryMod
             <Button variant="outline" size="sm" onClick={onClose}>
               Cancel
             </Button>
-            <Button size="sm" onClick={handleConfirm} disabled={!selectedId}>
-              Insert
+            <Button
+              size="sm"
+              onClick={handleConfirm}
+              disabled={multiSelect ? selectedIds.length === 0 : !selectedId}
+            >
+              {multiSelect ? `Select ${selectedIds.length}` : 'Insert'}
             </Button>
           </div>
         </div>

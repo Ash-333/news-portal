@@ -440,6 +440,345 @@ async function main() {
   console.log("✅ Tags: 15 created\n");
 
   // ═══════════════════════════════════════════
+  // PHOTO GALLERIES
+  // ═══════════════════════════════════════════
+
+  console.log("📸 Seeding photo galleries...\n");
+
+  async function createPhotoGallery({
+    slug,
+    titleNe,
+    titleEn,
+    excerptNe,
+    excerptEn,
+    authorId,
+    coverImageUrl,
+    coverImageFilename,
+    photos,
+    isPublished = true,
+  }: {
+    slug: string;
+    titleNe: string;
+    titleEn: string;
+    excerptNe?: string;
+    excerptEn?: string;
+    authorId: string;
+    coverImageUrl: string;
+    coverImageFilename: string;
+    photos: Array<{ url: string; filename: string; captionNe?: string; captionEn?: string }>;
+    isPublished?: boolean;
+  }) {
+    // Create cover image media
+    let coverMedia = await prisma.media.findFirst({
+      where: { filename: coverImageFilename },
+    });
+
+    if (!coverMedia) {
+      coverMedia = await prisma.media.create({
+        data: {
+          filename: coverImageFilename,
+          url: coverImageUrl,
+          type: MediaType.IMAGE,
+          altText: titleEn,
+          size: 250000,
+          uploadedBy: authorId,
+        },
+      });
+    }
+
+    // Create photo media entries
+    const photoMediaRecords = await Promise.all(
+      photos.map(async (photo, index) => {
+        const filename = `${slug}-photo-${index}.jpg`;
+        let media = await prisma.media.findFirst({
+          where: { filename },
+        });
+
+        if (!media) {
+          media = await prisma.media.create({
+            data: {
+              filename,
+              url: photo.url,
+              type: MediaType.IMAGE,
+              altText: photo.captionEn || titleEn,
+              size: 180000,
+              uploadedBy: authorId,
+            },
+          });
+        }
+        return { media, captionNe: photo.captionNe, captionEn: photo.captionEn };
+      })
+    );
+
+    // Create photo gallery
+    const gallery = await prisma.photoGallery.upsert({
+      where: { slug },
+      update: {
+        titleNe,
+        titleEn,
+        excerptNe,
+        excerptEn,
+        coverImageId: coverMedia.id,
+        isPublished,
+      },
+      create: {
+        titleNe,
+        titleEn,
+        excerptNe,
+        excerptEn,
+        slug,
+        isPublished,
+        authorId,
+        coverImageId: coverMedia.id,
+      },
+    });
+
+    // Add photos to gallery
+    await prisma.photoGalleryPhoto.deleteMany({
+      where: { photoGalleryId: gallery.id },
+    });
+
+    await prisma.photoGalleryPhoto.createMany({
+      data: photoMediaRecords.map((record, index) => ({
+        photoGalleryId: gallery.id,
+        mediaId: record.media.id,
+        order: index,
+        captionNe: record.captionNe,
+        captionEn: record.captionEn,
+      })),
+    });
+
+    return gallery;
+  }
+
+  // Gallery 1: Kathmandu City Views
+  await createPhotoGallery({
+    slug: "kathmandu-city-views-2082",
+    titleNe: "काठमाडौंको सुन्दर दृश्यहरू",
+    titleEn: "Beautiful Views of Kathmandu City",
+    excerptNe: "काठमाडौं उपत्यकाका विभिन्न स्थानहरूबाट लिइएको मनमोहक दृश्य सङ्कलन।",
+    excerptEn: "A collection of breathtaking views from various locations across Kathmandu Valley.",
+    authorId: author2.id,
+    coverImageUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80",
+    coverImageFilename: "kathmandu-gallery-cover.jpg",
+    photos: [
+      {
+        url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+        filename: "kathmandu-photo-1.jpg",
+        captionNe: "स्वयम्भूनाथ दृश्य",
+        captionEn: "Swayambhunath Stupa View",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1574169208507-84376144848b?w=800&q=80",
+        filename: "kathmandu-photo-2.jpg",
+        captionNe: "पाटन दरबार स्क्वायर",
+        captionEn: "Patan Durbar Square",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1598091383021-15ddea1448c8?w=800&q=80",
+        filename: "kathmandu-photo-3.jpg",
+        captionNe: "सुन्दर हवेली पुरानो नगर",
+        captionEn: "Traditional Architecture in Old City",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1582108336632-062975a1e855?w=800&q=80",
+        filename: "kathmandu-photo-4.jpg",
+        captionNe: "बौद्धनाथ स्तूप",
+        captionEn: "Boudhanath Stupa",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1591017403286-fd8493524e1e?w=800&q=80",
+        filename: "kathmandu-photo-5.jpg",
+        captionNe: "काठमाडौंको रात्री दृश्य",
+        captionEn: "Kathmandu Night Skyline",
+      },
+    ],
+  });
+  console.log("  ✓ Gallery 1: Kathmandu City Views");
+
+  // Gallery 2: Himalayan Landscapes
+  await createPhotoGallery({
+    slug: "himalayan-landscapes-nepal",
+    titleNe: "हिमालयको रमाइलो दृश्यहरू",
+    titleEn: "Majestic Himalayan Landscapes",
+    excerptNe: "नेपालको हिमाल क्षेत्रका मनमोहक प्रकृतिक दृश्यहरूको सङ्कलन।",
+    excerptEn: "A stunning collection of natural landscapes from Nepal's Himalayan region.",
+    authorId: author2.id,
+    coverImageUrl: "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1200&q=80",
+    coverImageFilename: "himalayan-gallery-cover.jpg",
+    photos: [
+      {
+        url: "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800&q=80",
+        filename: "himalaya-photo-1.jpg",
+        captionNe: "माउण्ट एवरेस्ट दृश्य",
+        captionEn: "Mount Everest View",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1454496522488-7a8e488e8606?w=800&q=80",
+        filename: "himalaya-photo-2.jpg",
+        captionNe: "अन्नपूर्ण रेन्ज",
+        captionEn: "Annapurna Mountain Range",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80",
+        filename: "himalaya-photo-3.jpg",
+        captionNe: "घर्तकुण्ड झील",
+        captionEn: "Gokyo Lakes",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=800&q=80",
+        filename: "himalaya-photo-4.jpg",
+        captionNe: "माचापुच्छ्रे हिमाल",
+        captionEn: "Machapuchare (Fish Tail) Peak",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&q=80",
+        filename: "himalaya-photo-5.jpg",
+        captionNe: "गोसाइँकुण्ड",
+        captionEn: "Gosainkunda Lake",
+      },
+    ],
+  });
+  console.log("  ✓ Gallery 2: Himalayan Landscapes");
+
+  // Gallery 3: Cultural Festivals
+  await createPhotoGallery({
+    slug: "nepal-cultural-festivals-2082",
+    titleNe: "नेपालको सांस्कृतिक पर्वहरू",
+    titleEn: "Cultural Festivals of Nepal",
+    excerptNe: "नेपालको विभिन्न सांस्कृतिक पर्वहरूबाट लिइएको दृश्य सङ्कलन।",
+    excerptEn: "A vibrant collection capturing Nepal's rich cultural festivals.",
+    authorId: author5.id,
+    coverImageUrl: "https://images.unsplash.com/photo-1574169208507-84376144848b?w=1200&q=80",
+    coverImageFilename: "festivals-gallery-cover.jpg",
+    photos: [
+      {
+        url: "https://images.unsplash.com/photo-1566438480900-0609be27a4be?w=800&q=80",
+        filename: "festival-photo-1.jpg",
+        captionNe: "दशैं पर्वको दृश्य",
+        captionEn: "Dashain Festival Celebration",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1574169208507-84376144848b?w=800&q=80",
+        filename: "festival-photo-2.jpg",
+        captionNe: "स्वयम्भूनाथलोक फेस्टिभल",
+        captionEn: "Swayambhunath Annual Festival",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1582108336632-062975a1e855?w=800&q=80",
+        filename: "festival-photo-3.jpg",
+        captionNe: "बौद्धनाथ चैते दसैं",
+        captionEn: "Boudhanath Chaite Dashain",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1591017403286-fd8493524e1e?w=800&q=80",
+        filename: "festival-photo-4.jpg",
+        captionNe: "इन्द्रजात्रा पर्व",
+        captionEn: "Indra Jatra Festival",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1598091383021-15ddea1448c8?w=800&q=80",
+        filename: "festival-photo-5.jpg",
+        captionNe: "तिहार दीपावली",
+        captionEn: "Tihar Diwali Lights",
+      },
+    ],
+  });
+  console.log("  ✓ Gallery 3: Cultural Festivals");
+
+  // Gallery 4: Wildlife of Nepal
+  await createPhotoGallery({
+    slug: "nepal-wildlife-photography",
+    titleNe: "नेपालको वन्यजन्तु संग्रह",
+    titleEn: "Wildlife Photography Collection",
+    excerptNe: "चितवन र बार्दिया राष्ट्रिय निकुञ्जबाट लिइएको वन्यजन्तुका दृश्यहरू।",
+    excerptEn: "Wildlife photos captured from Chitwan and Bardia National Parks.",
+    authorId: author2.id,
+    coverImageUrl: "https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=1200&q=80",
+    coverImageFilename: "wildlife-gallery-cover.jpg",
+    photos: [
+      {
+        url: "https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=800&q=80",
+        filename: "wildlife-photo-1.jpg",
+        captionNe: "एक-सिङ्गे गैँडा",
+        captionEn: "One-Horned Rhinoceros",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1552053831-71594a27632d?w=800&q=80",
+        filename: "wildlife-photo-2.jpg",
+        captionNe: "बाघ चितवन",
+        captionEn: "Bengal Tiger in Chitwan",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?w=800&q=80",
+        filename: "wildlife-photo-3.jpg",
+        captionNe: "हाती सफारी",
+        captionEn: "Elephant Safari",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1569678834646-437873507316?w=800&q=80",
+        filename: "wildlife-photo-4.jpg",
+        captionNe: "घाडियाल कृमि",
+        captionEn: "Gharial Crocodile",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1570470867345-25e578504c89?w=800&q=80",
+        filename: "wildlife-photo-5.jpg",
+        captionNe: "डाफे मुनाल पक्षी",
+        captionEn: "Himalayan Monal Pheasant",
+      },
+    ],
+  });
+  console.log("  ✓ Gallery 4: Nepal Wildlife");
+
+  // Gallery 5: Traditional Architecture
+  await createPhotoGallery({
+    slug: "nepal-traditional-architecture",
+    titleNe: "नेपालको परम्परागत वास्तुकला",
+    titleEn: "Traditional Architecture of Nepal",
+    excerptNe: "दरबार स्क्वायर र विभिन्न मन्दिरहरूको वास्तुकलाको सुन्दर दृश्यहरू।",
+    excerptEn: "Beautiful architectural details from Durbar Squares and ancient temples.",
+    authorId: author1.id,
+    coverImageUrl: "https://images.unsplash.com/photo-1574169208507-84376144848b?w=1200&q=80",
+    coverImageFilename: "architecture-gallery-cover.jpg",
+    photos: [
+      {
+        url: "https://images.unsplash.com/photo-1574169208507-84376144848b?w=800&q=80",
+        filename: "arch-photo-1.jpg",
+        captionNe: "नयाँ मन्दिर पाटन",
+        captionEn: "Krishna Mandir Patan",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1582108336632-062975a1e855?w=800&q=80",
+        filename: "arch-photo-2.jpg",
+        captionNe: "स्वयम्भूनाथ स्तूप विवरण",
+        captionEn: "Swayambhunath Stupa Details",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1591017403286-fd8493524e1e?w=800&q=80",
+        filename: "arch-photo-3.jpg",
+        captionNe: "दरबार स्क्वायर खण्डहर",
+        captionEn: "Durbar Square Woodcarvings",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1598091383021-15ddea1448c8?w=800&q=80",
+        filename: "arch-photo-4.jpg",
+        captionNe: "भक्तपुर दरबार स्क्वायर",
+        captionEn: "Bhaktapur Durbar Square",
+      },
+      {
+        url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+        filename: "arch-photo-5.jpg",
+        captionNe: "पशुपतिनाथ मन्दिर",
+        captionEn: "Pashupatinath Temple",
+      },
+    ],
+  });
+  console.log("  ✓ Gallery 5: Traditional Architecture");
+
+  console.log("✅ Photo Galleries: 5 created\n");
+
+  // ═══════════════════════════════════════════
   // HELPER FUNCTION
   // ═══════════════════════════════════════════
 

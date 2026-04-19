@@ -379,6 +379,59 @@ export interface FlashUpdateFormData {
   featuredImageId?: string;
 }
 
+// Photo Gallery Types
+export interface PhotoGallery {
+  id: string;
+  titleNe: string;
+  titleEn: string;
+  excerptNe?: string;
+  excerptEn?: string;
+  slug: string;
+  isPublished: boolean;
+  authorId: string;
+  coverImageId?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface PhotoGalleryWithRelations extends PhotoGallery {
+  author: Pick<User, "id" | "name" | "profilePhoto">;
+  coverImage?: Media;
+  photos: PhotoGalleryPhotoWithMedia[];
+  _count?: {
+    photos: number;
+  };
+}
+
+export interface PhotoGalleryPhoto {
+  id: string;
+  photoGalleryId: string;
+  mediaId: string;
+  order: number;
+  captionNe?: string;
+  captionEn?: string;
+  createdAt: Date;
+}
+
+export interface PhotoGalleryPhotoWithMedia extends PhotoGalleryPhoto {
+  media: Media;
+}
+
+export interface PhotoGalleryFormData {
+  titleNe: string;
+  titleEn: string;
+  excerptNe?: string;
+  excerptEn?: string;
+  coverImageId?: string;
+  isPublished?: boolean;
+  photos: Array<{
+    mediaId: string;
+    captionNe?: string;
+    captionEn?: string;
+    order: number;
+  }>;
+}
+
 // Filter Types
 export interface ArticleFilter {
   status?: ArticleStatus;

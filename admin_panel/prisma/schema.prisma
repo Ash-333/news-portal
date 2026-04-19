@@ -93,6 +93,7 @@ model User {
   pollVotes      PollVote[]
   horoscopes     Horoscope[]
   audioNews      AudioNews[]
+  photoGalleries PhotoGallery[]
 
   @@index([status])
   @@index([deletedAt])
@@ -207,9 +208,11 @@ model Media {
   createdAt  DateTime  @default(now()) @map("created_at")
 
   // Relations
-  uploader User @relation(fields: [uploadedBy], references: [id])
-  featuredInArticles Article[]
-  featuredInFlashUpdates FlashUpdate[]
+  uploader                 User                  @relation(fields: [uploadedBy], references: [id])
+  featuredInArticles       Article[]
+  featuredInFlashUpdates   FlashUpdate[]
+  coverInGalleries         PhotoGallery[]        @relation("CoverPhotoGallery")
+  galleryPhotos            PhotoGalleryPhoto[]
 
   @@index([uploadedBy])
   @@index([type])
@@ -539,4 +542,45 @@ model TeamMember {
   @@index([order])
   @@index([isActive])
   @@map("team_members")
+}
+
+// Photo Gallery Models
+model PhotoGallery {
+  id           String    @id @default(uuid())
+  titleNe      String    @map("title_ne")
+  titleEn      String    @map("title_en")
+  excerptNe    String?   @map("excerpt_ne")
+  excerptEn    String?   @map("excerpt_en")
+  slug         String    @unique
+  isPublished  Boolean   @default(false) @map("is_published")
+  authorId     String    @map("author_id")
+  coverImageId String?   @map("cover_image_id")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  author     User                    @relation(fields: [authorId], references: [id])
+  coverImage Media?                  @relation("CoverPhotoGallery", fields: [coverImageId], references: [id])
+  photos     PhotoGalleryPhoto[]
+
+  @@index([slug])
+  @@index([isPublished])
+  @@index([authorId])
+  @@map("photo_galleries")
+}
+
+model PhotoGalleryPhoto {
+  id              String   @id @default(uuid())
+  photoGalleryId  String   @map("photo_gallery_id")
+  mediaId         String   @map("media_id")
+  order           Int      @default(0)
+  captionNe       String?  @map("caption_ne")
+  captionEn       String?  @map("caption_en")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  photoGallery PhotoGallery @relation(fields: [photoGalleryId], references: [id], onDelete: Cascade)
+  media        Media        @relation(fields: [mediaId], references: [id])
+
+  @@unique([photoGalleryId, mediaId])
+  @@index([photoGalleryId])
+  @@map("photo_gallery_photos")
 }

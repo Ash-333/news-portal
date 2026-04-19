@@ -19,6 +19,7 @@ import { getCategories } from '@/lib/api/categories';
 import { getPolls } from '@/lib/api/polls';
 import { HoroscopeSection } from '@/components/horoscopes/HoroscopeSection';
 import { VideoSection } from '@/components/sections/VideoSection';
+import { PhotoGallerySection } from '@/components/sections/PhotoGallerySection';
 import { Article, Poll } from '@/types';
 import { getServerLanguage } from '@/lib/utils/language';
 
@@ -28,16 +29,16 @@ export async function generateMetadata({ searchParams }: { searchParams?: { lang
   const urlLang = searchParams?.lang as string | undefined;
   const serverLang = getServerLanguage();
   const isNepali = urlLang === 'ne' || (!urlLang && serverLang === 'ne');
-  
+
   return {
     title: isNepali ? 'होम - HTC मिडिया' : 'Home - HTC Media',
-    description: isNepali 
+    description: isNepali
       ? 'नेपाल र विश्वबाट ताजा समाचार, ब्रेकिङ न्यूज र गहन विश्लेषण।'
       : 'Latest news, breaking news, and in-depth analysis from Nepal and around the world.',
     openGraph: {
       type: 'website',
       title: isNepali ? 'HTC मिडिया - तपाईंको विश्वसनीय समाचार स्रोत' : 'HTC Media - Your Trusted Source for News',
-      description: isNepali 
+      description: isNepali
         ? 'नेपाल र विश्वबाट ताजा समाचार र अपडेटहरू।'
         : 'Latest news and updates from Nepal and around the world.',
     },
@@ -272,7 +273,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { lang
             />
           ) : null}
 
-{/* Province Section */}
+          {/* Province Section */}
           {hasProvinceNews && (
             <div className="py-8 border-t border-news-border dark:border-news-border-dark">
               <div className="container mx-auto px-4">
@@ -293,71 +294,71 @@ export default async function HomePage({ searchParams }: { searchParams?: { lang
                   {province1Articles.length > 0 && (
                     <div className="space-y-4">
                       <h3 className="text-lg font-semibold text-news-primary">{isNepali ? 'प्रदेश १ - कोशी' : 'Province 1 - Koshi'}</h3>
-                       <div className="space-y-4">
-                         {province1Articles.slice(0, 3).map((article: Article) => (
-                           <ArticleCard key={article.id} article={article} variant="province" showCategory={false} showExcerpt={false} />
-                         ))}
-                       </div>
+                      <div className="space-y-4">
+                        {province1Articles.slice(0, 3).map((article: Article) => (
+                          <ArticleCard key={article.id} article={article} variant="province" showCategory={false} showExcerpt={false} />
+                        ))}
+                      </div>
                     </div>
                   )}
                   {province2Articles.length > 0 && (
                     <div className="space-y-4">
                       <h3 className="text-lg font-semibold text-news-primary">{isNepali ? 'प्रदेश २ - मधेश' : 'Province 2 - Madhesh'}</h3>
-                       <div className="space-y-4">
-                         {province2Articles.slice(0, 3).map((article: Article) => (
-                           <ArticleCard key={article.id} article={article} variant="province" showCategory={false} showExcerpt={false} />
-                         ))}
-                       </div>
+                      <div className="space-y-4">
+                        {province2Articles.slice(0, 3).map((article: Article) => (
+                          <ArticleCard key={article.id} article={article} variant="province" showCategory={false} showExcerpt={false} />
+                        ))}
+                      </div>
                     </div>
                   )}
                   {province3Articles.length > 0 && (
                     <div className="space-y-4">
                       <h3 className="text-lg font-semibold text-news-primary">{isNepali ? 'प्रदेश ३ - बागमती' : 'Province 3 - Bagmati'}</h3>
-                       <div className="space-y-4">
-                         {province3Articles.slice(0, 3).map((article: Article) => (
-                           <ArticleCard key={article.id} article={article} variant="province" showCategory={false} showExcerpt={false} />
-                         ))}
-                       </div>
+                      <div className="space-y-4">
+                        {province3Articles.slice(0, 3).map((article: Article) => (
+                          <ArticleCard key={article.id} article={article} variant="province" showCategory={false} showExcerpt={false} />
+                        ))}
+                      </div>
                     </div>
                   )}
                   {province4Articles.length > 0 && (
                     <div className="space-y-4">
                       <h3 className="text-lg font-semibold text-news-primary">{isNepali ? 'प्रदेश ४ - गण्डकी' : 'Province 4 - Gandaki'}</h3>
-                       <div className="space-y-4">
-                         {province4Articles.slice(0, 3).map((article: Article) => (
-                           <ArticleCard key={article.id} article={article} variant="province" showCategory={false} showExcerpt={false} />
-                         ))}
-                       </div>
+                      <div className="space-y-4">
+                        {province4Articles.slice(0, 3).map((article: Article) => (
+                          <ArticleCard key={article.id} article={article} variant="province" showCategory={false} showExcerpt={false} />
+                        ))}
+                      </div>
                     </div>
                   )}
                   {province5Articles.length > 0 && (
                     <div className="space-y-4">
                       <h3 className="text-lg font-semibold text-news-primary">{isNepali ? 'प्रदेश ५ - लुम्बिनी' : 'Province 5 - Lumbini'}</h3>
-                       <div className="space-y-4">
-                         {province5Articles.slice(0, 3).map((article: Article) => (
-                           <ArticleCard key={article.id} article={article} variant="province" showCategory={false} showExcerpt={false} />
-                         ))}
-                       </div>
+                      <div className="space-y-4">
+                        {province5Articles.slice(0, 3).map((article: Article) => (
+                          <ArticleCard key={article.id} article={article} variant="province" showCategory={false} showExcerpt={false} />
+                        ))}
+                      </div>
                     </div>
                   )}
                   {province6Articles.length > 0 && (
                     <div className="space-y-4">
                       <h3 className="text-lg font-semibold text-news-primary">{isNepali ? 'प्रदेश ६ - कर्णाली' : 'Province 6 - Karnali'}</h3>
-                       <div className="space-y-4">
-                         {province6Articles.slice(0, 3).map((article: Article) => (
-                           <ArticleCard key={article.id} article={article} variant="province" showCategory={false} showExcerpt={false} />
-                         ))}
-                       </div>
+                      <div className="space-y-4">
+                        {province6Articles.slice(0, 3).map((article: Article) => (
+                          <ArticleCard key={article.id} article={article} variant="province" showCategory={false} showExcerpt={false} />
+                        ))}
+                      </div>
                     </div>
                   )}
                   {province7Articles.length > 0 && (
                     <div className="space-y-4">
                       <h3 className="text-lg font-semibold text-news-primary">{isNepali ? 'प्रदेश ७ - सुदूरपश्चिम' : 'Province 7 - Sudurpashchim'}</h3>
-                       <div className="space-y-4">
-                         {province7Articles.slice(0, 3).map((article: Article) => (
-                           <ArticleCard key={article.id} article={article} variant="province" showCategory={false} showExcerpt={false} />
-                         ))}
-                       </div>
+                      <div className="space-y-4">
+                        {province7Articles.slice(0, 3).map((article: Article) => (
+                          <ArticleCard key={article.id} article={article} variant="province" showCategory={false} showExcerpt={false} />
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -374,6 +375,9 @@ export default async function HomePage({ searchParams }: { searchParams?: { lang
 
         {/* Video News Section */}
         <VideoSection />
+
+        {/* Photo Gallery Section */}
+        <PhotoGallerySection />
       </div>
     </>
   );

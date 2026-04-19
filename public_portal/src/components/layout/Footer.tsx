@@ -22,6 +22,7 @@ export function Footer() {
   const quickLinks = [
     { label: 'About Us', labelNe: 'हाम्रोबारे', href: '/about' },
     { label: 'Our Team', labelNe: 'हाम्रो टिम', href: '/our-team' },
+    { label: 'Photo Galleries', labelNe: 'फोटो ग्यालरी', href: '/photos' },
     { label: 'Contact', labelNe: 'सम्पर्क', href: '/contact' },
     { label: 'Privacy Policy', labelNe: 'गोपनीयता नीति', href: '/privacy' },
     { label: 'Terms of Use', labelNe: 'प्रयोगका सर्तहरू', href: '/terms' },
