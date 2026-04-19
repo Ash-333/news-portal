@@ -75,7 +75,7 @@ export default function PhotosPage() {
     queryKey: ['photo-galleries', debouncedSearch],
     queryFn: async ({ pageParam = 1 }) => {
       const result = await getPhotoGalleries({
-        page: pageParam,
+        page: pageParam as number,
         limit: 12,
         search: debouncedSearch || undefined,
       })

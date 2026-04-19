@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
-<url><loc>http://localhost:3001/robots.txt/</loc><lastmod>2026-04-19T11:13:56.704Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>http://localhost:3001/contact/</loc><lastmod>2026-04-19T11:13:56.705Z</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
-<url><loc>http://localhost:3001/forgot-password/</loc><lastmod>2026-04-19T11:13:56.705Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>http://localhost:3001/photos/</loc><lastmod>2026-04-19T11:13:56.705Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>http://localhost:3001/videos/</loc><lastmod>2026-04-19T11:13:56.705Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>http://localhost:3001/flash-updates/</loc><lastmod>2026-04-19T11:13:56.705Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>http://localhost:3001/audio/</loc><lastmod>2026-04-19T11:13:56.705Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>http://localhost:3001/privacy/</loc><lastmod>2026-04-19T11:13:56.705Z</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
-<url><loc>http://localhost:3001/terms/</loc><lastmod>2026-04-19T11:13:56.705Z</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
-<url><loc>http://localhost:3001/about/</loc><lastmod>2026-04-19T11:13:56.705Z</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
+<url><loc>http://localhost:3001/robots.txt/</loc><lastmod>2026-04-19T16:27:53.868Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>http://localhost:3001/flash-updates/</loc><lastmod>2026-04-19T16:27:53.870Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>http://localhost:3001/forgot-password/</loc><lastmod>2026-04-19T16:27:53.870Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>http://localhost:3001/photos/</loc><lastmod>2026-04-19T16:27:53.870Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>http://localhost:3001/contact/</loc><lastmod>2026-04-19T16:27:53.870Z</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
+<url><loc>http://localhost:3001/videos/</loc><lastmod>2026-04-19T16:27:53.870Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>http://localhost:3001/about/</loc><lastmod>2026-04-19T16:27:53.870Z</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
+<url><loc>http://localhost:3001/audio/</loc><lastmod>2026-04-19T16:27:53.870Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>http://localhost:3001/privacy/</loc><lastmod>2026-04-19T16:27:53.870Z</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
+<url><loc>http://localhost:3001/terms/</loc><lastmod>2026-04-19T16:27:53.870Z</lastmod><changefreq>monthly</changefreq><priority>0.4</priority></url>
 </urlset>
