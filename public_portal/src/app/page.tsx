@@ -3,7 +3,7 @@ import { ArticleCard } from '@/components/ArticleCard';
 import { HeroSection } from '@/components/sections/HeroSection';
 import { CategorySection } from '@/components/sections/CategorySection';
 import { LatestNewsSection } from '@/components/sections/LatestNewsSection';
-import { LatestUpdatesSidebar } from '@/components/sections/LatestUpdatesSidebar';
+
 
 import { SportsSection } from '@/components/sections/SportsSection';
 import { FullWidthArticlesSection } from '@/components/sections/FullWidthArticlesSection';
@@ -188,8 +188,6 @@ export default async function HomePage() {
                 </div>
 
                 <FlashUpdateSidebar />
-
-                <LatestUpdatesSidebar articles={latestArticles} />
               </div>
             </aside>
           </div>
@@ -258,71 +256,71 @@ export default async function HomePage() {
                   {province1Articles.length > 0 && (
                     <div className="space-y-4">
                       <h3 className="text-lg font-semibold text-news-primary">प्रदेश १ - कोशी</h3>
-                      <div className="space-y-4">
-                        {province1Articles.slice(0, 3).map((article) => (
-                          <ArticleCard key={article.id} article={article} variant="compact" />
-                        ))}
-                      </div>
+                       <div className="space-y-4">
+                         {province1Articles.slice(0, 3).map((article: Article) => (
+                           <ArticleCard key={article.id} article={article} variant="compact" />
+                         ))}
+                       </div>
                     </div>
                   )}
                   {province2Articles.length > 0 && (
                     <div className="space-y-4">
                       <h3 className="text-lg font-semibold text-news-primary">प्रदेश २ - मधेश</h3>
-                      <div className="space-y-4">
-                        {province2Articles.slice(0, 3).map((article) => (
-                          <ArticleCard key={article.id} article={article} variant="compact" />
-                        ))}
-                      </div>
+                       <div className="space-y-4">
+                         {province2Articles.slice(0, 3).map((article: Article) => (
+                           <ArticleCard key={article.id} article={article} variant="compact" />
+                         ))}
+                       </div>
                     </div>
                   )}
                   {province3Articles.length > 0 && (
                     <div className="space-y-4">
                       <h3 className="text-lg font-semibold text-news-primary">प्रदेश ३ - बागमती</h3>
-                      <div className="space-y-4">
-                        {province3Articles.slice(0, 3).map((article) => (
-                          <ArticleCard key={article.id} article={article} variant="compact" />
-                        ))}
-                      </div>
+                       <div className="space-y-4">
+                         {province3Articles.slice(0, 3).map((article: Article) => (
+                           <ArticleCard key={article.id} article={article} variant="compact" />
+                         ))}
+                       </div>
                     </div>
                   )}
                   {province4Articles.length > 0 && (
                     <div className="space-y-4">
                       <h3 className="text-lg font-semibold text-news-primary">प्रदेश ४ - गण्डकी</h3>
-                      <div className="space-y-4">
-                        {province4Articles.slice(0, 3).map((article) => (
-                          <ArticleCard key={article.id} article={article} variant="compact" />
-                        ))}
-                      </div>
+                       <div className="space-y-4">
+                         {province4Articles.slice(0, 3).map((article: Article) => (
+                           <ArticleCard key={article.id} article={article} variant="compact" />
+                         ))}
+                       </div>
                     </div>
                   )}
                   {province5Articles.length > 0 && (
                     <div className="space-y-4">
                       <h3 className="text-lg font-semibold text-news-primary">प्रदेश ५ - लुम्बिनी</h3>
-                      <div className="space-y-4">
-                        {province5Articles.slice(0, 3).map((article) => (
-                          <ArticleCard key={article.id} article={article} variant="compact" />
-                        ))}
-                      </div>
+                       <div className="space-y-4">
+                         {province5Articles.slice(0, 3).map((article: Article) => (
+                           <ArticleCard key={article.id} article={article} variant="compact" />
+                         ))}
+                       </div>
                     </div>
                   )}
                   {province6Articles.length > 0 && (
                     <div className="space-y-4">
                       <h3 className="text-lg font-semibold text-news-primary">प्रदेश ६ - कर्णाली</h3>
-                      <div className="space-y-4">
-                        {province6Articles.slice(0, 3).map((article) => (
-                          <ArticleCard key={article.id} article={article} variant="compact" />
-                        ))}
-                      </div>
+                       <div className="space-y-4">
+                         {province6Articles.slice(0, 3).map((article: Article) => (
+                           <ArticleCard key={article.id} article={article} variant="compact" />
+                         ))}
+                       </div>
                     </div>
                   )}
                   {province7Articles.length > 0 && (
                     <div className="space-y-4">
                       <h3 className="text-lg font-semibold text-news-primary">प्रदेश ७ - सुदूरपश्चिम</h3>
-                      <div className="space-y-4">
-                        {province7Articles.slice(0, 3).map((article) => (
-                          <ArticleCard key={article.id} article={article} variant="compact" />
-                        ))}
-                      </div>
+                       <div className="space-y-4">
+                         {province7Articles.slice(0, 3).map((article: Article) => (
+                           <ArticleCard key={article.id} article={article} variant="compact" />
+                         ))}
+                       </div>
                     </div>
                   )}
                 </div>

@@ -4,11 +4,12 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { Search, Menu, X, ChevronDown, Sun, Moon } from 'lucide-react';
+import { Search, Menu, X, ChevronDown, Sun, Moon, Headphones, Clock } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useLanguage } from '@/context/LanguageContext';
 import { cn } from '@/lib/utils';
 import { useCategoriesQuery } from '@/hooks/useNewsQueries';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import type { NavItem } from '@/types';
 
 export function Header() {
@@ -35,8 +36,6 @@ export function Header() {
   const navItems: NavItem[] = [
     { label: 'Home', labelNe: 'होमपेज', href: '/' },
     { label: 'Provinces', labelNe: 'प्रदेशहरु', href: '/provinces', hasDropdown: true, children: provinces.map((p) => ({ label: p.name, labelNe: p.nameNe, href: `/provinces/${p.slug}` })) },
-    { label: '24 hours update', labelNe: '२४ घण्टा अपडेट', href: '/flash-updates' },
-    { label: 'Audio news', labelNe: 'अडियो समाचार', href: '/audio' },
     { label: 'Video updates', labelNe: 'भिडियो अपडेट', href: '/videos' },
     ...categories.slice(0, 8).map((category) => ({
       label: category.name || category.nameNe || '',
@@ -101,6 +100,44 @@ export function Header() {
 
             {/* Right Actions */}
             <div className="flex items-center gap-3">
+              {/* Flash Updates */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    href="/flash-updates"
+                    className="flex flex-col items-center gap-1 p-2 rounded-lg bg-news-red hover:bg-news-red/90 transition-colors"
+                    aria-label="24 hours update"
+                  >
+                    <Clock className="h-5 w-5 text-white" />
+                    <span className={cn(
+                      "text-xs font-medium px-2 py-0.5 rounded-full bg-white text-news-red",
+                      isNepali ? "font-nepali" : ""
+                    )}>
+                      {isNepali ? '२४ घण्टा' : '24H'}
+                    </span>
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{isNepali ? '२४ घण्टा अपडेट' : '24 hours update'}</p>
+                </TooltipContent>
+              </Tooltip>
+
+              {/* Audio News */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Link
+                    href="/audio"
+                    className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-news-card-dark transition-colors"
+                    aria-label="Audio news"
+                  >
+                    <Headphones className="h-5 w-5 text-gray-600 dark:text-gray-300" />
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{isNepali ? 'अडियो समाचार' : 'Audio news'}</p>
+                </TooltipContent>
+              </Tooltip>
+
               {/* Theme Toggle */}
               <button
                 onClick={toggleTheme}

@@ -12,6 +12,7 @@ import { Footer } from '@/components/layout/Footer';
 import { MobileBottomBar } from '@/components/layout/MobileBottomBar';
 import { BreakingNewsTicker } from '@/components/layout/BreakingNewsTicker';
 import { FloatingWatchButton } from '@/components/ui/FloatingWatchButton';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { GoogleAnalytics } from '@next/third-parties/google';
 
 const inter = Inter({
@@ -107,28 +108,30 @@ export default function RootLayout({
       </head>
       <body className={`${inter.variable} ${merriweather.variable} ${mukta.variable} antialiased`}>
         <ThemeProvider>
-          <LanguageProvider>
-            <QueryProvider>
-              <AuthProvider>
-                <a href="#main-content" className="skip-link">
-                  Skip to main content
-                </a>
-                <div className="flex min-h-screen flex-col">
-                  <Suspense fallback={<div className="bg-news-red text-white py-2" />}>
-                    <TopBar />
-                  </Suspense>
-                  <Header />
-                  <BreakingNewsTicker />
-                  <main id="main-content" className="flex-1">
-                    {children}
-                  </main>
-                  <Footer />
-                  <MobileBottomBar />
-                  <FloatingWatchButton />
-                </div>
-              </AuthProvider>
-            </QueryProvider>
-          </LanguageProvider>
+          <TooltipProvider>
+            <LanguageProvider>
+              <QueryProvider>
+                <AuthProvider>
+                  <a href="#main-content" className="skip-link">
+                    Skip to main content
+                  </a>
+                  <div className="flex min-h-screen flex-col">
+                    <Suspense fallback={<div className="bg-news-red text-white py-2" />}>
+                      <TopBar />
+                    </Suspense>
+                    <Header />
+                    <BreakingNewsTicker />
+                    <main id="main-content" className="flex-1">
+                      {children}
+                    </main>
+                    <Footer />
+                    <MobileBottomBar />
+                    <FloatingWatchButton />
+                  </div>
+                </AuthProvider>
+              </QueryProvider>
+            </LanguageProvider>
+          </TooltipProvider>
         </ThemeProvider>
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ''} />
       </body>

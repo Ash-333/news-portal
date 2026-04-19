@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -119,10 +120,14 @@ export default function NewTeamMemberPage() {
 
   return (
     <>
-      <PageHeader>
-        <PageHeader.BackButton href="/admin/team-members" />
-        <PageHeader.Title>Add Team Member</PageHeader.Title>
-      </PageHeader>
+      <PageHeader
+        title="Add Team Member"
+        actions={
+          <Button variant="outline" asChild>
+            <Link href="/admin/team-members">Back to Team Members</Link>
+          </Button>
+        }
+      />
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <Card className="max-w-2xl">

@@ -76,25 +76,21 @@ export default async function ProvincePage({ params, searchParams }: ProvincePag
 
   return (
     <>
-      <JsonLd>
-        <ItemListJsonLd
-          items={articles.map((article, index) => ({
-            position: index + 1,
+      <JsonLd
+        data={ItemListJsonLd(
+          articles.map((article) => ({
             url: `${process.env.NEXT_PUBLIC_SITE_URL}/article/${article.slug}`,
-            name: lang === 'ne' ? article.titleNe : article.titleEn,
-            description: lang === 'ne' ? article.excerptNe : article.excerptEn,
-          }))}
-        />
-      </JsonLd>
-      <JsonLd>
-        <BreadcrumbListJsonLd
-          items={[
-            { name: 'Home', url: `${process.env.NEXT_PUBLIC_SITE_URL}` },
-            { name: 'Provinces', url: `${process.env.NEXT_PUBLIC_SITE_URL}/provinces` },
-            { name: province.name, url: `${process.env.NEXT_PUBLIC_SITE_URL}/provinces/${params.slug}` },
-          ]}
-        />
-      </JsonLd>
+            name: (lang === 'ne' ? article.titleNe : article.titleEn) || '',
+          }))
+        )}
+      />
+      <JsonLd
+        data={BreadcrumbListJsonLd([
+          { name: 'Home', url: `${process.env.NEXT_PUBLIC_SITE_URL}` },
+          { name: 'Provinces', url: `${process.env.NEXT_PUBLIC_SITE_URL}/provinces` },
+          { name: province.name, url: `${process.env.NEXT_PUBLIC_SITE_URL}/provinces/${params.slug}` },
+        ])}
+      />
 
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">

@@ -7,20 +7,7 @@ interface TeamPageProps {
   searchParams?: { lang?: string };
 }
 
-interface TeamMember {
-  id: string;
-  name: string;
-  nameNe: string;
-  department: string;
-  departmentNe: string;
-  designation: string;
-  designationNe: string;
-  image: string;
-  bio?: string;
-  bioNe?: string;
-  email?: string;
-  phone?: string;
-}
+
 
 export const revalidate = 120;
 
@@ -32,7 +19,7 @@ export async function generateMetadata({}: TeamPageProps): Promise<Metadata> {
 }
 
 export default async function TeamPage({ searchParams }: TeamPageProps) {
-  const lang = getServerLanguage();
+  const lang = (searchParams?.lang === 'en' || searchParams?.lang === 'ne') ? searchParams.lang : 'ne';
   const result = await getTeamMembers();
   const members = result.success ? result.data : [];
 

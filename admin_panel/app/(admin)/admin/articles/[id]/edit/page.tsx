@@ -32,7 +32,7 @@ const provinces = [
   { value: 'PROVINCE_5', label: 'Province 5 (Lumbini)' },
   { value: 'PROVINCE_6', label: 'Province 6 (Karnali)' },
   { value: 'PROVINCE_7', label: 'Province 7 (Sudurpashchim)' },
-] as const
+]
 
 const articleSchema = z.object({
   titleNe: z.string().min(1, 'Nepali title is required'),

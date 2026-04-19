@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Role, ArticleStatus, Prisma } from "@prisma/client";
+import { Role, ArticleStatus, Province, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import {
   articleSchema,
@@ -253,7 +253,7 @@ export async function POST(req: NextRequest) {
         ogImage: articleData.ogImage as string | undefined,
         isBreaking: articleData.isBreaking as boolean | undefined,
         isFeatured: articleData.isFeatured as boolean | undefined,
-        province: articleData.province,
+        province: articleData.province as Province | null | undefined,
         slug,
         authorId: authenticatedReq.user!.id,
         status: (articleData.status as ArticleStatus) || ArticleStatus.DRAFT,

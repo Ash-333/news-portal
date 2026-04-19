@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import Link from 'next/link'
 import { useRouter, useParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -165,10 +166,14 @@ export default function EditTeamMemberPage() {
   if (isLoading) {
     return (
       <>
-        <PageHeader>
-          <PageHeader.BackButton href="/admin/team-members" />
-          <PageHeader.Title>Edit Team Member</PageHeader.Title>
-        </PageHeader>
+        <PageHeader
+          title="Edit Team Member"
+          actions={
+            <Button variant="outline" asChild>
+              <Link href="/admin/team-members">Back to Team Members</Link>
+            </Button>
+          }
+        />
         <div className="space-y-4">
           <Skeleton className="h-96" />
         </div>
@@ -178,10 +183,14 @@ export default function EditTeamMemberPage() {
 
   return (
     <>
-      <PageHeader>
-        <PageHeader.BackButton href="/admin/team-members" />
-        <PageHeader.Title>Edit Team Member</PageHeader.Title>
-      </PageHeader>
+      <PageHeader
+        title="Edit Team Member"
+        actions={
+          <Button variant="outline" asChild>
+            <Link href="/admin/team-members">Back to Team Members</Link>
+          </Button>
+        }
+      />
 
       <form onSubmit={handleSubmit(onSubmit)}>
         <Card className="max-w-2xl">
