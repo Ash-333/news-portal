@@ -71,11 +71,11 @@ export default function PhotosPage() {
     isLoading,
     isError,
     error,
-  } = useInfiniteQuery<GalleryResponse>({
+  } = useInfiniteQuery<GalleryResponse, Error, { pages: GalleryResponse[]; pageParams: number[] }, string[], number>({
     queryKey: ['photo-galleries', debouncedSearch],
-    queryFn: async ({ pageParam = 1 }) => {
+    queryFn: async ({ pageParam }) => {
       const result = await getPhotoGalleries({
-        page: pageParam as number,
+        page: pageParam,
         limit: 12,
         search: debouncedSearch || undefined,
       })
@@ -195,16 +195,16 @@ export default function PhotosPage() {
                   <p className="text-xs text-slate-500 mt-2">
                     {gallery.publishedAt
                       ? new Date(gallery.publishedAt).toLocaleDateString(
-                          isNepali ? 'ne-NP' : 'en-US',
-                          {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric',
-                          }
-                        )
+                        isNepali ? 'ne-NP' : 'en-US',
+                        {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                        }
+                      )
                       : isNepali
-                      ? 'ड्राफ्ट'
-                      : 'Draft'}
+                        ? 'ड्राफ्ट'
+                        : 'Draft'}
                   </p>
                 </CardContent>
               </Card>

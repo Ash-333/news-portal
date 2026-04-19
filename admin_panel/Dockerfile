@@ -11,6 +11,7 @@ FROM base AS builder
 ENV NODE_ENV=production
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+COPY .env.production .env.production
 RUN npx prisma generate && npm run build
 
 FROM node:20-alpine AS runner
