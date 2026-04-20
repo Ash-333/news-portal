@@ -8,7 +8,7 @@ import { useLanguage } from '@/context/LanguageContext';
 import { ArticleCard } from '@/components/ArticleCard';
 import { getRelativeTime, toNepaliDigits, cn } from '@/lib/utils';
 import { getArticleImage } from '@/lib/utils/image';
-import { getTitle, getExcerpt, getCategoryName } from '@/lib/utils/lang';
+import { getTitle, getExcerpt, getCategoryName, getAuthorName } from '@/lib/utils/lang';
 
 interface HeroSectionProps {
   featuredArticles: Article[];
@@ -62,7 +62,7 @@ export function HeroSection({ featuredArticles, trendingArticles }: HeroSectionP
                   </p>
                   <div className="flex items-center gap-4 text-sm text-white/70">
                     <span className={isNepali ? 'font-nepali' : ''}>
-                      {mainArticle.author.name}
+                      {getAuthorName(mainArticle.author, language)}
                     </span>
                     <span className="flex items-center gap-1">
                       <Clock className="h-4 w-4" />

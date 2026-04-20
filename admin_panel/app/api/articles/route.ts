@@ -141,7 +141,7 @@ export async function GET(req: NextRequest) {
                 select: { id: true, url: true },
               },
               author: {
-                select: { id: true, name: true, profilePhoto: true },
+                select: { id: true, name: true, nameNe: true, profilePhoto: true },
               },
               category: {
                 select: { id: true, nameNe: true, nameEn: true, slug: true },

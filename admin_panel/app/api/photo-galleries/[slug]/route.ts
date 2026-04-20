@@ -53,6 +53,7 @@ export async function GET(
               select: {
                 id: true,
                 name: true,
+                nameNe: true,
                 profilePhoto: true,
               },
             },

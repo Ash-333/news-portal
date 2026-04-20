@@ -7,7 +7,7 @@ import { Article } from '@/types';
 import { useLanguage } from '@/context/LanguageContext';
 import { getRelativeTime, cn } from '@/lib/utils';
 import { getArticleImage } from '@/lib/utils/image';
-import { getTitle, getExcerpt, getCategoryName } from '@/lib/utils/lang';
+import { getTitle, getExcerpt, getCategoryName, getAuthorName } from '@/lib/utils/lang';
 
 interface FullWidthArticlesSectionProps {
   articles: Article[];
@@ -41,10 +41,10 @@ export function FullWidthArticlesSection({ articles }: FullWidthArticlesSectionP
               {/* Avatar / Initials as author icon */}
               <div className="flex items-center gap-2">
                 <span className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center text-news-blue dark:text-blue-400 font-bold text-xs select-none">
-                  {article.author.name.substring(0, 2).toUpperCase()}
+                  {getAuthorName(article.author, language).substring(0, 2).toUpperCase()}
                 </span>
                 <span className={cn(isNepali ? 'font-nepali' : '')}>
-                  {article.author.name}
+                  {getAuthorName(article.author, language)}
                 </span>
               </div>
 

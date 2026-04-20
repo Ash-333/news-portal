@@ -11,7 +11,8 @@ interface AuthorBoxProps {
 }
 
 export function AuthorBox({ author }: AuthorBoxProps) {
-  const { isNepali } = useLanguage();
+  const { isNepali, language } = useLanguage();
+  const authorName = isNepali ? (author.nameNe || author.name) : author.name;
 
   return (
     <div className="bg-gray-50 dark:bg-news-card-dark rounded-xl p-6 my-8">
@@ -20,7 +21,7 @@ export function AuthorBox({ author }: AuthorBoxProps) {
           <div className="relative w-20 h-20 rounded-full overflow-hidden shrink-0">
             <Image
               src={author.profilePhoto || '/images/default-avatar.png'}
-              alt={author.name}
+              alt={authorName}
               fill
               className="object-cover"
               sizes="80px"
@@ -33,7 +34,7 @@ export function AuthorBox({ author }: AuthorBoxProps) {
               'font-bold text-lg text-gray-900 dark:text-white hover:text-news-red transition-colors',
               isNepali ? 'font-nepali' : ''
             )}>
-              {author.name}
+              {authorName}
             </h3>
           </Link>
           <p className={cn('text-sm text-gray-600 dark:text-gray-400 mt-1', isNepali ? 'font-nepali leading-relaxed' : '')}>

@@ -37,11 +37,24 @@ function resolveArticleLanguage(article: Awaited<ReturnType<typeof fetchArticleB
   const hasContentEn = !!article.contentEn;
   const hasContentNe = !!article.contentNe;
 
-  if (userLang === 'ne') {
-    return hasContentNe || !hasContentEn;
-  } else {
-    return hasContentEn || !hasContentNe;
+  // If user explicitly requests a language and that content exists, use it
+  if (userLang === 'ne' && hasContentNe) {
+    return true;
   }
+  if (userLang === 'en' && hasContentEn) {
+    return false;
+  }
+
+  // Fallback: if requested language doesn't have content, try the other language
+  if (userLang === 'ne' && !hasContentNe && hasContentEn) {
+    return false;
+  }
+  if (userLang === 'en' && !hasContentEn && hasContentNe) {
+    return true;
+  }
+
+  // Default to Nepali if nothing available
+  return true;
 }
 
 export async function generateMetadata({ params, searchParams }: ArticlePageProps): Promise<Metadata> {
@@ -61,7 +74,7 @@ export async function generateMetadata({ params, searchParams }: ArticlePageProp
     title: isNepali ? article.titleNe : (article.titleEn || article.titleNe || article.title),
     description: isNepali ? article.excerptNe : (article.excerptEn || article.excerptNe || article.excerpt),
     keywords: article.tags.map((tag) => tag.nameEn || tag.nameNe),
-    authors: [{ name: article.author.name }],
+    authors: [{ name: isNepali ? (article.author.nameNe || article.author.name) : article.author.name }],
     alternates: {
       canonical: url,
       languages: {
@@ -82,7 +95,7 @@ export async function generateMetadata({ params, searchParams }: ArticlePageProp
       })(),
       publishedTime: article.publishedAt,
       modifiedTime: article.modifiedAt,
-      authors: [article.author.name],
+      authors: [isNepali ? (article.author.nameNe || article.author.name) : article.author.name],
       section: article.category.nameEn || article.category.nameNe,
       tags: article.tags.map((tag) => tag.nameEn || tag.nameNe),
     },
@@ -192,7 +205,7 @@ export default async function ArticlePage({ params, searchParams }: ArticlePageP
                 <div className="flex items-center gap-2">
                   <User className="h-4 w-4" />
                   <Link href={`/author/${article.author.slug}`} className="hover:text-news-red">
-                    {article.author.name}
+                    {isNepali ? (article.author.nameNe || article.author.name) : article.author.name}
                   </Link>
                 </div>
                 <div className="flex items-center gap-2">

@@ -75,6 +75,8 @@ export async function GET(req: NextRequest) {
                 select: {
                   id: true,
                   name: true,
+                  nameNe: true,
+                  profilePhoto: true,
                 },
               },
               photos: {

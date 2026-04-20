@@ -424,6 +424,7 @@ export interface PhotoGallery {
   author: {
     id: string;
     name: string;
+    nameNe?: string;
     profilePhoto?: string;
   };
   photos: PhotoGalleryPhoto[];

@@ -7,7 +7,7 @@ import { Article } from "@/types";
 import { useLanguage } from "@/context/LanguageContext";
 import { cn, toNepaliDigits } from "@/lib/utils";
 import { getArticleImage } from "@/lib/utils/image";
-import { getTitle, getExcerpt, getCategoryName, getContent } from "@/lib/utils/lang";
+import { getTitle, getExcerpt, getCategoryName, getContent, getAuthorName } from "@/lib/utils/lang";
 import { ArticleContent } from "@/components/article/ArticleContent";
 import { ShareBar } from "@/components/article/ShareBar";
 import { ArticleTags } from "@/components/article/ArticleTags";
@@ -88,7 +88,7 @@ export function ArticlePageBody({ article, url, prevArticle, nextArticle }: Arti
       <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-6 pb-6 border-b border-news-border dark:border-news-border-dark">
         <div className="flex items-center gap-2">
           <User className="h-4 w-4" />
-          <span>{article.author.name}</span>
+          <span>{getAuthorName(article.author, lang)}</span>
         </div>
         <div className="flex items-center gap-2">
           <Calendar className="h-4 w-4" />

@@ -1,4 +1,4 @@
-import { Article, ArticleCategory, Category, Tag } from '@/types';
+import { Article, ArticleAuthor, ArticleCategory, Category, Tag } from '@/types';
 
 export function getTitle(article: Article, lang: string): string {
   return lang === 'ne' ? article.titleNe ?? '' : article.titleEn ?? '';
@@ -18,4 +18,8 @@ export function getCategoryName(category: ArticleCategory | Category, lang: stri
 
 export function getTagName(tag: Tag, lang: string): string {
   return lang === 'ne' ? tag.nameNe : tag.nameEn ?? tag.nameNe;
+}
+
+export function getAuthorName(author: ArticleAuthor, lang: string): string {
+  return lang === 'ne' ? (author.nameNe || author.name) : author.name;
 }

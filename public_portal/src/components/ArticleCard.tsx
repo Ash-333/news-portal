@@ -7,7 +7,7 @@ import { Article } from '@/types';
 import { useLanguage } from '@/context/LanguageContext';
 import { getRelativeTime, toNepaliDigits, cn } from '@/lib/utils';
 import { getArticleImage } from '@/lib/utils/image';
-import { getTitle, getExcerpt, getCategoryName } from '@/lib/utils/lang';
+import { getTitle, getExcerpt, getCategoryName, getAuthorName } from '@/lib/utils/lang';
 
 interface ArticleCardProps {
   article: Article;
@@ -158,7 +158,7 @@ export function ArticleCard({
             
             {showMeta && (
               <div className="flex items-center gap-4 text-xs sm:text-sm text-white/80 font-medium">
-                <span className={cn(isNepali ? 'font-nepali' : '')}>{article.author.name}</span>
+                <span className={cn(isNepali ? 'font-nepali' : '')}>{getAuthorName(article.author, language)}</span>
                 <span className="flex items-center gap-1.5">
                   <Clock className="h-4 w-4" />
                   {getRelativeTime(article.publishedAt, language)}

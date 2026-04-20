@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useSession } from 'next-auth/react'
+import { useSession, signOut } from 'next-auth/react'
 import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
@@ -211,11 +211,9 @@ function TopNavbar({
   const router = useRouter()
 
   const handleLogout = async () => {
-    // Sign out using NextAuth
-    const response = await fetch('/api/auth/signout', { method: 'POST' })
-    if (response.ok) {
-      router.push('/login')
-    }
+    await signOut({ redirect: false })
+    router.push('/login')
+    router.refresh()
   }
 
   return (

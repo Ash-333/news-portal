@@ -28,15 +28,19 @@ export async function generateMetadata({ params }: AuthorPageProps): Promise<Met
     };
   }
 
+  const serverLang = await getServerLanguage();
+  const isNepali = serverLang === 'ne' || !serverLang;
+  const authorName = isNepali ? (author.nameNe || author.name) : author.name;
+
   return {
-    title: author.name,
+    title: authorName,
     description: author.bio,
     alternates: {
       canonical: `/author/${author.slug}`,
     },
     openGraph: {
       type: 'profile',
-      title: `${author.name} - HTC Media`,
+      title: `${authorName} - HTC Media`,
       description: author.bio,
       images: author.avatar ? [author.avatar] : undefined,
     },
@@ -71,7 +75,7 @@ export default async function AuthorPage({ params, searchParams }: AuthorPagePro
       <JsonLd
         data={BreadcrumbListJsonLd([
           { name: 'Home', url: `${SITE_URL}/` },
-          { name: author.name, url },
+          { name: authorName, url },
         ])}
       />
 
@@ -91,7 +95,7 @@ export default async function AuthorPage({ params, searchParams }: AuthorPagePro
               <div className="relative w-32 h-32 rounded-full overflow-hidden shrink-0">
                 <Image
                   src={author.avatar || '/images/default-avatar.png'}
-                  alt={author.name}
+                  alt={authorName}
                   fill
                   className="object-cover"
                   sizes="128px"

@@ -52,7 +52,7 @@ export default async function PhotoGalleryDetailPage({ params, searchParams }: P
         <h1 className="text-3xl font-bold mb-2">{title}</h1>
 
         <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-8">
-          {gallery.author && <span>By {gallery.author.name}</span>}
+          {gallery.author && <span>By {isNepali ? (gallery.author.nameNe || gallery.author.name) : gallery.author.name}</span>}
           {gallery.createdAt && (
             <span>
               {new Date(gallery.createdAt).toLocaleDateString(isNepali ? 'ne-NP' : 'en-US', {

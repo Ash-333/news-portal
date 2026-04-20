@@ -19,10 +19,12 @@ interface SearchResult {
   publishedAt: string;
   category: {
     name: string;
+    nameNe?: string;
     slug: string;
   };
   author: {
     name: string;
+    nameNe?: string;
     slug: string;
   };
   featuredImage?: string;
@@ -30,7 +32,7 @@ interface SearchResult {
 
 export function SearchClient() {
   const searchParams = useSearchParams();
-  const { language, t } = useLanguage();
+  const { language, isNepali, t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '');
   const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'relevance');
@@ -74,6 +76,7 @@ export function SearchClient() {
     },
     author: {
       name: article.author.name,
+      nameNe: article.author.nameNe,
       slug: article.author.slug || '',
     },
     featuredImage: getArticleImage(article),
@@ -248,7 +251,7 @@ export function SearchClient() {
                           href={`/author/${result.author.slug}`}
                           className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
                         >
-                          {result.author.name}
+                          {isNepali ? (result.author.nameNe || result.author.name) : result.author.name}
                         </Link>
                         <span className="text-gray-400">•</span>
                         <time className="text-xs text-gray-500 dark:text-gray-400">
