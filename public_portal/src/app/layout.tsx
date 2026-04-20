@@ -12,6 +12,7 @@ import { Footer } from '@/components/layout/Footer';
 import { MobileBottomBar } from '@/components/layout/MobileBottomBar';
 import { BreakingNewsTicker } from '@/components/layout/BreakingNewsTicker';
 import { FloatingWatchButton } from '@/components/ui/FloatingWatchButton';
+import { FlashNewsSheet } from '@/components/ui/FlashNewsSheet';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { GoogleAnalytics } from '@next/third-parties/google';
 
@@ -127,6 +128,7 @@ export default function RootLayout({
                     <Footer />
                     <MobileBottomBar />
                     <FloatingWatchButton />
+                    <FlashNewsSheet />
                   </div>
                 </AuthProvider>
               </QueryProvider>

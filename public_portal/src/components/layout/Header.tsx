@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { Search, Menu, X, ChevronDown, Sun, Moon, Headphones, Clock } from 'lucide-react';
+import { Search, Menu, X, ChevronDown, Sun, Moon, Headphones } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useLanguage } from '@/context/LanguageContext';
 import { cn } from '@/lib/utils';
@@ -100,28 +100,6 @@ export function Header() {
 
             {/* Right Actions */}
             <div className="flex items-center gap-3">
-              {/* Flash Updates */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Link
-                    href="/flash-updates"
-                    className="flex flex-col items-center gap-1 p-2 rounded-lg bg-news-red hover:bg-news-red/90 transition-colors"
-                    aria-label="24 hours update"
-                  >
-                    <Clock className="h-5 w-5 text-white" />
-                    <span className={cn(
-                      "text-xs font-medium px-2 py-0.5 rounded-full bg-white text-news-red",
-                      isNepali ? "font-nepali" : ""
-                    )}>
-                      {isNepali ? '२४ घण्टा' : '24H'}
-                    </span>
-                  </Link>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>{isNepali ? '२४ घण्टा अपडेट' : '24 hours update'}</p>
-                </TooltipContent>
-              </Tooltip>
-
               {/* Audio News */}
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -188,8 +166,8 @@ export function Header() {
                   <Link
                     href={item.href}
                     className={cn(
-                      'flex items-center gap-1 px-4 py-3 text-sm font-medium transition-colors',
-                      'text-gray-700 dark:text-gray-300 hover:text-news-red dark:hover:text-news-red',
+                      'flex items-center gap-1 px-4 py-3 text-base font-bold transition-colors',
+                      'text-gray-800 dark:text-gray-200 hover:text-news-red dark:hover:text-news-red',
                       'border-b-2 border-transparent hover:border-news-red'
                     )}
                   >

@@ -106,6 +106,9 @@ export function FloatingWatchButton() {
 
     // Touch support for mobile
     const handleTouchStart = (e: React.TouchEvent) => {
+        e.preventDefault();
+        setIsDragging(true);
+        
         const touch = e.touches[0];
         if (buttonRef.current) {
             const rect = buttonRef.current.getBoundingClientRect();
