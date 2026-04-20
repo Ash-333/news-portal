@@ -67,7 +67,7 @@ export function PhotoGallerySection() {
         {/* Gallery Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {galleries.map((gallery: PhotoGallery) => (
-            <Link key={gallery.id} href={`/photos/${gallery.slug}`}>
+            <Link key={gallery.id} href={`/photos/${gallery.slug}/`}>
               <Card className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow">
                 <div className="relative aspect-video bg-slate-100 dark:bg-slate-800">
                   {gallery.coverImage ? (

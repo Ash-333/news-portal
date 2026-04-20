@@ -26,6 +26,8 @@ export interface PhotoGallery {
   slug: string;
   isPublished: boolean;
   publishedAt?: string;
+  createdAt?: string;
+  updatedAt?: string;
   coverImage?: {
     id: string;
     url: string;
@@ -57,26 +59,28 @@ export async function getPhotoGalleries(params: PhotoGalleriesParams = {}): Prom
     next: { revalidate: 300 },
   });
 
+  if (Array.isArray(response.data)) {
+    return { data: response.data, pagination: { page: params.page || 1, limit: params.limit || 12, total: response.data.length, totalPages: 1 } };
+  }
   return response.data;
 }
 
-export async function getPhotoGalleryBySlug(
+export function getPhotoGalleryBySlug(
+  slug: string,
+  options?: { revalidate?: number }
+): Promise<ApiResponse<PhotoGallery>> {
+  return apiFetch<PhotoGallery>(`/api/photo-galleries/${slug}`, {
+    method: 'GET',
+    next: options?.revalidate ? { revalidate: options.revalidate } : undefined,
+  });
+}
+
+export async function fetchPhotoGalleryBySlug(
   slug: string,
   options?: { revalidate?: number }
 ): Promise<PhotoGallery | null> {
-  try {
-    const response = await apiFetch<{ data: PhotoGallery }>(`/api/photo-galleries/${slug}`, {
-      method: 'GET',
-      next: options?.revalidate ? { revalidate: options.revalidate } : undefined,
-    });
-
-    return response.data.data;
-  } catch (error: any) {
-    if (error.status === 404) {
-      return null;
-    }
-    throw error;
-  }
+  const response = await getPhotoGalleryBySlug(slug, options);
+  return response.success ? response.data : null;
 }
 
 export async function getPhotoGalleriesForHomepage(

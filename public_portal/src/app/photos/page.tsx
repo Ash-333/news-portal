@@ -79,6 +79,15 @@ export default function PhotosPage() {
         limit: 12,
         search: debouncedSearch || undefined,
       })
+      if (!result) {
+        throw new Error('No result returned from API')
+      }
+      if (Array.isArray(result)) {
+        return { data: result, pagination: { page: pageParam, limit: 12, total: result.length, totalPages: 1 } } as GalleryResponse
+      }
+      if (!result.data) {
+        throw new Error('No data in API response')
+      }
       return result as GalleryResponse
     },
     getNextPageParam: (lastPage) => {
@@ -91,6 +100,7 @@ export default function PhotosPage() {
     },
     initialPageParam: 1,
     staleTime: 5 * 60 * 1000,
+    retry: 3,
   })
 
   const galleries: PhotoGalleryItem[] = data?.pages
@@ -160,7 +170,7 @@ export default function PhotosPage() {
           {galleries.map((gallery) => (
             <Link
               key={gallery.id}
-              href={`/photos/${gallery.slug}`}
+              href={`/photos/${gallery.slug}/`}
               className="block"
             >
               <Card className="overflow-hidden group cursor-pointer hover:shadow-lg transition-all duration-300 hover:-translate-y-1">

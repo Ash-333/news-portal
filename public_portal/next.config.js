@@ -31,7 +31,7 @@ const nextConfig = {
       },
     ],
   },
-  trailingSlash: true,
+trailingSlash: true,
   async rewrites() {
     return [
       {

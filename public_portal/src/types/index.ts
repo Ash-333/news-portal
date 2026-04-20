@@ -415,6 +415,7 @@ export interface PhotoGallery {
   slug: string;
   isPublished: boolean;
   publishedAt?: string;
+  createdAt?: string;
   coverImage?: {
     id: string;
     url: string;
