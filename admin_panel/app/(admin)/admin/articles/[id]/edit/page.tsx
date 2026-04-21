@@ -37,6 +37,8 @@ const provinces = [
 const articleSchema = z.object({
   titleNe: z.string().min(1, 'Nepali title is required'),
   titleEn: z.string().min(1, 'English title is required'),
+  subheadingNe: z.string().optional(),
+  subheadingEn: z.string().optional(),
   contentNe: z.string().min(1, 'Nepali content is required'),
   contentEn: z.string().min(1, 'English content is required'),
   excerptNe: z.string().optional(),
@@ -97,6 +99,8 @@ export default function EditArticlePage() {
       reset({
         titleNe: article.titleNe,
         titleEn: article.titleEn,
+        subheadingNe: article.subheadingNe || '',
+        subheadingEn: article.subheadingEn || '',
         contentNe: article.contentNe,
         contentEn: article.contentEn,
         excerptNe: article.excerptNe || '',
@@ -195,21 +199,31 @@ export default function EditArticlePage() {
                   <TabsTrigger value="nepali">Nepali</TabsTrigger>
                 </TabsList>
 
-                 <TabsContent value="english" className="space-y-4">
-                   <div>
-                     <Label htmlFor="titleEn">Title (English)</Label>
-                     <Input
-                       id="titleEn"
-                       {...register('titleEn')}
-                       placeholder="Enter article title in English"
-                       className="mt-1"
-                     />
-                     {errors.titleEn && (
-                       <p className="text-sm text-red-600 mt-1">{errors.titleEn.message}</p>
-                     )}
-                   </div>
+<TabsContent value="english" className="space-y-4">
+                    <div>
+                      <Label htmlFor="titleEn">Title (English)</Label>
+                      <Input
+                        id="titleEn"
+                        {...register('titleEn')}
+                        placeholder="Enter article title in English"
+                        className="mt-1"
+                      />
+                      {errors.titleEn && (
+                        <p className="text-sm text-red-600 mt-1">{errors.titleEn.message}</p>
+                      )}
+                    </div>
 
-                   <div>
+                    <div>
+                      <Label htmlFor="subheadingEn">Subheading (English)</Label>
+                      <Input
+                        id="subheadingEn"
+                        {...register('subheadingEn')}
+                        placeholder="Enter subheading (optional)"
+                        className="mt-1"
+                      />
+                    </div>
+
+                    <div>
                      <Label htmlFor="excerptEn">Excerpt (English)</Label>
                      <textarea
                        id="excerptEn"
@@ -263,21 +277,31 @@ export default function EditArticlePage() {
                    </div>
                  </TabsContent>
 
-                 <TabsContent value="nepali" className="space-y-4">
-                   <div>
-                     <Label htmlFor="titleNe">Title (Nepali)</Label>
-                     <Input
-                       id="titleNe"
-                       {...register('titleNe')}
-                       placeholder="Enter article title in Nepali"
-                       className="mt-1"
-                     />
-                     {errors.titleNe && (
-                       <p className="text-sm text-red-600 mt-1">{errors.titleNe.message}</p>
-                     )}
-                   </div>
+<TabsContent value="nepali" className="space-y-4">
+                    <div>
+                      <Label htmlFor="titleNe">Title (Nepali)</Label>
+                      <Input
+                        id="titleNe"
+                        {...register('titleNe')}
+                        placeholder="Enter article title in Nepali"
+                        className="mt-1"
+                      />
+                      {errors.titleNe && (
+                        <p className="text-sm text-red-600 mt-1">{errors.titleNe.message}</p>
+                      )}
+                    </div>
 
-                   <div>
+                    <div>
+                      <Label htmlFor="subheadingNe">Subheading (Nepali)</Label>
+                      <Input
+                        id="subheadingNe"
+                        {...register('subheadingNe')}
+                        placeholder="Enter subheading (optional)"
+                        className="mt-1"
+                      />
+                    </div>
+
+                    <div>
                      <Label htmlFor="excerptNe">Excerpt (Nepali)</Label>
                      <textarea
                        id="excerptNe"

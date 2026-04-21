@@ -1,14 +1,10 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
-import Image from 'next/image';
 import { JsonLd } from '@/components/JsonLd';
 import { ItemListJsonLd, BreadcrumbListJsonLd } from '@/lib/jsonLd';
-import { ArticleCard } from '@/components/ArticleCard';
 import { getArticles } from '@/lib/api/articles';
 import { getCategories } from '@/lib/api/categories';
-import { getArticleImage } from '@/lib/utils/image';
-import { getTitle, getExcerpt, getCategoryName } from '@/lib/utils/lang';
+import { getTitle } from '@/lib/utils/lang';
 import { getServerLanguage } from '@/lib/utils/language';
 import { CategoryClient } from './CategoryClient';
 
@@ -19,10 +15,21 @@ interface CategoryPageProps {
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://yoursite.com';
 
+function findCategoryRecursive(categories: any[], slug: string): any | null {
+  for (const cat of categories) {
+    if (cat.slug === slug) return cat;
+    if (cat.children && cat.children.length > 0) {
+      const found = findCategoryRecursive(cat.children, slug);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
   const categoriesRes = await getCategories();
   const categories = categoriesRes.success ? categoriesRes.data : [];
-  const category = categories.find((c) => c.slug === params.slug);
+  const category = findCategoryRecursive(categories, params.slug);
 
   if (!category) {
     return { title: 'Category Not Found' };
@@ -48,7 +55,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
   ]);
 
   const categories = categoriesRes.success ? categoriesRes.data : [];
-  const category = categories.find((c) => c.slug === params.slug);
+  const category = findCategoryRecursive(categories, params.slug);
 
   if (!category) {
     notFound();

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { Search, Menu, X, ChevronDown, Sun, Moon, Headphones } from 'lucide-react';
+import { Search, X, ChevronDown, Sun, Moon, Headphones, Menu } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useLanguage } from '@/context/LanguageContext';
 import { cn } from '@/lib/utils';
@@ -19,7 +19,6 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isOverlayOpen, setIsOverlayOpen] = useState(false);
-  const [isCategoriesOverlayOpen, setIsCategoriesOverlayOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [searchValue, setSearchValue] = useState('');
   const [categories, setCategories] = useState<Category[]>([]);
@@ -32,26 +31,42 @@ export function Header() {
     }).catch(() => { });
   }, []);
 
-  const provinces = [
-    { slug: 'koshi', name: 'Koshi', nameNe: 'कोशी प्रदेश' },
-    { slug: 'madhesh', name: 'Madhesh', nameNe: 'मधेश प्रदेश' },
-    { slug: 'bagmati', name: 'Bagmati', nameNe: 'बागमती प्रदेश' },
-    { slug: 'gandaki', name: 'Gandaki', nameNe: 'गण्डकी प्रदेश' },
-    { slug: 'lumbini', name: 'Lumbini', nameNe: 'लुम्बिनी प्रदेश' },
-    { slug: 'karnali', name: 'Karnali', nameNe: 'कर्णाली प्रदेश' },
-    { slug: 'sudurpashchim', name: 'Sudurpashchim', nameNe: 'सुदूरपश्चिम प्रदेश' },
-  ];
+  const provincesCategory = categories.find(cat => cat.slug === 'provinces');
+  const visibleCategories = categories.filter(cat => cat.slug !== 'provinces').slice(0, 8);
+  const remainingCategories = categories.filter(cat => cat.slug !== 'provinces').slice(8);
 
   const navItems: NavItem[] = [
     { label: 'Home', labelNe: 'होमपेज', href: '/' },
-    { label: 'Provinces', labelNe: 'प्रदेशहरु', href: '/provinces', hasDropdown: true, children: provinces.map((p) => ({ label: p.name, labelNe: p.nameNe, href: `/provinces/${p.slug}` })) },
+    ...(provincesCategory?.children?.length ? [{
+      label: 'Provinces',
+      labelNe: 'प्रदेशहरु',
+      href: '/category/provinces',
+      hasDropdown: true,
+      children: provincesCategory.children.map((child: any) => ({
+        label: child.nameEn || '',
+        labelNe: child.nameNe || '',
+        href: `/category/${child.slug}`,
+      })),
+    }] : []),
     { label: 'Video updates', labelNe: 'भिडियो अपडेट', href: '/videos' },
-    ...categories.slice(0, 8).map((category) => ({
+    ...visibleCategories.map((category) => ({
       label: category.nameEn || category.name || '',
       labelNe: category.nameNe || category.name || '',
       href: `/category/${category.slug}`,
     })),
   ];
+
+  const moreNavItem: NavItem = {
+    label: 'More',
+    labelNe: 'थप',
+    href: '#',
+    hasDropdown: true,
+    children: remainingCategories.map((category) => ({
+      label: category.nameEn || category.name || '',
+      labelNe: category.nameNe || category.name || '',
+      href: `/category/${category.slug}`,
+    })),
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -176,7 +191,7 @@ export function Header() {
                       'border-b-2 border-transparent hover:border-news-red'
                     )}
                   >
-                    <span className={isNepali ? 'font-nepali' : ''}>
+                    <span className={cn(isNepali ? 'font-nepali text-lg' : '')}>
                       {isNepali ? item.labelNe : item.label}
                     </span>
                     {item.children && <ChevronDown className="h-4 w-4" />}
@@ -192,7 +207,7 @@ export function Header() {
                               href={child.href}
                               className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-news-bg-dark hover:text-news-red"
                             >
-                              <span className={isNepali ? 'font-nepali' : ''}>
+                              <span className={isNepali ? 'font-nepali text-base' : ''}>
                                 {isNepali ? child.labelNe : child.label}
                               </span>
                             </Link>
@@ -203,13 +218,39 @@ export function Header() {
                   )}
                 </li>
               ))}
-              <li>
-                <button
-                  onClick={() => setIsCategoriesOverlayOpen(true)}
+              <li
+                className="relative"
+                onMouseEnter={() => moreNavItem.children && setActiveDropdown(moreNavItem.href)}
+                onMouseLeave={() => setActiveDropdown(null)}
+              >
+                <Link
+                  href={moreNavItem.href}
                   className="flex items-center gap-1 px-4 py-3 text-base font-bold transition-colors text-gray-800 dark:text-gray-200 hover:text-news-red dark:hover:text-news-red border-b-2 border-transparent hover:border-news-red"
                 >
-                  <Menu className="h-5 w-5" />
-                </button>
+                  <span className={cn(isNepali ? 'font-nepali text-lg' : '')}>
+                    {isNepali ? moreNavItem.labelNe : moreNavItem.label}
+                  </span>
+                  {moreNavItem.children && <ChevronDown className="h-4 w-4" />}
+                </Link>
+
+                {moreNavItem.children && activeDropdown === moreNavItem.href && (
+                  <div className="absolute top-full left-0 w-64 bg-white dark:bg-news-card-dark shadow-lg rounded-b-lg border border-t-0 border-news-border dark:border-news-border-dark z-50">
+                    <ul className="py-2">
+{moreNavItem.children.map((child: NavItem) => (
+                          <li key={child.href}>
+                            <Link
+                              href={child.href}
+                              className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-news-bg-dark hover:text-news-red"
+                            >
+                              <span className={isNepali ? 'font-nepali text-base' : ''}>
+                                {isNepali ? child.labelNe : child.label}
+                              </span>
+                            </Link>
+                          </li>
+                        ))}
+                    </ul>
+                  </div>
+                )}
               </li>
             </ul>
           </nav>
@@ -260,40 +301,6 @@ export function Header() {
                 ))}
               </ul>
             </nav>
-          </div>
-        </div>
-      )}
-
-      {/* Fullscreen Categories Overlay */}
-      {isCategoriesOverlayOpen && (
-        <div className="fixed inset-0 z-50 bg-white dark:bg-news-bg-dark">
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className={cn('text-xl font-bold', isNepali ? 'font-nepali' : '')}>
-                {isNepali ? 'सबै श्रेणीहरु' : 'All Categories'}
-              </h2>
-              <button
-                onClick={() => setIsCategoriesOverlayOpen(false)}
-                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-news-card-dark"
-                aria-label="Close"
-              >
-                <X className="h-6 w-6" />
-              </button>
-            </div>
-            <div className="grid grid-cols-3 gap-3">
-              {categories.map((category) => (
-                <Link
-                  key={category.id}
-                  href={`/category/${category.slug}`}
-                  onClick={() => setIsCategoriesOverlayOpen(false)}
-                  className="flex items-center justify-center px-3 py-4 text-base font-medium text-center text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-news-card-dark rounded-lg bg-gray-50 dark:bg-news-card-dark"
-                >
-                  <span className={isNepali ? 'font-nepali' : ''}>
-                    {isNepali ? (category.nameNe || category.nameEn) : (category.nameEn || category.nameNe)}
-                  </span>
-                </Link>
-              ))}
-            </div>
           </div>
         </div>
       )}

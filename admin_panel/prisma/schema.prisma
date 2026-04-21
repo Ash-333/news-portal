@@ -137,6 +137,8 @@ model Article {
   id              String        @id @default(uuid())
   titleNe         String        @map("title_ne")
   titleEn         String        @map("title_en")
+  subheadingNe    String?       @map("subheading_ne")
+  subheadingEn    String?       @map("subheading_en")
   contentNe       String        @map("content_ne")
   contentEn       String        @map("content_en")
   excerptNe       String?       @map("excerpt_ne")

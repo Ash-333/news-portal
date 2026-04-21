@@ -324,7 +324,11 @@ async function main() {
   const dharmaSanskriti = await prisma.category.upsert({
     where: { slug: "dharma-sanskriti" },
     update: {},
-    create: { nameNe: "धर्मसंस्कृति", nameEn: "Dharma & Culture", slug: "dharma-sanskriti" },
+    create: {
+      nameNe: "धर्मसंस्कृति",
+      nameEn: "Dharma & Culture",
+      slug: "dharma-sanskriti",
+    },
   });
   const swasthya = await prisma.category.upsert({
     where: { slug: "swasthya" },
@@ -336,18 +340,70 @@ async function main() {
     update: {},
     create: { nameNe: "जीवनशैली", nameEn: "Lifestyle", slug: "jeevan-shaili" },
   });
-  const suchanaPrabidhhi = await prisma.category.upsert({
-    where: { slug: "suchana-prabidhhi" },
-    update: {},
-    create: { nameNe: "सूचना प्रविधि", nameEn: "Information Technology", slug: "suchana-prabidhhi" },
-  });
   const antarvarta = await prisma.category.upsert({
     where: { slug: "antarvarta" },
     update: {},
     create: { nameNe: "अन्तर्वार्ता", nameEn: "Interview", slug: "antarvarta" },
   });
 
-  console.log("✅ Categories: 13 created");
+  // Provinces category (parent)
+  const provincesCategory = await prisma.category.upsert({
+    where: { slug: "provinces" },
+    update: {},
+    create: { nameNe: "प्रदेशहरु", nameEn: "Provinces", slug: "provinces" },
+  });
+
+  // Province subcategories (children of provinces)
+  const provinceSubcategories = [
+    { slug: "koshi-province", nameEn: "Koshi Province", nameNe: "कोशी प्रदेश" },
+    {
+      slug: "madhesh-province",
+      nameEn: "Madhesh Province",
+      nameNe: "मधेश प्रदेश",
+    },
+    {
+      slug: "bagmati-province",
+      nameEn: "Bagmati Province",
+      nameNe: "बागमती प्रदेश",
+    },
+    {
+      slug: "gandaki-province",
+      nameEn: "Gandaki Province",
+      nameNe: "गण्डकी प्रदेश",
+    },
+    {
+      slug: "lumbini-province",
+      nameEn: "Lumbini Province",
+      nameNe: "लुम्बिनी प्रदेश",
+    },
+    {
+      slug: "karnali-province",
+      nameEn: "Karnali Province",
+      nameNe: "कर्णाली प्रदेश",
+    },
+    {
+      slug: "sudurpashchim-province",
+      nameEn: "Sudurpashchim Province",
+      nameNe: "सुदूरपश्चिम प्रदेश",
+    },
+  ];
+
+  for (const province of provinceSubcategories) {
+    await prisma.category.upsert({
+      where: { slug: province.slug },
+      update: {},
+      create: {
+        nameNe: province.nameNe,
+        nameEn: province.nameEn,
+        slug: province.slug,
+        parentId: provincesCategory.id,
+      },
+    });
+  }
+
+  console.log(
+    "✅ Categories: 21 created (13 + provinces with 7 subcategories)",
+  );
 
   // ═══════════════════════════════════════════
   // TAGS
@@ -465,7 +521,12 @@ async function main() {
     authorId: string;
     coverImageUrl: string;
     coverImageFilename: string;
-    photos: Array<{ url: string; filename: string; captionNe?: string; captionEn?: string }>;
+    photos: Array<{
+      url: string;
+      filename: string;
+      captionNe?: string;
+      captionEn?: string;
+    }>;
     isPublished?: boolean;
   }) {
     // Create cover image media
@@ -506,8 +567,12 @@ async function main() {
             },
           });
         }
-        return { media, captionNe: photo.captionNe, captionEn: photo.captionEn };
-      })
+        return {
+          media,
+          captionNe: photo.captionNe,
+          captionEn: photo.captionEn,
+        };
+      }),
     );
 
     // Create photo gallery
@@ -556,10 +621,13 @@ async function main() {
     slug: "kathmandu-city-views-2082",
     titleNe: "काठमाडौंको सुन्दर दृश्यहरू",
     titleEn: "Beautiful Views of Kathmandu City",
-    excerptNe: "काठमाडौं उपत्यकाका विभिन्न स्थानहरूबाट लिइएको मनमोहक दृश्य सङ्कलन।",
-    excerptEn: "A collection of breathtaking views from various locations across Kathmandu Valley.",
+    excerptNe:
+      "काठमाडौं उपत्यकाका विभिन्न स्थानहरूबाट लिइएको मनमोहक दृश्य सङ्कलन।",
+    excerptEn:
+      "A collection of breathtaking views from various locations across Kathmandu Valley.",
     authorId: author2.id,
-    coverImageUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80",
+    coverImageUrl:
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80",
     coverImageFilename: "kathmandu-gallery-cover.jpg",
     photos: [
       {
@@ -602,9 +670,11 @@ async function main() {
     titleNe: "हिमालयको रमाइलो दृश्यहरू",
     titleEn: "Majestic Himalayan Landscapes",
     excerptNe: "नेपालको हिमाल क्षेत्रका मनमोहक प्रकृतिक दृश्यहरूको सङ्कलन।",
-    excerptEn: "A stunning collection of natural landscapes from Nepal's Himalayan region.",
+    excerptEn:
+      "A stunning collection of natural landscapes from Nepal's Himalayan region.",
     authorId: author2.id,
-    coverImageUrl: "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1200&q=80",
+    coverImageUrl:
+      "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1200&q=80",
     coverImageFilename: "himalayan-gallery-cover.jpg",
     photos: [
       {
@@ -647,9 +717,11 @@ async function main() {
     titleNe: "नेपालको सांस्कृतिक पर्वहरू",
     titleEn: "Cultural Festivals of Nepal",
     excerptNe: "नेपालको विभिन्न सांस्कृतिक पर्वहरूबाट लिइएको दृश्य सङ्कलन।",
-    excerptEn: "A vibrant collection capturing Nepal's rich cultural festivals.",
+    excerptEn:
+      "A vibrant collection capturing Nepal's rich cultural festivals.",
     authorId: author5.id,
-    coverImageUrl: "https://images.unsplash.com/photo-1574169208507-84376144848b?w=1200&q=80",
+    coverImageUrl:
+      "https://images.unsplash.com/photo-1574169208507-84376144848b?w=1200&q=80",
     coverImageFilename: "festivals-gallery-cover.jpg",
     photos: [
       {
@@ -691,10 +763,13 @@ async function main() {
     slug: "nepal-wildlife-photography",
     titleNe: "नेपालको वन्यजन्तु संग्रह",
     titleEn: "Wildlife Photography Collection",
-    excerptNe: "चितवन र बार्दिया राष्ट्रिय निकुञ्जबाट लिइएको वन्यजन्तुका दृश्यहरू।",
-    excerptEn: "Wildlife photos captured from Chitwan and Bardia National Parks.",
+    excerptNe:
+      "चितवन र बार्दिया राष्ट्रिय निकुञ्जबाट लिइएको वन्यजन्तुका दृश्यहरू।",
+    excerptEn:
+      "Wildlife photos captured from Chitwan and Bardia National Parks.",
     authorId: author2.id,
-    coverImageUrl: "https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=1200&q=80",
+    coverImageUrl:
+      "https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=1200&q=80",
     coverImageFilename: "wildlife-gallery-cover.jpg",
     photos: [
       {
@@ -736,10 +811,13 @@ async function main() {
     slug: "nepal-traditional-architecture",
     titleNe: "नेपालको परम्परागत वास्तुकला",
     titleEn: "Traditional Architecture of Nepal",
-    excerptNe: "दरबार स्क्वायर र विभिन्न मन्दिरहरूको वास्तुकलाको सुन्दर दृश्यहरू।",
-    excerptEn: "Beautiful architectural details from Durbar Squares and ancient temples.",
+    excerptNe:
+      "दरबार स्क्वायर र विभिन्न मन्दिरहरूको वास्तुकलाको सुन्दर दृश्यहरू।",
+    excerptEn:
+      "Beautiful architectural details from Durbar Squares and ancient temples.",
     authorId: author1.id,
-    coverImageUrl: "https://images.unsplash.com/photo-1574169208507-84376144848b?w=1200&q=80",
+    coverImageUrl:
+      "https://images.unsplash.com/photo-1574169208507-84376144848b?w=1200&q=80",
     coverImageFilename: "architecture-gallery-cover.jpg",
     photos: [
       {
@@ -789,6 +867,8 @@ async function main() {
     uploadedById,
     titleNe,
     titleEn,
+    subheadingNe,
+    subheadingEn,
     excerptNe,
     excerptEn,
     contentNe,
@@ -810,6 +890,8 @@ async function main() {
     uploadedById: string;
     titleNe: string;
     titleEn: string;
+    subheadingNe?: string;
+    subheadingEn?: string;
     excerptNe: string;
     excerptEn: string;
     contentNe: string;
@@ -855,6 +937,8 @@ async function main() {
       update: {
         titleNe,
         titleEn,
+        subheadingNe,
+        subheadingEn,
         contentNe,
         contentEn,
         excerptNe,
@@ -873,6 +957,8 @@ async function main() {
       create: {
         titleNe,
         titleEn,
+        subheadingNe,
+        subheadingEn,
         contentNe,
         contentEn,
         excerptNe,
@@ -2002,8 +2088,10 @@ ${img(images.society2, "Community health services being expanded to reach the mo
     uploadedById: superAdmin.id,
     titleNe: "दैनिक समाचार: नेपालमा आजका प्रमुख घटनाहरू",
     titleEn: "Daily News: Major Events in Nepal Today",
-    excerptNe: "आजका प्रमुख समाचारहरूको सारांश: राजनीति, अर्थतन्त्र र सामाजिक क्षेत्रका महत्वपूर्ण घटनाहरू।",
-    excerptEn: "Summary of today's major news: Important events in politics, economy and social sectors.",
+    excerptNe:
+      "आजका प्रमुख समाचारहरूको सारांश: राजनीति, अर्थतन्त्र र सामाजिक क्षेत्रका महत्वपूर्ण घटनाहरू।",
+    excerptEn:
+      "Summary of today's major news: Important events in politics, economy and social sectors.",
     contentNe: `<p>काठमाडौं, वैशाख १ गते। आजको दिनमा नेपालमा विभिन्न क्षेत्रहरूमा महत्वपूर्ण घटनाहरू भएका छन्।</p>
     <p>राजनीतिक क्षेत्रमा संसदको कार्यक्रम जारी छ भने अर्थतन्त्रमा बजेट कार्यान्वयनको समीक्षा भइरहेको छ।</p>`,
     contentEn: `<p>Kathmandu, May 1st. Various important events have taken place in Nepal today across different sectors.</p>
@@ -2025,8 +2113,10 @@ ${img(images.society2, "Community health services being expanded to reach the mo
     uploadedById: superAdmin.id,
     titleNe: "महाशिवरात्रि उत्सव सम्पन्न, लाखौं भक्तजनको सहभागिता",
     titleEn: "Mahashivratri Festival Concludes, Lakhs of Devotees Participate",
-    excerptNe: "पशुपतिनाथको मन्दिरमा महाशिवरात्रि उत्सव सम्पन्न भएको छ। लाखौं भक्तजनहरूले दर्शन गरे।",
-    excerptEn: "Mahashivratri festival at Pashupatinath Temple has concluded. Lakhs of devotees took darshan.",
+    excerptNe:
+      "पशुपतिनाथको मन्दिरमा महाशिवरात्रि उत्सव सम्पन्न भएको छ। लाखौं भक्तजनहरूले दर्शन गरे।",
+    excerptEn:
+      "Mahashivratri festival at Pashupatinath Temple has concluded. Lakhs of devotees took darshan.",
     contentNe: `<p>काठमाडौं। वैशाख १ गते महाशिवरात्रि पर्व सम्पन्न भयो।</p>
     <p>पशुपतिनाथ मन्दिरमा लाखौं भक्तजनहरू आएका थिए।</p>`,
     contentEn: `<p>Kathmandu. Mahashivratri festival concluded on May 1st.</p>
@@ -2048,8 +2138,10 @@ ${img(images.society2, "Community health services being expanded to reach the mo
     uploadedById: superAdmin.id,
     titleNe: "डेंगु रोग बिरुद्ध सतर्कता, स्वास्थ्य मन्त्रालयको अभियान",
     titleEn: "Alert Against Dengue Disease, Health Ministry Campaign",
-    excerptNe: "डेंगु रोगको जोखिम बढेपछि स्वास्थ्य मन्त्रालयले सतर्कता अभियान सुरु गरेको छ।",
-    excerptEn: "After the risk of dengue disease has increased, the health ministry has launched an awareness campaign.",
+    excerptNe:
+      "डेंगु रोगको जोखिम बढेपछि स्वास्थ्य मन्त्रालयले सतर्कता अभियान सुरु गरेको छ।",
+    excerptEn:
+      "After the risk of dengue disease has increased, the health ministry has launched an awareness campaign.",
     contentNe: `<p>काठमाडौं। स्वास्थ्य मन्त्रालयले डेंगु रोग बिरुद्ध सतर्कता अभियान सुरु गरेको छ।</p>
     <p>मच्छर नियन्त्रण र स्वच्छता कार्यक्रम जारी छ।</p>`,
     contentEn: `<p>Kathmandu. The health ministry has launched an awareness campaign against dengue disease.</p>
@@ -2071,8 +2163,10 @@ ${img(images.society2, "Community health services being expanded to reach the mo
     uploadedById: superAdmin.id,
     titleNe: "अन्तर्राष्ट्रिय योग दिवस: स्वस्थ जीवनको मार्ग",
     titleEn: "International Day of Yoga: Path to Healthy Life",
-    excerptNe: "अन्तर्राष्ट्रिय योग दिवसको अवसरमा विभिन्न कार्यक्रमहरू आयोजना गरिए।",
-    excerptEn: "Various programs were organized on the occasion of International Day of Yoga.",
+    excerptNe:
+      "अन्तर्राष्ट्रिय योग दिवसको अवसरमा विभिन्न कार्यक्रमहरू आयोजना गरिए।",
+    excerptEn:
+      "Various programs were organized on the occasion of International Day of Yoga.",
     contentNe: `<p>काठमाडौं। अन्तर्राष्ट्रिय योग दिवसको अवसरमा योग शिविर आयोजना गरियो।</p>
     <p>हजारौं मानिसहरूले योग अभ्यासमा भाग लिए।</p>`,
     contentEn: `<p>Kathmandu. Yoga camp was organized on the occasion of International Day of Yoga.</p>
@@ -2086,29 +2180,6 @@ ${img(images.society2, "Community health services being expanded to reach the mo
   });
   console.log("  ✓ Lifestyle 1: Yoga Day");
 
-  // Information Technology category
-  await createArticle({
-    slug: "digital-nepal-initiatives-2082",
-    coverImageUrl: images.tech1,
-    coverImageFilename: "digital-nepal-cover.jpg",
-    uploadedById: superAdmin.id,
-    titleNe: "डिजिटल नेपाल अभियान: सूचना प्रविधिको विकास",
-    titleEn: "Digital Nepal Initiative: Development of Information Technology",
-    excerptNe: "सरकारले डिजिटल नेपाल अभियानअन्तर्गत विभिन्न कार्यक्रमहरू सुरु गरेको छ।",
-    excerptEn: "The government has launched various programs under the Digital Nepal campaign.",
-    contentNe: `<p>काठमाडौं। डिजिटल नेपाल अभियानअन्तर्गत डिजिटल लिटरेसी कार्यक्रम जारी छ।</p>
-    <p>ग्रामीण क्षेत्रमा इन्टरनेट सेवा विस्तार भइरहेको छ।</p>`,
-    contentEn: `<p>Kathmandu. Digital literacy program is ongoing under the Digital Nepal campaign.</p>
-    <p>Internet service is being expanded to rural areas.</p>`,
-    categoryId: suchanaPrabidhhi.id,
-    authorId: author3.id,
-    isFeatured: false,
-    isBreaking: false,
-    tagIds: [tagStartup.id, tagNepal.id],
-    publishedAt: new Date(Date.now() - 10 * 60 * 60 * 1000),
-  });
-  console.log("  ✓ IT 1: Digital Nepal");
-
   // Interview category
   await createArticle({
     slug: "interview-cm-karnali-province",
@@ -2117,8 +2188,10 @@ ${img(images.society2, "Community health services being expanded to reach the mo
     uploadedById: superAdmin.id,
     titleNe: "अन्तर्वार्ता: मुख्यमन्त्रीसँग विकास योजनाबारे कुराकानी",
     titleEn: "Interview: Talk with Chief Minister about Development Plans",
-    excerptNe: "कर्णाली प्रदेशका मुख्यमन्त्रीसँग विकास योजना र भविष्यका योजनाबारे कुराकानी।",
-    excerptEn: "Conversation with the Chief Minister of Karnali Province about development plans and future initiatives.",
+    excerptNe:
+      "कर्णाली प्रदेशका मुख्यमन्त्रीसँग विकास योजना र भविष्यका योजनाबारे कुराकानी।",
+    excerptEn:
+      "Conversation with the Chief Minister of Karnali Province about development plans and future initiatives.",
     contentNe: `<p>प्रश्न: आगामी वर्षको प्राथमिकता के हो?</p>
     <p>मुख्यमन्त्री: पूर्वाधार विकास र स्वास्थ्य क्षेत्रमा लगानी बढाउने योजना छ।</p>`,
     contentEn: `<p>Q: What is the priority for the next year?</p>
@@ -2181,8 +2254,10 @@ ${img(images.society2, "Community health services being expanded to reach the mo
     uploadedById: superAdmin.id,
     titleNe: "प्रदेश २ मा औद्योगिक क्षेत्र विकास योजना",
     titleEn: "Industrial Zone Development Plan in Province 2",
-    excerptNe: "मधेश प्रदेशमा नयाँ औद्योगिक क्षेत्र विकास योजना घोषणा गरिएको छ।",
-    excerptEn: "New industrial zone development plan announced in Madhesh Province.",
+    excerptNe:
+      "मधेश प्रदेशमा नयाँ औद्योगिक क्षेत्र विकास योजना घोषणा गरिएको छ।",
+    excerptEn:
+      "New industrial zone development plan announced in Madhesh Province.",
     contentNe: `<p>मधेश प्रदेशमा नयाँ औद्योगिक क्षेत्र विकास योजना घोषणा गरिएको छ।</p>
     <p>बिरगञ्जमा नयाँ औद्योगिक पार्क स्थापना हुनेछ।</p>`,
     contentEn: `<p>New industrial zone development plan announced in Madhesh Province.</p>
@@ -2235,7 +2310,8 @@ ${img(images.society2, "Community health services being expanded to reach the mo
     titleNe: "बागमती प्रदेशमा शिक्षा सुधार योजना",
     titleEn: "Education Reform Plan in Bagmati Province",
     excerptNe: "बागमती प्रदेशमा नयाँ शिक्षा सुधार योजना लागू हुनेछ।",
-    excerptEn: "New education reform plan will be implemented in Bagmati Province.",
+    excerptEn:
+      "New education reform plan will be implemented in Bagmati Province.",
     contentNe: `<p>बागमती प्रदेशमा शिक्षा सुधार योजना लागू हुनेछ।</p>`,
     contentEn: `<p>New education reform plan will be implemented in Bagmati Province.</p>`,
     categoryId: society.id,
@@ -2251,8 +2327,10 @@ ${img(images.society2, "Community health services being expanded to reach the mo
     uploadedById: superAdmin.id,
     titleNe: "���ण्डकी प्रदेशमा जलविद्युत् र पर्यटन परियोजना",
     titleEn: "Hydropower and Tourism Projects in Gandaki Province",
-    excerptNe: "गण्डकी प्रदेशमा जलविद्युत् र पर्यटन परियोजनाहरू अघि बढिरहेका छन्।",
-    excerptEn: "Hydropower and tourism projects are progressing in Gandaki Province.",
+    excerptNe:
+      "गण्डकी प्रदेशमा जलविद्युत् र पर्यटन परियोजनाहरू अघि बढिरहेका छन्।",
+    excerptEn:
+      "Hydropower and tourism projects are progressing in Gandaki Province.",
     contentNe: `<p>गण्डकी प्रदेशमा जलविद्युत् परियोजनाहरू अघि बढिरहेका छन्।</p>
     <p>पोखरा क्षेत्रमा पर्यटन विस्तार भइरहेको छ।</p>`,
     contentEn: `<p>Hydropower projects are progressing in Gandaki Province.</p>
@@ -2270,7 +2348,8 @@ ${img(images.society2, "Community health services being expanded to reach the mo
     uploadedById: superAdmin.id,
     titleNe: "लुम्बिनी प्रदेशमा पर्यटन विकास",
     titleEn: "Tourism Development in Lumbini Province",
-    excerptNe: "लुम्बिनी प्रदेशमा पर्यटन विकासका नयाँ योजनाहरू घोषणा गरिएका छन्।",
+    excerptNe:
+      "लुम्बिनी प्रदेशमा पर्यटन विकासका नयाँ योजनाहरू घोषणा गरिएका छन्।",
     excerptEn: "New tourism development plans announced in Lumbini Province.",
     contentNe: `<p>लुम्बिनी प्रदेशमा पर्यटन विकासका नयाँ योजनाहरू घोषणा गरिएका छन्।</p>
     <p>कपिलवस्तुमा होटल निर्माण हुनेछ।</p>`,
@@ -2309,7 +2388,8 @@ ${img(images.society2, "Community health services being expanded to reach the mo
     titleNe: "सुदूरपश्चिम प्रदेशमा सीमा व्यापार वृद्धि",
     titleEn: "Border Trade Increases in Sudurpashchim Province",
     excerptNe: "सुदूरपश्चिम प्रदेशमा ��ा��तसँगको सीमा व्यापार बढेको छ।",
-    excerptEn: "Border trade with India has increased in Sudurpashchim Province.",
+    excerptEn:
+      "Border trade with India has increased in Sudurpashchim Province.",
     contentNe: `<p>सुदूरपश्चिम प्रदेशमा भारतसँगको सीमा व्यापार बढेको छ।</p>
     <p>दार्चुला नाकाबाट आयात निर्यात बढेको छ।</p>`,
     contentEn: `<p>Border trade with India has increased in Sudurpashchim Province.</p>
@@ -3038,81 +3118,278 @@ ${img(images.society2, "Community health services being expanded to reach the mo
   const cricket = await prisma.category.upsert({
     where: { slug: "cricket" },
     update: { parentId: sports.id },
-    create: { nameNe: "क्रिकेट", nameEn: "Cricket", slug: "cricket", parentId: sports.id },
+    create: {
+      nameNe: "क्रिकेट",
+      nameEn: "Cricket",
+      slug: "cricket",
+      parentId: sports.id,
+    },
   });
   const football = await prisma.category.upsert({
     where: { slug: "football" },
     update: { parentId: sports.id },
-    create: { nameNe: "फुटबल", nameEn: "Football", slug: "football", parentId: sports.id },
+    create: {
+      nameNe: "फुटबल",
+      nameEn: "Football",
+      slug: "football",
+      parentId: sports.id,
+    },
   });
   const volleyball = await prisma.category.upsert({
     where: { slug: "volleyball" },
     update: { parentId: sports.id },
-    create: { nameNe: "भलिवल", nameEn: "Volleyball", slug: "volleyball", parentId: sports.id },
+    create: {
+      nameNe: "भलिवल",
+      nameEn: "Volleyball",
+      slug: "volleyball",
+      parentId: sports.id,
+    },
   });
   const basketball = await prisma.category.upsert({
     where: { slug: "basketball" },
     update: { parentId: sports.id },
-    create: { nameNe: "बास्केटबल", nameEn: "Basketball", slug: "basketball", parentId: sports.id },
+    create: {
+      nameNe: "बास्केटबल",
+      nameEn: "Basketball",
+      slug: "basketball",
+      parentId: sports.id,
+    },
   });
   const hockey = await prisma.category.upsert({
     where: { slug: "hockey" },
     update: { parentId: sports.id },
-    create: { nameNe: "हक्की", nameEn: "Hockey", slug: "hockey", parentId: sports.id },
+    create: {
+      nameNe: "हक्की",
+      nameEn: "Hockey",
+      slug: "hockey",
+      parentId: sports.id,
+    },
   });
 
   console.log("✅ Sports Subcategories: 5 created");
 
   // Sports images
   const sportsImages = {
-    cricket1: "https://images.unsplash.com/photo-1624526267942-ab0ff8a3e972?w=1200&q=80",
-    cricket2: "https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=1200&q=80",
-    cricket3: "https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=1200&q=80",
-    football1: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=1200&q=80",
-    football2: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1200&q=80",
-    football3: "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=1200&q=80",
-    volleyball1: "https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=1200&q=80",
-    volleyball2: "https://images.unsplash.com/photo-1592655596760-0f3d3270e2e1?w=1200&q=80",
-    basketball1: "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=1200&q=80",
-    hockey1: "https://images.unsplash.com/photo-1515703403366-26c933a60058?w=1200&q=80",
+    cricket1:
+      "https://images.unsplash.com/photo-1624526267942-ab0ff8a3e972?w=1200&q=80",
+    cricket2:
+      "https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=1200&q=80",
+    cricket3:
+      "https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=1200&q=80",
+    football1:
+      "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=1200&q=80",
+    football2:
+      "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1200&q=80",
+    football3:
+      "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=1200&q=80",
+    volleyball1:
+      "https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=1200&q=80",
+    volleyball2:
+      "https://images.unsplash.com/photo-1592655596760-0f3d3270e2e1?w=1200&q=80",
+    basketball1:
+      "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=1200&q=80",
+    hockey1:
+      "https://images.unsplash.com/photo-1515703403366-26c933a60058?w=1200&q=80",
   };
 
   // Helper for sports articles
   async function createSportsArticle({
-    slug, titleNe, titleEn, excerptNe, excerptEn, contentNe, contentEn, categoryId, imageUrl, imageFilename, isFeatured = false
+    slug,
+    titleNe,
+    titleEn,
+    excerptNe,
+    excerptEn,
+    contentNe,
+    contentEn,
+    categoryId,
+    imageUrl,
+    imageFilename,
+    isFeatured = false,
   }: any) {
-    let media = await prisma.media.findFirst({ where: { filename: imageFilename } });
+    let media = await prisma.media.findFirst({
+      where: { filename: imageFilename },
+    });
     if (!media) {
       media = await prisma.media.create({
-        data: { filename: imageFilename, url: imageUrl, type: MediaType.IMAGE, altText: titleEn, size: 350000, uploadedBy: superAdmin.id },
+        data: {
+          filename: imageFilename,
+          url: imageUrl,
+          type: MediaType.IMAGE,
+          altText: titleEn,
+          size: 350000,
+          uploadedBy: superAdmin.id,
+        },
       });
     }
     await prisma.article.upsert({
       where: { slug },
-      update: { titleNe, titleEn, contentNe, contentEn, excerptNe, excerptEn, status: ArticleStatus.PUBLISHED, isFeatured, categoryId, authorId: author2.id, featuredImageId: media.id, publishedAt: new Date() },
-      create: { titleNe, titleEn, contentNe, contentEn, excerptNe, excerptEn, slug, status: ArticleStatus.PUBLISHED, isFeatured, categoryId, authorId: author2.id, featuredImageId: media.id, publishedAt: new Date() },
+      update: {
+        titleNe,
+        titleEn,
+        contentNe,
+        contentEn,
+        excerptNe,
+        excerptEn,
+        status: ArticleStatus.PUBLISHED,
+        isFeatured,
+        categoryId,
+        authorId: author2.id,
+        featuredImageId: media.id,
+        publishedAt: new Date(),
+      },
+      create: {
+        titleNe,
+        titleEn,
+        contentNe,
+        contentEn,
+        excerptNe,
+        excerptEn,
+        slug,
+        status: ArticleStatus.PUBLISHED,
+        isFeatured,
+        categoryId,
+        authorId: author2.id,
+        featuredImageId: media.id,
+        publishedAt: new Date(),
+      },
     });
   }
 
   // Cricket articles
-  await createSportsArticle({ slug: "nepal-cricket-team-qualifies-asia-cup-2082", titleNe: "नेपाली क्रिकेट टोली एसिया कपमा छानिए, ऐतिहासिक उपलब्धि", titleEn: "Nepal Cricket Team Qualifies for Asia Cup, Historic Achievement", excerptNe: "नेपाली क्रिकेट टोली पहिलो पटक एसिया कपमा छानिएको छ।", excerptEn: "The Nepal cricket team has qualified for the Asia Cup for the first time.", contentNe: "<p>काठमाडौं। नेपाली राष्ट्रिय क्रिकेट टोली पहिलो पटक एसिया कपमा छानिएको छ।</p><p>यो नेपाली क्रिकेटको इतिहासमा सबैभन्दा ठूलो उपलब्धि हो।</p>", contentEn: "<p>Kathmandu. The Nepal national cricket team has qualified for the Asia Cup for the first time.</p><p>This is the biggest achievement in Nepal cricket history.</p>", categoryId: cricket.id, imageUrl: sportsImages.cricket1, imageFilename: "asia-cup-qualification.jpg", isFeatured: true });
-  await createSportsArticle({ slug: "sandeep-lamichhane-wpl-draft-2082", titleNe: "सन्दीप लामिछानेले डब्ल्यूपिएल ड्राफ्टमा छनोट भए", titleEn: "Sandeep Lamichhane Selected in WPL Draft", excerptNe: "नेपालका प्रसिद्ध लेग स्पिनर सन्दीप लामिछाने डब्ल्यूपिएल ड्राफ्टमा छानिएका छन्।", excerptEn: "Nepal's leg-spinner Sandeep Lamichhane selected in WPL draft.", contentNe: "<p>सन्दीप लामिछाने डब्ल्यूपिएलमा छानिएका छन्।</p>", contentEn: "<p>Sandeep Lamichhane has been selected in the WPL.</p>", categoryId: cricket.id, imageUrl: sportsImages.cricket2, imageFilename: "lamichhane-wpl.jpg" });
-  await createSportsArticle({ slug: "nepal-u19-cricket-team-wins-tournament", titleNe: "नेपाल यु-१९ क्रिकेट टोलीले टूर्नामेंट जित्यो", titleEn: "Nepal U19 Cricket Team Wins Tournament", excerptNe: "नेपालको यु-१९ क्रिकेट टोलीले टूर्नामेंट जितेको छ।", excerptEn: "Nepal's U19 cricket team has won the tournament.", contentNe: "<p>नेपालको यु-१९ क्रिकेट टोलीले टूर्नामेंट जितेको छ।</p>", contentEn: "<p>Nepal's U19 cricket team has won the tournament.</p>", categoryId: cricket.id, imageUrl: sportsImages.cricket3, imageFilename: "u19-cricket-win.jpg" });
+  await createSportsArticle({
+    slug: "nepal-cricket-team-qualifies-asia-cup-2082",
+    titleNe: "नेपाली क्रिकेट टोली एसिया कपमा छानिए, ऐतिहासिक उपलब्धि",
+    titleEn: "Nepal Cricket Team Qualifies for Asia Cup, Historic Achievement",
+    excerptNe: "नेपाली क्रिकेट टोली पहिलो पटक एसिया कपमा छानिएको छ।",
+    excerptEn:
+      "The Nepal cricket team has qualified for the Asia Cup for the first time.",
+    contentNe:
+      "<p>काठमाडौं। नेपाली राष्ट्रिय क्रिकेट टोली पहिलो पटक एसिया कपमा छानिएको छ।</p><p>यो नेपाली क्रिकेटको इतिहासमा सबैभन्दा ठूलो उपलब्धि हो।</p>",
+    contentEn:
+      "<p>Kathmandu. The Nepal national cricket team has qualified for the Asia Cup for the first time.</p><p>This is the biggest achievement in Nepal cricket history.</p>",
+    categoryId: cricket.id,
+    imageUrl: sportsImages.cricket1,
+    imageFilename: "asia-cup-qualification.jpg",
+    isFeatured: true,
+  });
+  await createSportsArticle({
+    slug: "sandeep-lamichhane-wpl-draft-2082",
+    titleNe: "सन्दीप लामिछानेले डब्ल्यूपिएल ड्राफ्टमा छनोट भए",
+    titleEn: "Sandeep Lamichhane Selected in WPL Draft",
+    excerptNe:
+      "नेपालका प्रसिद्ध लेग स्पिनर सन्दीप लामिछाने डब्ल्यूपिएल ड्राफ्टमा छानिएका छन्।",
+    excerptEn: "Nepal's leg-spinner Sandeep Lamichhane selected in WPL draft.",
+    contentNe: "<p>सन्दीप लामिछाने डब्ल्यूपिएलमा छानिएका छन्।</p>",
+    contentEn: "<p>Sandeep Lamichhane has been selected in the WPL.</p>",
+    categoryId: cricket.id,
+    imageUrl: sportsImages.cricket2,
+    imageFilename: "lamichhane-wpl.jpg",
+  });
+  await createSportsArticle({
+    slug: "nepal-u19-cricket-team-wins-tournament",
+    titleNe: "नेपाल यु-१९ क्रिकेट टोलीले टूर्नामेंट जित्यो",
+    titleEn: "Nepal U19 Cricket Team Wins Tournament",
+    excerptNe: "नेपालको यु-१९ क्रिकेट टोलीले टूर्नामेंट जितेको छ।",
+    excerptEn: "Nepal's U19 cricket team has won the tournament.",
+    contentNe: "<p>नेपालको यु-१९ क्रिकेट टोलीले टूर्नामेंट जितेको छ।</p>",
+    contentEn: "<p>Nepal's U19 cricket team has won the tournament.</p>",
+    categoryId: cricket.id,
+    imageUrl: sportsImages.cricket3,
+    imageFilename: "u19-cricket-win.jpg",
+  });
 
   // Football articles
-  await createSportsArticle({ slug: "nepal-national-football-team-fifa-rankings", titleNe: "नेपाली फुटबल टोलीको फिफा र्याङ्किङ सुधार", titleEn: "Nepal National Football Team FIFA Rankings Improve", excerptNe: "नेपाली फुटबल टोलीको फिफा र्याङ्किङमा सुधार भएको छ।", excerptEn: "Nepal football team's FIFA rankings have improved.", contentNe: "<p>नेपाली फुटबल टोलीको फिफा र्याङ्किङ सुधार भएको छ।</p>", contentEn: "<p>Nepal football team's FIFA rankings have improved.</p>", categoryId: football.id, imageUrl: sportsImages.football1, imageFilename: "football-rankings.jpg", isFeatured: true });
-  await createSportsArticle({ slug: "dashrath-stadium-renovation-complete", titleNe: "दशरथ रङ्गशालाको सुधार कार्य पूरा", titleEn: "Dashrath Stadium Renovation Complete", excerptNe: "दशरथ रङ्गशालाको सुधार कार्य पूरा भएको छ।", excerptEn: "Dashrath Stadium renovation is complete.", contentNe: "<p>दशरथ रङ्गशालाको सुधार कार्य पूरा भएको छ।</p>", contentEn: "<p>Dashrath Stadium renovation is complete.</p>", categoryId: football.id, imageUrl: sportsImages.football2, imageFilename: "dashrath-renovation.jpg" });
-  await createSportsArticle({ slug: "nepal-youth-football-academy-opens", titleNe: "नेपालमा नयाँ युवा फुटबल एकेडेमी खुला", titleEn: "New Youth Football Academy Opens in Nepal", excerptNe: "काठमाडौंमा नयाँ युवा फुटबल एकेडेमी खुला भएको छ।", excerptEn: "A new youth football academy has opened in Kathmandu.", contentNe: "<p>नयाँ युवा फुटबल एकेडेमी खुला भएको छ।</p>", contentEn: "<p>A new youth football academy has opened.</p>", categoryId: football.id, imageUrl: sportsImages.football3, imageFilename: "football-academy.jpg" });
+  await createSportsArticle({
+    slug: "nepal-national-football-team-fifa-rankings",
+    titleNe: "नेपाली फुटबल टोलीको फिफा र्याङ्किङ सुधार",
+    titleEn: "Nepal National Football Team FIFA Rankings Improve",
+    excerptNe: "नेपाली फुटबल टोलीको फिफा र्याङ्किङमा सुधार भएको छ।",
+    excerptEn: "Nepal football team's FIFA rankings have improved.",
+    contentNe: "<p>नेपाली फुटबल टोलीको फिफा र्याङ्किङ सुधार भएको छ।</p>",
+    contentEn: "<p>Nepal football team's FIFA rankings have improved.</p>",
+    categoryId: football.id,
+    imageUrl: sportsImages.football1,
+    imageFilename: "football-rankings.jpg",
+    isFeatured: true,
+  });
+  await createSportsArticle({
+    slug: "dashrath-stadium-renovation-complete",
+    titleNe: "दशरथ रङ्गशालाको सुधार कार्य पूरा",
+    titleEn: "Dashrath Stadium Renovation Complete",
+    excerptNe: "दशरथ रङ्गशालाको सुधार कार्य पूरा भएको छ।",
+    excerptEn: "Dashrath Stadium renovation is complete.",
+    contentNe: "<p>दशरथ रङ्गशालाको सुधार कार्य पूरा भएको छ।</p>",
+    contentEn: "<p>Dashrath Stadium renovation is complete.</p>",
+    categoryId: football.id,
+    imageUrl: sportsImages.football2,
+    imageFilename: "dashrath-renovation.jpg",
+  });
+  await createSportsArticle({
+    slug: "nepal-youth-football-academy-opens",
+    titleNe: "नेपालमा नयाँ युवा फुटबल एकेडेमी खुला",
+    titleEn: "New Youth Football Academy Opens in Nepal",
+    excerptNe: "काठमाडौंमा नयाँ युवा फुटबल एकेडेमी खुला भएको छ।",
+    excerptEn: "A new youth football academy has opened in Kathmandu.",
+    contentNe: "<p>नयाँ युवा फुटबल एकेडेमी खुला भएको छ।</p>",
+    contentEn: "<p>A new youth football academy has opened.</p>",
+    categoryId: football.id,
+    imageUrl: sportsImages.football3,
+    imageFilename: "football-academy.jpg",
+  });
 
   // Volleyball articles
-  await createSportsArticle({ slug: "nepal-volleyball-team-south-asian-games", titleNe: "नेपाली भलिवल टोली दक्षिण एशियाली खेलहरूमा", titleEn: "Nepal Volleyball Team at South Asian Games", excerptNe: "नेपाली भलिवल टोली दक्षिण एशियाली खेलहरूमा भाग लिन तयार छ।", excerptEn: "Nepal volleyball team ready for South Asian Games.", contentNe: "<p>नेपाली भलिवल टोली तयारीमा छ।</p>", contentEn: "<p>Nepal volleyball team is preparing.</p>", categoryId: volleyball.id, imageUrl: sportsImages.volleyball1, imageFilename: "volleyball-sag.jpg" });
-  await createSportsArticle({ slug: "nepal-womens-volleyball-championship", titleNe: "नेपाल महिला भलिवल च्याम्पियनसिप आयोजना", titleEn: "Nepal Women's Volleyball Championship Organized", excerptNe: "नेपाल महिला भलिवल च्याम्पियनसिप काठमाडौंमा हुनेछ।", excerptEn: "Nepal Women's Volleyball Championship in Kathmandu.", contentNe: "<p>महिला भलिवल च्याम्पियनसिप आयोजना हुनेछ।</p>", contentEn: "<p>Women's volleyball championship to be organized.</p>", categoryId: volleyball.id, imageUrl: sportsImages.volleyball2, imageFilename: "womens-volleyball.jpg" });
+  await createSportsArticle({
+    slug: "nepal-volleyball-team-south-asian-games",
+    titleNe: "नेपाली भलिवल टोली दक्षिण एशियाली खेलहरूमा",
+    titleEn: "Nepal Volleyball Team at South Asian Games",
+    excerptNe: "नेपाली भलिवल टोली दक्षिण एशियाली खेलहरूमा भाग लिन तयार छ।",
+    excerptEn: "Nepal volleyball team ready for South Asian Games.",
+    contentNe: "<p>नेपाली भलिवल टोली तयारीमा छ।</p>",
+    contentEn: "<p>Nepal volleyball team is preparing.</p>",
+    categoryId: volleyball.id,
+    imageUrl: sportsImages.volleyball1,
+    imageFilename: "volleyball-sag.jpg",
+  });
+  await createSportsArticle({
+    slug: "nepal-womens-volleyball-championship",
+    titleNe: "नेपाल महिला भलिवल च्याम्पियनसिप आयोजना",
+    titleEn: "Nepal Women's Volleyball Championship Organized",
+    excerptNe: "नेपाल महिला भलिवल च्याम्पियनसिप काठमाडौंमा हुनेछ।",
+    excerptEn: "Nepal Women's Volleyball Championship in Kathmandu.",
+    contentNe: "<p>महिला भलिवल च्याम्पियनसिप आयोजना हुनेछ।</p>",
+    contentEn: "<p>Women's volleyball championship to be organized.</p>",
+    categoryId: volleyball.id,
+    imageUrl: sportsImages.volleyball2,
+    imageFilename: "womens-volleyball.jpg",
+  });
 
   // Basketball articles
-  await createSportsArticle({ slug: "nepal-basketball-league-starts-2082", titleNe: "नेपाल बास्केटबल लिग सुरु", titleEn: "Nepal Basketball League Starts", excerptNe: "नेपाल बास्केटबल लिग सुरु भएको छ।", excerptEn: "The Nepal Basketball League has started.", contentNe: "<p>नेपाल बास्केटबल लिग सुरु भएको छ।</p>", contentEn: "<p>The Nepal Basketball League has started.</p>", categoryId: basketball.id, imageUrl: sportsImages.basketball1, imageFilename: "basketball-league.jpg" });
+  await createSportsArticle({
+    slug: "nepal-basketball-league-starts-2082",
+    titleNe: "नेपाल बास्केटबल लिग सुरु",
+    titleEn: "Nepal Basketball League Starts",
+    excerptNe: "नेपाल बास्केटबल लिग सुरु भएको छ।",
+    excerptEn: "The Nepal Basketball League has started.",
+    contentNe: "<p>नेपाल बास्केटबल लिग सुरु भएको छ।</p>",
+    contentEn: "<p>The Nepal Basketball League has started.</p>",
+    categoryId: basketball.id,
+    imageUrl: sportsImages.basketball1,
+    imageFilename: "basketball-league.jpg",
+  });
 
   // Hockey articles
-  await createSportsArticle({ slug: "nepal-field-hockey-team-training", titleNe: "नेपाल हक्की टोलीको अभ्यास शिविर सुरु", titleEn: "Nepal Hockey Team Training Camp Begins", excerptNe: "नेपाली हक्की टोलीको अभ्यास शिविर सुरु भएको छ।", excerptEn: "Nepal hockey team training camp has begun.", contentNe: "<p>हक्की टोलीको अभ्यास शिविर सुरु भएको छ।</p>", contentEn: "<p>Hockey team training camp has begun.</p>", categoryId: hockey.id, imageUrl: sportsImages.hockey1, imageFilename: "hockey-training.jpg" });
+  await createSportsArticle({
+    slug: "nepal-field-hockey-team-training",
+    titleNe: "नेपाल हक्की टोलीको अभ्यास शिविर सुरु",
+    titleEn: "Nepal Hockey Team Training Camp Begins",
+    excerptNe: "नेपाली हक्की टोलीको अभ्यास शिविर सुरु भएको छ।",
+    excerptEn: "Nepal hockey team training camp has begun.",
+    contentNe: "<p>हक्की टोलीको अभ्यास शिविर सुरु भएको छ।</p>",
+    contentEn: "<p>Hockey team training camp has begun.</p>",
+    categoryId: hockey.id,
+    imageUrl: sportsImages.hockey1,
+    imageFilename: "hockey-training.jpg",
+  });
 
   console.log("✅ Sports Articles: 10 created");
 
@@ -3121,18 +3398,107 @@ ${img(images.society2, "Community health services being expanded to reach the mo
   // ═══════════════════════════════════════════
 
   const teamMembers = [
-    { name: "Rajesh Sharma", nameNe: "राजेश शर्मा", department: "Sports", departmentNe: "खेलकुद", designation: "Head Coach - Cricket", designationNe: "प्रमुख प्रशिक्षक - क्रिकेट", image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80", bio: "Former national cricket team captain with 15 years of coaching experience.", bioNe: "पूर्व राष्ट्रिय क्रिकेट कप्तान।", email: "rajesh.sharma@newsportal.com", phone: "+977-9851000001", order: 1 },
-    { name: "Priya Rai", nameNe: "प्रिया राई", department: "Sports", departmentNe: "खेलकुद", designation: "Football Analyst", designationNe: "फुटबल विश्लेषक", image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80", bio: "UEFA certified football analyst.", bioNe: "यूईएफए प्रमाणित फुटबल विश्लेषक।", email: "priya.rai@newsportal.com", phone: "+977-9851000002", order: 2 },
-    { name: "Amit Gurung", nameNe: "अमित गुरुङ", department: "Sports", departmentNe: "खेलकुद", designation: "Volleyball Correspondent", designationNe: "भलिवल संवाददाता", image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80", bio: "Covering volleyball for over 8 years.", bioNe: "भलिवल कवरेज विशेषज्ञ।", email: "amit.gurung@newsportal.com", phone: "+977-9851000003", order: 3 },
-    { name: "Bikash Karki", nameNe: "विकाश कार्की", department: "Sports", departmentNe: "खेलकुद", designation: "Basketball Reporter", designationNe: "बास्केटबल रिपोर्टर", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80", bio: "Former college basketball player.", bioNe: "पूर्व कलेज बास्केटबल खेलाडी।", email: "bikash.karki@newsportal.com", phone: "+977-9851000004", order: 4 },
-    { name: "Sita Thapa", nameNe: "सीता थापा", department: "Sports", departmentNe: "खेलकुद", designation: "Senior Sports Editor", designationNe: "वरिष्ठ खेलकुद सम्पादक", image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80", bio: "Leading sports coverage.", bioNe: "प्रमुख खेलकुद कवरेज।", email: "sita.thapa@newsportal.com", phone: "+977-9851000005", order: 5 },
-    { name: "Deepak Lama", nameNe: "दीपक लामा", department: "Sports", departmentNe: "खेलकुद", designation: "Hockey Expert", designationNe: "हक्की विशेषज्ञ", image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=80", bio: "Former national hockey player.", bioNe: "पूर्व राष्ट्रिय हक्की खेलाडी।", email: "deepak.lama@newsportal.com", phone: "+977-9851000006", order: 6 },
+    {
+      name: "Rajesh Sharma",
+      nameNe: "राजेश शर्मा",
+      department: "Sports",
+      departmentNe: "खेलकुद",
+      designation: "Head Coach - Cricket",
+      designationNe: "प्रमुख प्रशिक्षक - क्रिकेट",
+      image:
+        "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80",
+      bio: "Former national cricket team captain with 15 years of coaching experience.",
+      bioNe: "पूर्व राष्ट्रिय क्रिकेट कप्तान।",
+      email: "rajesh.sharma@newsportal.com",
+      phone: "+977-9851000001",
+      order: 1,
+    },
+    {
+      name: "Priya Rai",
+      nameNe: "प्रिया राई",
+      department: "Sports",
+      departmentNe: "खेलकुद",
+      designation: "Football Analyst",
+      designationNe: "फुटबल विश्लेषक",
+      image:
+        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&q=80",
+      bio: "UEFA certified football analyst.",
+      bioNe: "यूईएफए प्रमाणित फुटबल विश्लेषक।",
+      email: "priya.rai@newsportal.com",
+      phone: "+977-9851000002",
+      order: 2,
+    },
+    {
+      name: "Amit Gurung",
+      nameNe: "अमित गुरुङ",
+      department: "Sports",
+      departmentNe: "खेलकुद",
+      designation: "Volleyball Correspondent",
+      designationNe: "भलिवल संवाददाता",
+      image:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&q=80",
+      bio: "Covering volleyball for over 8 years.",
+      bioNe: "भलिवल कवरेज विशेषज्ञ।",
+      email: "amit.gurung@newsportal.com",
+      phone: "+977-9851000003",
+      order: 3,
+    },
+    {
+      name: "Bikash Karki",
+      nameNe: "विकाश कार्की",
+      department: "Sports",
+      departmentNe: "खेलकुद",
+      designation: "Basketball Reporter",
+      designationNe: "बास्केटबल रिपोर्टर",
+      image:
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80",
+      bio: "Former college basketball player.",
+      bioNe: "पूर्व कलेज बास्केटबल खेलाडी।",
+      email: "bikash.karki@newsportal.com",
+      phone: "+977-9851000004",
+      order: 4,
+    },
+    {
+      name: "Sita Thapa",
+      nameNe: "सीता थापा",
+      department: "Sports",
+      departmentNe: "खेलकुद",
+      designation: "Senior Sports Editor",
+      designationNe: "वरिष्ठ खेलकुद सम्पादक",
+      image:
+        "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80",
+      bio: "Leading sports coverage.",
+      bioNe: "प्रमुख खेलकुद कवरेज।",
+      email: "sita.thapa@newsportal.com",
+      phone: "+977-9851000005",
+      order: 5,
+    },
+    {
+      name: "Deepak Lama",
+      nameNe: "दीपक लामा",
+      department: "Sports",
+      departmentNe: "खेलकुद",
+      designation: "Hockey Expert",
+      designationNe: "हक्की विशेषज्ञ",
+      image:
+        "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=80",
+      bio: "Former national hockey player.",
+      bioNe: "पूर्व राष्ट्रिय हक्की खेलाडी।",
+      email: "deepak.lama@newsportal.com",
+      phone: "+977-9851000006",
+      order: 6,
+    },
   ];
 
   for (const member of teamMembers) {
-    const existing = await prisma.teamMember.findFirst({ where: { email: member.email } });
+    const existing = await prisma.teamMember.findFirst({
+      where: { email: member.email },
+    });
     if (existing) {
-      await prisma.teamMember.update({ where: { id: existing.id }, data: member });
+      await prisma.teamMember.update({
+        where: { id: existing.id },
+        data: member,
+      });
     } else {
       await prisma.teamMember.create({ data: member });
     }
@@ -3148,7 +3514,9 @@ ${img(images.society2, "Community health services being expanded to reach the mo
   console.log("🎉 Database seed completed successfully!");
   console.log("═".repeat(50));
   console.log("📊 Summary:");
-  console.log("   Users:         10  (1 superadmin + 5 authors + 4 public users)");
+  console.log(
+    "   Users:         10  (1 superadmin + 5 authors + 4 public users)",
+  );
   console.log("   Categories:    7 + 5 sports subcategories");
   console.log("   Tags:          15");
   console.log("   Articles:      20 + 10 sports articles");
