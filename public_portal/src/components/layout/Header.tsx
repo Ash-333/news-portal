@@ -8,20 +8,29 @@ import { Search, Menu, X, ChevronDown, Sun, Moon, Headphones } from 'lucide-reac
 import { useTheme } from 'next-themes';
 import { useLanguage } from '@/context/LanguageContext';
 import { cn } from '@/lib/utils';
-import { useCategoriesQuery } from '@/hooks/useNewsQueries';
+import { getCategories } from '@/lib/api/categories';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
-import type { NavItem } from '@/types';
+import type { NavItem, Category } from '@/types';
 
 export function Header() {
   const { isNepali, t } = useLanguage();
   const { theme, setTheme } = useTheme();
   const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isOverlayOpen, setIsOverlayOpen] = useState(false);
+  const [isCategoriesOverlayOpen, setIsCategoriesOverlayOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [searchValue, setSearchValue] = useState('');
-  const { data: categories = [] } = useCategoriesQuery();
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    getCategories().then((res) => {
+      if (res.success && res.data) {
+        setCategories(res.data);
+      }
+    }).catch(() => { });
+  }, []);
 
   const provinces = [
     { slug: 'koshi', name: 'Koshi', nameNe: 'कोशी प्रदेश' },
@@ -38,8 +47,8 @@ export function Header() {
     { label: 'Provinces', labelNe: 'प्रदेशहरु', href: '/provinces', hasDropdown: true, children: provinces.map((p) => ({ label: p.name, labelNe: p.nameNe, href: `/provinces/${p.slug}` })) },
     { label: 'Video updates', labelNe: 'भिडियो अपडेट', href: '/videos' },
     ...categories.slice(0, 8).map((category) => ({
-      label: category.name || category.nameNe || '',
-      labelNe: category.nameNe || '',
+      label: category.nameEn || category.name || '',
+      labelNe: category.nameNe || category.name || '',
       href: `/category/${category.slug}`,
     })),
   ];
@@ -140,15 +149,11 @@ export function Header() {
 
               {/* Mobile Menu Button */}
               <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                onClick={() => setIsOverlayOpen(true)}
                 className="lg:hidden p-2 rounded-full hover:bg-gray-100 dark:hover:bg-news-card-dark transition-colors"
-                aria-label="Toggle menu"
+                aria-label="Open menu"
               >
-                {isMobileMenuOpen ? (
-                  <X className="h-5 w-5 text-gray-600 dark:text-gray-300" />
-                ) : (
-                  <Menu className="h-5 w-5 text-gray-600 dark:text-gray-300" />
-                )}
+                <Menu className="h-5 w-5 text-gray-600 dark:text-gray-300" />
               </button>
             </div>
           </div>
@@ -198,21 +203,29 @@ export function Header() {
                   )}
                 </li>
               ))}
+              <li>
+                <button
+                  onClick={() => setIsCategoriesOverlayOpen(true)}
+                  className="flex items-center gap-1 px-4 py-3 text-base font-bold transition-colors text-gray-800 dark:text-gray-200 hover:text-news-red dark:hover:text-news-red border-b-2 border-transparent hover:border-news-red"
+                >
+                  <Menu className="h-5 w-5" />
+                </button>
+              </li>
             </ul>
           </nav>
         </div>
       </header>
 
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 bg-white dark:bg-news-bg-dark">
+      {/* Fullscreen Mobile Menu */}
+      {isOverlayOpen && (
+        <div className="fixed inset-0 z-50 bg-white dark:bg-news-bg-dark">
           <div className="container mx-auto px-4 py-4">
             <div className="flex items-center justify-between mb-6">
               <h2 className={cn('text-xl font-bold', isNepali ? 'font-nepali' : '')}>
                 {t('nav.menu')}
               </h2>
               <button
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={() => setIsOverlayOpen(false)}
                 className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-news-card-dark"
                 aria-label="Close menu"
               >
@@ -221,21 +234,66 @@ export function Header() {
             </div>
             <nav>
               <ul className="space-y-2">
-                {navItems.map((item) => (
-                  <li key={item.href}>
+                <li>
+                  <Link
+                    href="/"
+                    onClick={() => setIsOverlayOpen(false)}
+                    className="block px-4 py-3 text-lg font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-news-card-dark rounded-lg"
+                  >
+                    <span className={isNepali ? 'font-nepali' : ''}>
+                      {isNepali ? 'होमपेज' : 'Home'}
+                    </span>
+                  </Link>
+                </li>
+                {categories.map((category) => (
+                  <li key={category.id}>
                     <Link
-                      href={item.href}
-                      onClick={() => setIsMobileMenuOpen(false)}
+                      href={`/category/${category.slug}`}
+                      onClick={() => setIsOverlayOpen(false)}
                       className="block px-4 py-3 text-lg font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-news-card-dark rounded-lg"
                     >
                       <span className={isNepali ? 'font-nepali' : ''}>
-                        {isNepali ? item.labelNe : item.label}
+                        {isNepali ? (category.nameNe || category.nameEn) : (category.nameEn || category.nameNe)}
                       </span>
                     </Link>
                   </li>
                 ))}
               </ul>
             </nav>
+          </div>
+        </div>
+      )}
+
+      {/* Fullscreen Categories Overlay */}
+      {isCategoriesOverlayOpen && (
+        <div className="fixed inset-0 z-50 bg-white dark:bg-news-bg-dark">
+          <div className="container mx-auto px-4 py-4">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className={cn('text-xl font-bold', isNepali ? 'font-nepali' : '')}>
+                {isNepali ? 'सबै श्रेणीहरु' : 'All Categories'}
+              </h2>
+              <button
+                onClick={() => setIsCategoriesOverlayOpen(false)}
+                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-news-card-dark"
+                aria-label="Close"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+              {categories.map((category) => (
+                <Link
+                  key={category.id}
+                  href={`/category/${category.slug}`}
+                  onClick={() => setIsCategoriesOverlayOpen(false)}
+                  className="flex items-center justify-center px-3 py-4 text-base font-medium text-center text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-news-card-dark rounded-lg bg-gray-50 dark:bg-news-card-dark"
+                >
+                  <span className={isNepali ? 'font-nepali' : ''}>
+                    {isNepali ? (category.nameNe || category.nameEn) : (category.nameEn || category.nameNe)}
+                  </span>
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       )}

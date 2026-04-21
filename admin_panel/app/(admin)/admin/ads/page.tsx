@@ -12,7 +12,15 @@ import { Switch } from '@/components/ui/switch'
 import { toast } from 'sonner'
 import { useAds, useCreateAd, useToggleAdActive, useDeleteAd } from '@/hooks/use-ads'
 
-const positions = ['SIDEBAR', 'BANNER', 'POPUP', 'INLINE']
+const positions = [
+  { value: 'SIDEBAR', label: 'Sidebar' },
+  { value: 'BANNER', label: 'Banner' },
+  { value: 'IN_ARTICLE', label: 'In Article' },
+  { value: 'SIDEBAR_TOP', label: 'Sidebar Top' },
+  { value: 'SIDEBAR_BOTTOM', label: 'Sidebar Bottom' },
+  { value: 'HOME_MIDDLE', label: 'Home Middle' },
+  { value: 'ARTICLE_DETAIL', label: 'Article Detail' },
+]
 
 export default function AdsPage() {
   const [showForm, setShowForm] = useState(false)
@@ -117,7 +125,7 @@ export default function AdsPage() {
                   onChange={(e) => setFormData(p => ({ ...p, position: e.target.value }))}
                   className="mt-1 w-full p-2 border rounded-md bg-background"
                 >
-                  {positions.map(p => <option key={p} value={p}>{p}</option>)}
+                  {positions.map(p => <option key={p.value} value={p.value}>{p.label}</option>)}
                 </select>
               </div>
             </div>
