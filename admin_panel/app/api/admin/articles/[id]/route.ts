@@ -272,14 +272,30 @@ export async function PATCH(
     const validatedData = validation.data as {
       tagIds?: string[];
       scheduledAt?: string;
+      publishedAt?: string;
       featuredImageId?: string;
       [key: string]: unknown;
     };
-    const { tagIds, scheduledAt, featuredImageId, ...rest } = validatedData;
+    const { tagIds, scheduledAt, publishedAt, featuredImageId, ...rest } = validatedData;
 
     const articleData: Record<string, unknown> = {
       ...rest,
     };
+
+    if (publishedAt && publishedAt !== "") {
+      let dateStr = publishedAt as string;
+      if (dateStr.split(":").length === 2) {
+        dateStr = dateStr + ":00";
+      }
+      if (!dateStr.endsWith("Z") && !dateStr.includes("+")) {
+        const nepalOffset = 5.75 * 60 * 60 * 1000;
+        const nepalDate = new Date(dateStr);
+        const utcDate = new Date(nepalDate.getTime() - nepalOffset);
+        articleData.publishedAt = utcDate;
+      } else {
+        articleData.publishedAt = new Date(dateStr);
+      }
+    }
 
     if (scheduledAt && scheduledAt !== "") {
       let dateStr = scheduledAt as string;

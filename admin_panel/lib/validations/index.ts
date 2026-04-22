@@ -113,6 +113,14 @@ export const articleSchema = z.object({
   ogImage: z.string().url("Invalid URL").optional().or(z.literal("")),
   isFlashUpdate: booleanFromInput.default(false),
   isFeatured: booleanFromInput.default(false),
+  publishedAt: z
+    .string()
+    .regex(
+      /^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}(?::\d{2})?(?:\.\d+)?(?:[+-]\d{2}:?\d{2}|Z)?$/,
+      "Invalid datetime format. Use format like: YYYY-MM-DDTHH:MM",
+    )
+    .optional()
+    .or(z.literal("")),
   scheduledAt: z
     .string()
     .regex(

@@ -40,6 +40,7 @@ const articleSchema = z.object({
   isFlashUpdate: z.boolean().default(false),
   isFeatured: z.boolean().default(false),
   featuredImageId: z.string().optional(),
+  publishedAt: z.string().optional(),
   scheduledAt: z.string().optional(),
 })
 
@@ -385,6 +386,27 @@ export default function NewArticlePage() {
                   checked={isFeatured}
                   onCheckedChange={(checked) => setValue('isFeatured', checked)}
                 />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Published Date */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm font-medium">Publication Date</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="publishedAt">Published Date & Time</Label>
+                <Input
+                  id="publishedAt"
+                  type="datetime-local"
+                  {...register('publishedAt')}
+                  className="mt-1"
+                />
+                <p className="text-xs text-slate-500 mt-1">
+                  Set custom publish date or leave empty (will auto-set when published)
+                </p>
               </div>
             </CardContent>
           </Card>
