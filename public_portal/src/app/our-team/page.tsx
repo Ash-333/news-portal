@@ -11,7 +11,7 @@ interface TeamPageProps {
 
 export const revalidate = 120;
 
-export async function generateMetadata({ }: TeamPageProps): Promise<Metadata> {
+export async function generateMetadata({}: TeamPageProps): Promise<Metadata> {
   return {
     title: 'Our Team - HTC Media',
     description: 'Meet the team behind HTC Media',
@@ -24,8 +24,8 @@ export default async function TeamPage({ searchParams }: TeamPageProps) {
   const members = result.success ? result.data : [];
 
   const pageTitle = lang === 'ne' ? 'हाम्रो टिम' : 'Our Team';
-  const noMembers = lang === 'ne'
-    ? 'हालसम्म कुनै टिम सदस्य छैन।'
+  const noMembers = lang === 'ne' 
+    ? 'हालसम्म कुनै टिम सदस्य छैन।' 
     : 'No team members found.';
 
   // Group members by department

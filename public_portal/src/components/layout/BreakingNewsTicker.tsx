@@ -11,12 +11,12 @@ import { getTitle } from '@/lib/utils/lang';
 export function BreakingNewsTicker() {
   const { isNepali, language, t } = useLanguage();
   const [isPaused, setIsPaused] = useState(false);
-
+  
   const { data: flashUpdateArticles = [] } = useBreakingArticles();
   const { data: latestArticles = [] } = useLatestArticles(5);
-
+  
   const articles = flashUpdateArticles.length > 0 ? flashUpdateArticles : latestArticles;
-
+  
   const breakingNews = articles.slice(0, 6).map((article) => ({
     id: article.id,
     title: getTitle(article, language),

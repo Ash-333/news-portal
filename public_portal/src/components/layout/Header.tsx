@@ -235,20 +235,20 @@ export function Header() {
 
                 {moreNavItem.children && activeDropdown === moreNavItem.href && (
                   <div className="absolute top-full left-0 w-64 bg-white dark:bg-news-card-dark shadow-lg rounded-b-lg border border-t-0 border-news-border dark:border-news-border-dark z-50">
-                    <ul className="py-2">
-                      {moreNavItem.children.map((child: NavItem) => (
-                        <li key={child.href}>
-                          <Link
-                            href={child.href}
-                            className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-news-bg-dark hover:text-news-red"
-                          >
-                            <span className={isNepali ? 'font-nepali text-lg font-bold' : ''}>
-                              {isNepali ? child.labelNe : child.label}
-                            </span>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
+<ul className="py-2">
+ {moreNavItem.children.map((child: NavItem) => (
+                          <li key={child.href}>
+                            <Link
+                              href={child.href}
+                              className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-news-bg-dark hover:text-news-red"
+                            >
+                              <span className={isNepali ? 'font-nepali text-lg font-bold' : ''}>
+                                {isNepali ? child.labelNe : child.label}
+                              </span>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
                   </div>
                 )}
               </li>

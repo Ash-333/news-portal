@@ -32,8 +32,8 @@ export function WorldDiasporaSection({
     <section className="py-8 border-t border-news-border dark:border-news-border-dark w-full overflow-hidden">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Diaspora - Title Only List (8 columns) - LEFT */}
-          <div className="lg:col-span-8">
+          {/* Diaspora - Title Only List (5 columns) - LEFT */}
+          <div className="lg:col-span-5">
             <div className="flex items-center gap-2 mb-6">
               <div className="w-1 h-6 bg-news-blue rounded-full" />
               <h2 className={cn('text-xl md:text-2xl font-bold text-gray-900 dark:text-white', isNepali ? 'font-nepali' : '')}>
@@ -80,8 +80,8 @@ export function WorldDiasporaSection({
             </Link>
           </div>
 
-          {/* World - Featured + Grid Layout (4 columns) - RIGHT */}
-          <div className="lg:col-span-4">
+          {/* World - Featured + Grid Layout (7 columns) - RIGHT */}
+          <div className="lg:col-span-7">
             <div className="flex items-center gap-2 mb-4">
               <div className="w-1 h-5 bg-news-red rounded-full" />
               <h3 className={cn('text-lg font-bold text-gray-900 dark:text-white', isNepali ? 'font-nepali' : '')}>

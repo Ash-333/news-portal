@@ -24,7 +24,7 @@ replace breaking news and add flash updates in marquee //done
 add placement in article page title below image below and in between news and end of news
 entire sidebar
 merge category and province //done
-add social media link for team member and email //done
+add social media link for team member and email //done  
 name of reporter should be in all over the article
 update the published date and time
 

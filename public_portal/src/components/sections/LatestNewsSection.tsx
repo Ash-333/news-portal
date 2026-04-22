@@ -1,22 +1,26 @@
 "use client";
 
-import { Article, Poll } from "@/types";
+import { Article, Poll, Category } from "@/types";
 import { useLanguage } from "@/context/LanguageContext";
 import { cn } from "@/lib/utils";
 import { ArticleCard } from "@/components/ArticleCard";
 import { AdPlaceholder } from "@/components/ui/AdPlaceholder";
 import { PollCard } from "@/components/polls/PollCard";
+import { getCategoryName } from "@/lib/utils/lang";
 import React from "react";
 
 interface LatestNewsSectionProps {
   articles: Article[];
   poll?: Poll | null;
+  category?: Category;
 }
 
-export function LatestNewsSection({ articles, poll }: LatestNewsSectionProps) {
+export function LatestNewsSection({ articles, poll, category }: LatestNewsSectionProps) {
   const { isNepali, t } = useLanguage();
 
   if (!articles.length) return null;
+
+  const sectionTitle = category ? getCategoryName(category, isNepali ? 'ne' : 'en') : t("category.latest");
 
   return (
     <section>
@@ -28,7 +32,7 @@ export function LatestNewsSection({ articles, poll }: LatestNewsSectionProps) {
             isNepali ? "font-nepali" : ""
           )}
         >
-          {t("category.latest")}
+          {sectionTitle}
         </h2>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

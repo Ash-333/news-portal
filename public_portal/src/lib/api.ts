@@ -417,14 +417,11 @@ export async function fetchPublishedArticles(options?: {
       params.set("limit", String(options.limit));
     }
     const queryString = params.toString();
-    const payload = await apiFetch<unknown>(
-      `/api/articles${queryString ? `?${queryString}` : ""}`,
-      {
-        next: options?.revalidate
-          ? { revalidate: options.revalidate }
-          : undefined,
-      },
-    );
+    const payload = await apiFetch<unknown>(`/api/articles${queryString ? `?${queryString}` : ""}`, {
+      next: options?.revalidate
+        ? { revalidate: options.revalidate }
+        : undefined,
+    });
 
     return unwrapList<any>(payload, ["articles"]).map(normalizeArticle);
   } catch (error) {

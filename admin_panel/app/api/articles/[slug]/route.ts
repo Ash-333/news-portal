@@ -57,13 +57,7 @@ export async function GET(
             ogImage: true,
             featuredImage: { select: { id: true, url: true } },
             author: {
-              select: {
-                id: true,
-                name: true,
-                nameNe: true,
-                profilePhoto: true,
-                bio: true,
-              },
+              select: { id: true, name: true, nameNe: true, profilePhoto: true, bio: true },
             },
             category: {
               select: { id: true, nameNe: true, nameEn: true, slug: true },

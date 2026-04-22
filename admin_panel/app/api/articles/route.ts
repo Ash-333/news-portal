@@ -24,7 +24,7 @@ async function getAllCategoryIds(categoryId: string): Promise<string[]> {
   const allCategories = await prisma.category.findMany({
     select: { id: true, parentId: true },
   });
-
+  
   const ids: string[] = [];
   const findChildren = (parentId: string) => {
     ids.push(parentId);
@@ -33,7 +33,7 @@ async function getAllCategoryIds(categoryId: string): Promise<string[]> {
       findChildren(child.id);
     }
   };
-
+  
   findChildren(categoryId);
   return ids;
 }
@@ -101,7 +101,7 @@ export async function GET(req: NextRequest) {
             where: { slug: categorySlug },
             select: { id: true },
           });
-
+          
           if (category) {
             const allCategoryIds = await getAllCategoryIds(category.id);
             where.categoryId = { in: allCategoryIds };
@@ -137,12 +137,7 @@ export async function GET(req: NextRequest) {
                 select: { id: true, url: true },
               },
               author: {
-                select: {
-                  id: true,
-                  name: true,
-                  nameNe: true,
-                  profilePhoto: true,
-                },
+                select: { id: true, name: true, nameNe: true, profilePhoto: true },
               },
               category: {
                 select: { id: true, nameNe: true, nameEn: true, slug: true },

@@ -78,7 +78,7 @@ export default function NewTeamMemberPage() {
     setIsSubmitting(true)
     try {
       let imageUrl = ''
-
+      
       if (selectedFile) {
         const formData = new FormData()
         formData.append('file', selectedFile)
@@ -107,7 +107,7 @@ export default function NewTeamMemberPage() {
         }),
       })
       const result = await response.json()
-
+      
       if (result.success) {
         toast.success('Team member created successfully')
         router.push('/admin/team-members')
@@ -215,7 +215,7 @@ export default function NewTeamMemberPage() {
                 ref={fileInputRef}
                 onChange={handleFileSelect}
               />
-
+              
               {preview ? (
                 <div className="relative mt-2 w-32 h-32">
                   <img src={preview} alt="Preview" className="w-full h-full object-cover rounded-lg" />

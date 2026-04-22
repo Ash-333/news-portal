@@ -121,7 +121,7 @@ export default function EditTeamMemberPage() {
     setIsSubmitting(true)
     try {
       let imageUrl = data.image || ''
-
+      
       if (selectedFile) {
         const formData = new FormData()
         formData.append('file', selectedFile)
@@ -152,7 +152,7 @@ export default function EditTeamMemberPage() {
         }),
       })
       const result = await response.json()
-
+      
       if (result.success) {
         toast.success('Team member updated successfully')
         router.push('/admin/team-members')
@@ -272,7 +272,7 @@ export default function EditTeamMemberPage() {
             <div>
               <Label>Photo</Label>
               <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleFileSelect} />
-
+              
               {preview ? (
                 <div className="relative mt-2 w-32 h-32">
                   <img src={preview} alt="Preview" className="w-full h-full object-cover rounded-lg" />

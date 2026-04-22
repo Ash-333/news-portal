@@ -7,7 +7,7 @@ import Link from 'next/link'
 import {
   LayoutDashboard,
   FileText,
-  Image,
+Image,
   Images,
   Tag,
   FolderTree,

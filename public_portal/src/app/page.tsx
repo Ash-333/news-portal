@@ -20,6 +20,7 @@ import { HoroscopeSection } from '@/components/horoscopes/HoroscopeSection';
 import { VideoSection } from '@/components/sections/VideoSection';
 import { PhotoGallerySection } from '@/components/sections/PhotoGallerySection';
 import { WorldDiasporaSection } from '@/components/sections/WorldDiasporaSection';
+import { StoryOpinionSection } from '@/components/sections/StoryOpinionSection';
 import { Article, Poll, Category } from '@/types';
 import { getServerLanguage } from '@/lib/utils/language';
 
@@ -219,7 +220,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { lang
         <section className="border-t border-news-border dark:border-news-border-dark py-6">
           <div className="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-6">
             <div className="lg:col-span-8 space-y-8">
-              <LatestNewsSection articles={latestArticles} poll={activePoll} />
+              <LatestNewsSection articles={newsArticles} poll={activePoll} category={newsCategory} />
             </div>
 
             <aside className="lg:col-span-4 space-y-6">
@@ -265,25 +266,10 @@ export default async function HomePage({ searchParams }: { searchParams?: { lang
             <AdPlaceholder format="leaderboard" />
           </div>
 
-          {storyCategory ? (
-            <CategorySection
-              category={storyCategory}
-              articles={storyArticles}
-              layout="horizontal"
-            />
-          ) : null}
-
-          <div className="py-4 container mx-auto px-4 flex justify-center">
-            <AdPlaceholder format="leaderboard" />
-          </div>
-
-          {opinionCategory ? (
-            <CategorySection
-              category={opinionCategory}
-              articles={opinionArticles}
-              layout="opinion"
-            />
-          ) : null}
+          <StoryOpinionSection
+            opinionArticles={opinionArticles}
+            storyArticles={storyArticles}
+          />
 
           <div className="py-4 container mx-auto px-4 flex justify-center">
             <AdPlaceholder format="leaderboard" />
@@ -322,7 +308,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { lang
             <AdPlaceholder format="leaderboard" />
           </div>
 
-          {economyCategory && economyArticles.length > 0 ? (
+{economyCategory && economyArticles.length > 0 ? (
             <CategorySection
               category={economyCategory}
               articles={economyArticles}

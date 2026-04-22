@@ -366,51 +366,22 @@ async function main() {
 
   // Politics subcategories
   const politicsSubcategories = [
-    {
-      slug: "federal-politics",
-      nameEn: "Federal Politics",
-      nameNe: "संघीय राजनीति",
-    },
-    {
-      slug: "provincial-politics",
-      nameEn: "Provincial Politics",
-      nameNe: "प्रादेशिक राजनीति",
-    },
-    {
-      slug: "local-politics",
-      nameEn: "Local Politics",
-      nameNe: "स्थानीय राजनीति",
-    },
+    { slug: "federal-politics", nameEn: "Federal Politics", nameNe: "संघीय राजनीति" },
+    { slug: "provincial-politics", nameEn: "Provincial Politics", nameNe: "प्रादेशिक राजनीति" },
+    { slug: "local-politics", nameEn: "Local Politics", nameNe: "स्थानीय राजनीति" },
     { slug: "elections", nameEn: "Elections", nameNe: "निर्वाचन" },
-    {
-      slug: "political-parties",
-      nameEn: "Political Parties",
-      nameNe: "राजनीतिक दल",
-    },
+    { slug: "political-parties", nameEn: "Political Parties", nameNe: "राजनीतिक दल" },
     { slug: "parliament", nameEn: "Parliament", nameNe: "संसद" },
     { slug: "government", nameEn: "Government", nameNe: "सरकार" },
     { slug: "opposition", nameEn: "Opposition", nameNe: "विपक्ष" },
-    {
-      slug: "political-analysis",
-      nameEn: "Political Analysis",
-      nameNe: "राजनीतिक विश्लेषण",
-    },
-    {
-      slug: "political-news",
-      nameEn: "Political News",
-      nameNe: "राजनीतिक समाचार",
-    },
+    { slug: "political-analysis", nameEn: "Political Analysis", nameNe: "राजनीतिक विश्लेषण" },
+    { slug: "political-news", nameEn: "Political News", nameNe: "राजनीतिक समाचार" },
   ];
   for (const sub of politicsSubcategories) {
     await prisma.category.upsert({
       where: { slug: sub.slug },
       update: {},
-      create: {
-        nameNe: sub.nameNe,
-        nameEn: sub.nameEn,
-        slug: sub.slug,
-        parentId: politics.id,
-      },
+      create: { nameNe: sub.nameNe, nameEn: sub.nameEn, slug: sub.slug, parentId: politics.id },
     });
   }
 
@@ -431,23 +402,14 @@ async function main() {
     await prisma.category.upsert({
       where: { slug: sub.slug },
       update: {},
-      create: {
-        nameNe: sub.nameNe,
-        nameEn: sub.nameEn,
-        slug: sub.slug,
-        parentId: sports.id,
-      },
+      create: { nameNe: sub.nameNe, nameEn: sub.nameEn, slug: sub.slug, parentId: sports.id },
     });
   }
 
   // Technology subcategories
   const technologySubcategories = [
     { slug: "gadgets", nameEn: "Gadgets", nameNe: "ग्याजेट्स" },
-    {
-      slug: "ai-artificial-intelligence",
-      nameEn: "AI & Artificial Intelligence",
-      nameNe: "एआई र कृत्रिम बुद्धिमत्ता",
-    },
+    { slug: "ai-artificial-intelligence", nameEn: "AI & Artificial Intelligence", nameNe: "एआई र कृत्रिम बुद्धिमत्ता" },
     { slug: "startups", nameEn: "Startups", nameNe: "स्टार्टअप" },
     { slug: "cybersecurity", nameEn: "Cybersecurity", nameNe: "साइबर सुरक्षा" },
     { slug: "mobile-phones", nameEn: "Mobile Phones", nameNe: "मोबाइल फोन" },
@@ -455,22 +417,13 @@ async function main() {
     { slug: "internet", nameEn: "Internet", nameNe: "इन्टरनेट" },
     { slug: "social-media", nameEn: "Social Media", nameNe: "सामाजिक मिडिया" },
     { slug: "tech-news", nameEn: "Tech News", nameNe: "प्रविधि समाचार" },
-    {
-      slug: "software-apps",
-      nameEn: "Software & Apps",
-      nameNe: "सफ्टवेयर र एप्स",
-    },
+    { slug: "software-apps", nameEn: "Software & Apps", nameNe: "सफ्टवेयर र एप्स" },
   ];
   for (const sub of technologySubcategories) {
     await prisma.category.upsert({
       where: { slug: sub.slug },
       update: {},
-      create: {
-        nameNe: sub.nameNe,
-        nameEn: sub.nameEn,
-        slug: sub.slug,
-        parentId: technology.id,
-      },
+      create: { nameNe: sub.nameNe, nameEn: sub.nameEn, slug: sub.slug, parentId: technology.id },
     });
   }
 
@@ -485,22 +438,13 @@ async function main() {
     { slug: "celebrity", nameEn: "Celebrity", nameNe: "सेलिब्रिटी" },
     { slug: "fashion", nameEn: "Fashion", nameNe: "फेसन" },
     { slug: "gossip", nameEn: "Gossip", nameNe: "गपशप" },
-    {
-      slug: "entertainment-news",
-      nameEn: "Entertainment News",
-      nameNe: "मनोरञ्जन समाचार",
-    },
+    { slug: "entertainment-news", nameEn: "Entertainment News", nameNe: "मनोरञ्जन समाचार" },
   ];
   for (const sub of entertainmentSubcategories) {
     await prisma.category.upsert({
       where: { slug: sub.slug },
       update: {},
-      create: {
-        nameNe: sub.nameNe,
-        nameEn: sub.nameEn,
-        slug: sub.slug,
-        parentId: entertainment.id,
-      },
+      create: { nameNe: sub.nameNe, nameEn: sub.nameEn, slug: sub.slug, parentId: entertainment.id },
     });
   }
 
@@ -521,12 +465,7 @@ async function main() {
     await prisma.category.upsert({
       where: { slug: sub.slug },
       update: {},
-      create: {
-        nameNe: sub.nameNe,
-        nameEn: sub.nameEn,
-        slug: sub.slug,
-        parentId: economy.id,
-      },
+      create: { nameNe: sub.nameNe, nameEn: sub.nameEn, slug: sub.slug, parentId: economy.id },
     });
   }
 
@@ -539,28 +478,15 @@ async function main() {
     { slug: "middle-east", nameEn: "Middle East", nameNe: "मध्य पूर्व" },
     { slug: "un", nameEn: "United Nations", nameNe: "संयुक्त राष्ट्र" },
     { slug: "diplomacy", nameEn: "Diplomacy", nameNe: "कूटनीति" },
-    {
-      slug: "global-economy",
-      nameEn: "Global Economy",
-      nameNe: "विश्व अर्थतन्त्र",
-    },
-    {
-      slug: "climate-change",
-      nameEn: "Climate Change",
-      nameNe: "जलवायु परिवर्तन",
-    },
+    { slug: "global-economy", nameEn: "Global Economy", nameNe: "विश्व अर्थतन्त्र" },
+    { slug: "climate-change", nameEn: "Climate Change", nameNe: "जलवायु परिवर्तन" },
     { slug: "world-news", nameEn: "World News", nameNe: "विश्व समाचार" },
   ];
   for (const sub of worldSubcategories) {
     await prisma.category.upsert({
       where: { slug: sub.slug },
       update: {},
-      create: {
-        nameNe: sub.nameNe,
-        nameEn: sub.nameEn,
-        slug: sub.slug,
-        parentId: world.id,
-      },
+      create: { nameNe: sub.nameNe, nameEn: sub.nameEn, slug: sub.slug, parentId: world.id },
     });
   }
 
@@ -568,22 +494,10 @@ async function main() {
   const societySubcategories = [
     { slug: "education", nameEn: "Education", nameNe: "शिक्षा" },
     { slug: "health", nameEn: "Health", nameNe: "स्वास्थ्य" },
-    {
-      slug: "women-empowerment",
-      nameEn: "Women Empowerment",
-      nameNe: "महिला सशक्तिकरण",
-    },
+    { slug: "women-empowerment", nameEn: "Women Empowerment", nameNe: "महिला सशक्तिकरण" },
     { slug: "children", nameEn: "Children", nameNe: "बालबालिका" },
-    {
-      slug: "senior-citizens",
-      nameEn: "Senior Citizens",
-      nameNe: "ज्येष्ठ नागरिक",
-    },
-    {
-      slug: "social-issues",
-      nameEn: "Social Issues",
-      nameNe: "सामाजिक मुद्दा",
-    },
+    { slug: "senior-citizens", nameEn: "Senior Citizens", nameNe: "ज्येष्ठ नागरिक" },
+    { slug: "social-issues", nameEn: "Social Issues", nameNe: "सामाजिक मुद्दा" },
     { slug: "community", nameEn: "Community", nameNe: "समुदाय" },
     { slug: "volunteer", nameEn: "Volunteer", nameNe: "स्वयंसेवक" },
     { slug: "ngos", nameEn: "NGOs", nameNe: "गैरसरकारी संगठन" },
@@ -593,22 +507,13 @@ async function main() {
     await prisma.category.upsert({
       where: { slug: sub.slug },
       update: {},
-      create: {
-        nameNe: sub.nameNe,
-        nameEn: sub.nameEn,
-        slug: sub.slug,
-        parentId: society.id,
-      },
+      create: { nameNe: sub.nameNe, nameEn: sub.nameEn, slug: sub.slug, parentId: society.id },
     });
   }
 
   // Health subcategories (under swasthya)
   const healthSubcategories = [
-    {
-      slug: "mental-health",
-      nameEn: "Mental Health",
-      nameNe: "मानसिक स्वास्थ्य",
-    },
+    { slug: "mental-health", nameEn: "Mental Health", nameNe: "मानसिक स्वास्थ्य" },
     { slug: "nutrition", nameEn: "Nutrition", nameNe: "पोषण" },
     { slug: "fitness", nameEn: "Fitness", nameNe: "फिटनेस" },
     { slug: "diseases", nameEn: "Diseases", nameNe: "रोगहरु" },
@@ -623,12 +528,7 @@ async function main() {
     await prisma.category.upsert({
       where: { slug: sub.slug },
       update: {},
-      create: {
-        nameNe: sub.nameNe,
-        nameEn: sub.nameEn,
-        slug: sub.slug,
-        parentId: swasthya.id,
-      },
+      create: { nameNe: sub.nameNe, nameEn: sub.nameEn, slug: sub.slug, parentId: swasthya.id },
     });
   }
 
@@ -636,37 +536,20 @@ async function main() {
   const lifestyleSubcategories = [
     { slug: "food-recipes", nameEn: "Food & Recipes", nameNe: "खाना र रेसिपी" },
     { slug: "travel", nameEn: "Travel", nameNe: "यात्रा" },
-    {
-      slug: "fashion-style",
-      nameEn: "Fashion & Style",
-      nameNe: "फेसन र स्टाइल",
-    },
+    { slug: "fashion-style", nameEn: "Fashion & Style", nameNe: "फेसन र स्टाइल" },
     { slug: "home-living", nameEn: "Home & Living", nameNe: "घर र बसोबास" },
     { slug: "relationships", nameEn: "Relationships", nameNe: "सम्बन्ध" },
     { slug: "parenting", nameEn: "Parenting", nameNe: "पालनपोषण" },
     { slug: "pets", nameEn: "Pets", nameNe: "पाल्तु जनावर" },
-    {
-      slug: "beauty-skincare",
-      nameEn: "Beauty & Skincare",
-      nameNe: "सौन्दर्य र हेरचाह",
-    },
+    { slug: "beauty-skincare", nameEn: "Beauty & Skincare", nameNe: "सौन्दर्य र हेरचाह" },
     { slug: "fitness-yoga", nameEn: "Fitness & Yoga", nameNe: "फिटनेस र योग" },
-    {
-      slug: "lifestyle-news",
-      nameEn: "Lifestyle News",
-      nameNe: "जीवनशैली समाचार",
-    },
+    { slug: "lifestyle-news", nameEn: "Lifestyle News", nameNe: "जीवनशैली समाचार" },
   ];
   for (const sub of lifestyleSubcategories) {
     await prisma.category.upsert({
       where: { slug: sub.slug },
       update: {},
-      create: {
-        nameNe: sub.nameNe,
-        nameEn: sub.nameEn,
-        slug: sub.slug,
-        parentId: jeevanShaili.id,
-      },
+      create: { nameNe: sub.nameNe, nameEn: sub.nameEn, slug: sub.slug, parentId: jeevanShaili.id },
     });
   }
 
@@ -678,16 +561,8 @@ async function main() {
     { slug: "astrology", nameEn: "Astrology", nameNe: "ज्योतिष" },
     { slug: "spiritual", nameEn: "Spiritual", nameNe: "आध्यात्मिक" },
     { slug: "puja-path", nameEn: "Puja & Path", nameNe: "पूजा र पाठ" },
-    {
-      slug: "religious-places",
-      nameEn: "Religious Places",
-      nameNe: "धार्मिक स्थल",
-    },
-    {
-      slug: "culture-heritage",
-      nameEn: "Culture & Heritage",
-      nameNe: "संस्कृति र विरासत",
-    },
+    { slug: "religious-places", nameEn: "Religious Places", nameNe: "धार्मिक स्थल" },
+    { slug: "culture-heritage", nameEn: "Culture & Heritage", nameNe: "संस्कृति र विरासत" },
     { slug: "traditions", nameEn: "Traditions", nameNe: "परम्परा" },
     { slug: "dharma-news", nameEn: "Dharma News", nameNe: "धर्म समाचार" },
   ];
@@ -695,12 +570,7 @@ async function main() {
     await prisma.category.upsert({
       where: { slug: sub.slug },
       update: {},
-      create: {
-        nameNe: sub.nameNe,
-        nameEn: sub.nameEn,
-        slug: sub.slug,
-        parentId: dharmaSanskriti.id,
-      },
+      create: { nameNe: sub.nameNe, nameEn: sub.nameEn, slug: sub.slug, parentId: dharmaSanskriti.id },
     });
   }
 
@@ -709,48 +579,19 @@ async function main() {
     { slug: "nri-news", nameEn: "NRI News", nameNe: "एनआरआई समाचार" },
     { slug: "remittance", nameEn: "Remittance", nameNe: "रेमिट्यान्स" },
     { slug: "overseas-jobs", nameEn: "Overseas Jobs", nameNe: "विदेशी रोजगार" },
-    {
-      slug: "diaspora-community",
-      nameEn: "Diaspora Community",
-      nameNe: "प्रवासी समुदाय",
-    },
-    {
-      slug: "cultural-association",
-      nameEn: "Cultural Association",
-      nameNe: "सांस्कृतिक संघ",
-    },
-    {
-      slug: "diaspora-events",
-      nameEn: "Diaspora Events",
-      nameNe: "प्रवासी कार्यक्रम",
-    },
-    {
-      slug: "nepal-embassy",
-      nameEn: "Nepal Embassy",
-      nameNe: "नेपाली दूतावास",
-    },
-    {
-      slug: "citizenship-abroad",
-      nameEn: "Citizenship Abroad",
-      nameNe: "विदेशमा नागरिकता",
-    },
-    {
-      slug: "diaspora-investment",
-      nameEn: "Diaspora Investment",
-      nameNe: "प्रवासी लगानी",
-    },
+    { slug: "diaspora-community", nameEn: "Diaspora Community", nameNe: "प्रवासी समुदाय" },
+    { slug: "cultural-association", nameEn: "Cultural Association", nameNe: "सांस्कृतिक संघ" },
+    { slug: "diaspora-events", nameEn: "Diaspora Events", nameNe: "प्रवासी कार्यक्रम" },
+    { slug: "nepal-embassy", nameEn: "Nepal Embassy", nameNe: "नेपाली दूतावास" },
+    { slug: "citizenship-abroad", nameEn: "Citizenship Abroad", nameNe: "विदेशमा नागरिकता" },
+    { slug: "diaspora-investment", nameEn: "Diaspora Investment", nameNe: "प्रवासी लगानी" },
     { slug: "diaspora-news", nameEn: "Diaspora News", nameNe: "प्रवास समाचार" },
   ];
   for (const sub of diasporaSubcategories) {
     await prisma.category.upsert({
       where: { slug: sub.slug },
       update: {},
-      create: {
-        nameNe: sub.nameNe,
-        nameEn: sub.nameEn,
-        slug: sub.slug,
-        parentId: diaspora.id,
-      },
+      create: { nameNe: sub.nameNe, nameEn: sub.nameEn, slug: sub.slug, parentId: diaspora.id },
     });
   }
 
@@ -758,74 +599,33 @@ async function main() {
   const storySubcategories = [
     { slug: "news-story", nameEn: "News Story", nameNe: "समाचार कथा" },
     { slug: "feature-story", nameEn: "Feature Story", nameNe: "फिचर कथा" },
-    {
-      slug: " investigative-story",
-      nameEn: "Investigative Story",
-      nameNe: "अनुसन्धानात्मक कथा",
-    },
+    { slug: " investigative-story", nameEn: "Investigative Story", nameNe: "अनुसन्धानात्मक कथा" },
     { slug: "human-interest", nameEn: "Human Interest", nameNe: "मानवीय चासो" },
     { slug: "success-story", nameEn: "Success Story", nameNe: "सफलता कथा" },
     { slug: "frontline", nameEn: "Frontline", nameNe: "अग्रपंक्ति" },
     { slug: "profile", nameEn: "Profile", nameNe: "प्रोफाइल" },
     { slug: "opinion-piece", nameEn: "Opinion Piece", nameNe: "विचार लेख" },
-    {
-      slug: "analysis-piece",
-      nameEn: "Analysis Piece",
-      nameNe: "विश्लेषण लेख",
-    },
-    {
-      slug: "special-report",
-      nameEn: "Special Report",
-      nameNe: "विशेष रिपोर्ट",
-    },
+    { slug: "analysis-piece", nameEn: "Analysis Piece", nameNe: "विश्लेषण लेख" },
+    { slug: "special-report", nameEn: "Special Report", nameNe: "विशेष रिपोर्ट" },
   ];
   for (const sub of storySubcategories) {
     await prisma.category.upsert({
       where: { slug: sub.slug },
       update: {},
-      create: {
-        nameNe: sub.nameNe,
-        nameEn: sub.nameEn,
-        slug: sub.slug,
-        parentId: story.id,
-      },
+      create: { nameNe: sub.nameNe, nameEn: sub.nameEn, slug: sub.slug, parentId: story.id },
     });
   }
 
   // Opinion subcategories
   const opinionSubcategories = [
     { slug: "editorial", nameEn: "Editorial", nameNe: "प्रमुख सम्पादकीय" },
-    {
-      slug: "opinion-column",
-      nameEn: "Opinion Column",
-      nameNe: "विचार स्तम्भ",
-    },
+    { slug: "opinion-column", nameEn: "Opinion Column", nameNe: "विचार स्तम्भ" },
     { slug: "guest-article", nameEn: "Guest Article", nameNe: "अतिथि लेख" },
-    {
-      slug: "letter-to-editor",
-      nameEn: "Letter to Editor",
-      nameNe: "सम्पादकको चिठ्ठी",
-    },
-    {
-      slug: "political-opinion",
-      nameEn: "Political Opinion",
-      nameNe: "राजनीतिक विचार",
-    },
-    {
-      slug: "social-commentary",
-      nameEn: "Social Commentary",
-      nameNe: "सामाजिक टिप्पणी",
-    },
-    {
-      slug: "economic-analysis",
-      nameEn: "Economic Analysis",
-      nameNe: "आर्थिक विश्लेषण",
-    },
-    {
-      slug: "cultural-review",
-      nameEn: "Cultural Review",
-      nameNe: "सांस्कृतिक समीक्षा",
-    },
+    { slug: "letter-to-editor", nameEn: "Letter to Editor", nameNe: "सम्पादकको चिठ्ठी" },
+    { slug: "political-opinion", nameEn: "Political Opinion", nameNe: "राजनीतिक विचार" },
+    { slug: "social-commentary", nameEn: "Social Commentary", nameNe: "सामाजिक टिप्पणी" },
+    { slug: "economic-analysis", nameEn: "Economic Analysis", nameNe: "आर्थिक विश्लेषण" },
+    { slug: "cultural-review", nameEn: "Cultural Review", nameNe: "सांस्कृतिक समीक्षा" },
     { slug: "sports-view", nameEn: "Sports View", nameNe: "खेल दृष्टिकोण" },
     { slug: "opinion-news", nameEn: "Opinion News", nameNe: "विचार समाचार" },
   ];
@@ -833,12 +633,7 @@ async function main() {
     await prisma.category.upsert({
       where: { slug: sub.slug },
       update: {},
-      create: {
-        nameNe: sub.nameNe,
-        nameEn: sub.nameEn,
-        slug: sub.slug,
-        parentId: opinion.id,
-      },
+      create: { nameNe: sub.nameNe, nameEn: sub.nameEn, slug: sub.slug, parentId: opinion.id },
     });
   }
 
@@ -900,27 +695,13 @@ async function main() {
   }
 
   // Get province subcategory IDs for article assignment
-  const koshiProvince = await prisma.category.findUnique({
-    where: { slug: "koshi-province" },
-  });
-  const madheshProvince = await prisma.category.findUnique({
-    where: { slug: "madhesh-province" },
-  });
-  const bagmatiProvince = await prisma.category.findUnique({
-    where: { slug: "bagmati-province" },
-  });
-  const gandakiProvince = await prisma.category.findUnique({
-    where: { slug: "gandaki-province" },
-  });
-  const lumbiniProvince = await prisma.category.findUnique({
-    where: { slug: "lumbini-province" },
-  });
-  const karnaliProvince = await prisma.category.findUnique({
-    where: { slug: "karnali-province" },
-  });
-  const sudurpashchimProvince = await prisma.category.findUnique({
-    where: { slug: "sudurpashchim-province" },
-  });
+  const koshiProvince = await prisma.category.findUnique({ where: { slug: "koshi-province" } });
+  const madheshProvince = await prisma.category.findUnique({ where: { slug: "madhesh-province" } });
+  const bagmatiProvince = await prisma.category.findUnique({ where: { slug: "bagmati-province" } });
+  const gandakiProvince = await prisma.category.findUnique({ where: { slug: "gandaki-province" } });
+  const lumbiniProvince = await prisma.category.findUnique({ where: { slug: "lumbini-province" } });
+  const karnaliProvince = await prisma.category.findUnique({ where: { slug: "karnali-province" } });
+  const sudurpashchimProvince = await prisma.category.findUnique({ where: { slug: "sudurpashchim-province" } });
 
   console.log(
     "✅ Categories: 24 created (16 + provinces with 7 subcategories)",
@@ -2575,92 +2356,188 @@ ${img(images.society2, "Community health services being expanded to reach the mo
 
   // News category
   await createArticle({
-    slug: "daily-news-update-nepal-april-18",
+    slug: "nepal-daily-news-bulletin-april-22-2026",
     coverImageUrl: images.politics1,
     coverImageFilename: "daily-news-cover.jpg",
     uploadedById: superAdmin.id,
-    titleNe: "दैनिक समाचार: नेपालमा आजका प्रमुख घटनाहरू",
-    titleEn: "Daily News: Major Events in Nepal Today",
+    titleNe: "दैनिक समाचार बुलेटिन: वैशाख ९, २०८३",
+    titleEn: "Daily News Bulletin: April 22, 2026",
     excerptNe:
-      "आजका प्रमुख समाचारहरूको सारांश: राजनीति, अर्थतन्त्र र सामाजिक क्षेत्रका महत्वपूर्ण घटनाहरू।",
+      "आजका प्रमुख समाचारहरू: संसदमा नागरिकता विधेयक बहस, नेप्से नयाँ उचाइमा र देशभरि मौसम सतर्कता जारी।",
     excerptEn:
-      "Summary of today's major news: Important events in politics, economy and social sectors.",
-    contentNe: `<p>काठमाडौं, वैशाख १ गते। आजको दिनमा नेपालमा विभिन्न क्षेत्रहरूमा महत्वपूर्ण घटनाहरू भएका छन्।</p>
-    <p>राजनीतिक क्षेत्रमा संसदको कार्यक्रम जारी छ भने अर्थतन्त्रमा बजेट कार्यान्वयनको समीक्षा भइरहेको छ।</p>`,
-    contentEn: `<p>Kathmandu, May 1st. Various important events have taken place in Nepal today across different sectors.</p>
-    <p>In politics, parliament's program is ongoing while budget implementation review is underway in the economy sector.</p>`,
+      "Today's top stories: Citizenship bill debate in parliament, NEPSE hits new high, and weather advisory issued nationwide.",
+    contentNe: `<p>काठमाडौं, वैशाख ९ । आजको प्रमुख समाचारहरूमा संसदमा नागरिकता विधेयकको तीव्र बहस, नेपाल शेयर बजारको नयाँ रेकर्ड र देशभरि भारी वर्षाको सतर्कता समावेश छ।</p>
+
+<p>संसद्मा आज नागरिकता विधेयकमा छलफल जारी रहेको छ। विपक्षी दलहरूले विधेयकका केही प्रावधानहरू विरोध गरिरहेका छन् जबकि सत्तापक्षले विधेयक छिट्टै पारित गर्ने प्रयास गरिरहेको छ।</p>
+
+${img(images.inline_parliament, "संसद् बैठकमा नागरिकता विधेयकमा बहस — Parliament debates citizenship bill")}
+
+<p>आर्थिक क्षेत्रमा नेप्से सूचकाङ्क आज फेरि नयाँ उचाइ छोएको छ। बैंकिङ र जलविद्युत् क्षेत्रका शेयरहरूमा उल्लेख्य वृद्धि देखिएको छ।</p>
+
+<p>मौसम विभागले देशका पहाडी र हिमाली क्षेत्रमा आगामी तीन दिनसम्म भारी वर्षा हुने सम्भावना जनाएको छ। यात्राहरूले सावधानी अपनाउन आग्रह गरिएको छ।</p>
+
+${img(images.inline_budget, "आर्थिक समाचार: नेप्से नयाँ उचाइमा — Economic news: NEPSE hits record high")}
+
+<p>स्वास्थ्य क्षेत्रमा चितवनमा डेंगु रोगको एक नयाँ कase पुष्टि भएको छ। स्वास्थ्य मन्त्रालयले विगत महिनामा देशभरि १२० भन्दा बढी डेंगु मरीजहरू पत्ता लागेको जनाएको छ।</p>`,
+
+    contentEn: `<p>Kathmandu, April 22. Today's top stories include heated debate on the citizenship bill in parliament, Nepal Stock Exchange hitting new records, and heavy rainfall warnings issued across the country.</p>
+
+<p>Discussion on the citizenship bill continues in parliament today. Opposition parties are opposing certain provisions of the bill while the ruling side is attempting to pass it as soon as possible.</p>
+
+${img(images.inline_parliament, "Parliament session continues debate on the controversial citizenship bill")}
+
+<p>In the economic sector, the NEPSE index touched another new high today. Significant growth was seen in banking and hydropower sector shares during trading hours.</p>
+
+<p>The Meteorological Department has forecast heavy rainfall in hilly and mountainous regions for the next three days. Travelers have been urged to exercise caution and monitor weather updates.</p>
+
+${img(images.inline_budget, "Economic update: NEPSE index continues bullish trend reaching record levels")}
+
+<p>In health sector, one new case of dengue has been confirmed in Chitwan. The Health Ministry reported that over 120 dengue patients have been identified nationwide in the past month with numbers rising steadily.</p>`,
+
     categoryId: news.id,
     authorId: author1.id,
-    isFeatured: false,
-    tagIds: [tagNepal.id, tagBreaking.id],
+    isFeatured: true,
+    tagIds: [tagNepal.id, tagBreaking.id, tagGovt.id],
     publishedAt: new Date(Date.now() - 1 * 60 * 60 * 1000),
   });
-  console.log("  ✓ News 1: Daily news update");
+  console.log("  ✓ News 1: Daily news bulletin");
 
   // Dharma & Culture category
   await createArticle({
-    slug: "mahashivratri-celebration-nepal-2082",
+    slug: "pashupatinath-temple-annual-festival-2026",
     coverImageUrl: images.entertain1,
-    coverImageFilename: "mahashivratri-cover.jpg",
+    coverImageFilename: "pashupatinath-festival-cover.jpg",
     uploadedById: superAdmin.id,
-    titleNe: "महाशिवरात्रि उत्सव सम्पन्न, लाखौं भक्तजनको सहभागिता",
-    titleEn: "Mahashivratri Festival Concludes, Lakhs of Devotees Participate",
+    titleNe: "पशुपतिनाथ मन्दिरमा वार्षिक महोत्सव सुरु, लाखौं भक्तजनको आगमन",
+    titleEn: "Pashupatinath Temple Annual Festival Begins, Lakhs of Devotees Arrive",
     excerptNe:
-      "पशुपतिनाथको मन्दिरमा महाशिवरात्रि उत्सव सम्पन्न भएको छ। लाखौं भक्तजनहरूले दर्शन गरे।",
+      "विश्व धरोहर पशुपतिनाथ मन्दिरमा आजबाट वार्षिक महोत्सव सुरु भएको छ। देशविदेशबाट लाखौं भक्तजनहरू यस महोत्सवमा सहभागी हुन आएका छन्।",
     excerptEn:
-      "Mahashivratri festival at Pashupatinath Temple has concluded. Lakhs of devotees took darshan.",
-    contentNe: `<p>काठमाडौं। वैशाख १ गते महाशिवरात्रि पर्व सम्पन्न भयो।</p>
-    <p>पशुपतिनाथ मन्दिरमा लाखौं भक्तजनहरू आएका थिए।</p>`,
-    contentEn: `<p>Kathmandu. Mahashivratri festival concluded on May 1st.</p>
-    <p>Lakhs of devotees visited Pashupatinath Temple.</p>`,
+      "The annual festival has begun today at the World Heritage Pashupatinath Temple. Lakhs of devotees from home and abroad have arrived to participate in this grand celebration.",
+    contentNe: `<p>काठमाडौं, वैशाख ८ । विश्व धरोहर पशुपतिनाथ मन्दिरमा आजबाट वार्षिक महोत्सव सुरु भएको छ। देशविदेशबाट लाखौं भक्तजनहरू यस महोत्सवमा सहभागी हुन आएका छन्।</p>
+
+<p>यो चार दिने महोत्सवमा विशेष पूजा अर्चना, धार्मिक कीर्तन र प्रसाद वितरण गरिने योजना छ। मन्दिर क्षेत्रको सुरक्षा व्यवस्था अत्यन्त कडा बनाइएको छ।</p>
+
+${img(images.inline_movie, "पशुपतिनाथ मन्दिरमा भक्तजनहरूको भीड — Devotees crowd at Pashupatinath Temple")}
+
+<p>मन्दिर प्रशासनका अनुसार आज मात्रै ५ लाखभन्दा बढी भक्तजनहरूले मन्दिर दर्शन गरेका छन्। विभिन्न देशबाट आएका धार्मिक पर्यटकहरूले पनि यस महोत्सवमा सहभागी भएका छन्।</p>
+
+<p>विभिन्न जिल्लाबाट आएका सन्त महात्माहरूले धार्मिक प्रवचन पनि दिइरहेका छन्। यस अवसरमा गरीबहरूलाई खाना र कपडा वितरण गर्ने सामाजिक कार्यक्रम पनि आयोजना गरिएको छ।</p>
+
+${img(images.entertain1, "पशुपतिनाथ महोत्सवको बिशेष पूजा — Special worship during Pashupatinath festival")}
+
+<p>पशुपतिनाथ क्षेत्र विकास कोषले यस वर्षको महोत्सवलाई 'स्वच्छ महोत्सव' को नारामा आयोजना गरेको छ जसमा पर्यावरण संरक्षणलाई प्राथमिकता दिइएको छ।</p>`,
+
+    contentEn: `<p>Kathmandu, April 21. The annual festival has begun today at the World Heritage Pashupatinath Temple. Lakhs of devotees from home and abroad have arrived to participate in this grand celebration.</p>
+
+<p>This four-day festival features special worship ceremonies, religious kirtans, and prasad distribution. Security arrangements in the temple premises have been tightened significantly for the event.</p>
+
+${img(images.inline_movie, "Devotees throng Pashupatinath Temple premises during the annual festival")}
+
+<p>According to temple administration, over 500,000 devotees have visited the temple today alone. Religious tourists from various countries have also participated in this festival.</p>
+
+<p>Saints and religious leaders from different districts are also delivering spiritual discourses. Social programs including food and clothing distribution to the poor have also been organized on this occasion.</p>
+
+${img(images.entertain1, "Special religious ceremonies being performed at Pashupatinath Temple")}
+
+<p>The Pashupatinath Area Development Fund has organized this year's festival under the theme "Clean Festival" giving priority to environmental protection and waste management throughout the event period.</p>`,
+
     categoryId: dharmaSanskriti.id,
     authorId: author5.id,
-    isFeatured: false,
-    tagIds: [tagNepal.id],
+    isFeatured: true,
+    tagIds: [tagNepal.id, tagTourism.id],
     publishedAt: new Date(Date.now() - 4 * 60 * 60 * 1000),
   });
-  console.log("  ✓ Dharma & Culture 1: Mahashivratri");
+  console.log("  ✓ Dharma & Culture 1: Pashupatinath festival");
 
   // Health category
   await createArticle({
-    slug: "dengue-outbreak-nepal-prevention",
+    slug: "nepal-dengue-prevention-campaign-2026",
     coverImageUrl: images.society2,
     coverImageFilename: "dengue-prevention-cover.jpg",
     uploadedById: superAdmin.id,
-    titleNe: "डेंगु रोग बिरुद्ध सतर्कता, स्वास्थ्य मन्त्रालयको अभियान",
-    titleEn: "Alert Against Dengue Disease, Health Ministry Campaign",
+    titleNe: "डेंगु रोग बिरुद्ध राष्ट्रव्यापी सतर्कता अभियान सुरु",
+    titleEn: "Nationwide Dengue Prevention Awareness Campaign Launched",
     excerptNe:
-      "डेंगु रोगको जोखिम बढेपछि स्वास्थ्य मन्त्रालयले सतर्कता अभियान सुरु गरेको छ।",
+      "स्वास्थ्य मन्त्रालयले डेंगु रोगको बढ्दो खतराको बीचमा राष्ट्रव्यापी सतर्कता अभियान सुरु गरेको छ। यस वर्ष देशभरि १५० भन्दा बढी डेंगु मरीजहरू पत्ता लागिसकेका छन्।",
     excerptEn:
-      "After the risk of dengue disease has increased, the health ministry has launched an awareness campaign.",
-    contentNe: `<p>काठमाडौं। स्वास्थ्य मन्त्रालयले डेंगु रोग बिरुद्ध सतर्कता अभियान सुरु गरेको छ।</p>
-    <p>मच्छर नियन्त्रण र स्वच्छता कार्यक्रम जारी छ।</p>`,
-    contentEn: `<p>Kathmandu. The health ministry has launched an awareness campaign against dengue disease.</p>
-    <p>Mosquito control and cleanliness programs are ongoing.</p>`,
+      "The Ministry of Health has launched a nationwide awareness campaign amid growing dengue risk. Over 150 dengue patients have been identified across the country this year so far.",
+    contentNe: `<p>काठमाडौं, वैशाख ७ । स्वास्थ्य मन्त्रालयले डेंगु रोगको बढ्दो खतराको बीचमा राष्ट्रव्यापी सतर्कता अभियान सुरु गरेको छ। यस वर्ष देशभरि १५० भन्दा बढी डेंगु मरीजहरू पत्ता लागिसकेका छन्।</p>
+
+<p>स्वास्थ्य सचिव डा. राजेश ढकालले बताउनुभयो, "हामी सम्पूर्ण स्वास्थ्य संस्थाहरूलाई डेंगु रोग पत्ता लगाउने क्षमता सुदृढ गरिरहेका छौं। यस अभियान अन्तर्गत मच्छर नियन्त्रणका कार्यक्रम समेत सञ्चालन गरिनेछ।"</p>
+
+${img(images.inline_hospital, "स्वास्थ्य कार्यकर्ताहरूले सतर्कता जानकारी प्रदान गर्दै — Health workers conducting dengue awareness")}
+
+<p>डेंगु रोगको मुख्य लक्षणहरू उच्च ज्वरो, शरीरमा दुखाइ, जोर्नी खान नमिल्नु र त्वचामा दागहरू देखिनु हुन्। यस्ता लक्षण देखिंदा तुरुन्तै नजिकको स्वास्थ्य संस्थामा पहुँच्न आग्रह गरिएको छ।</p>
+
+<p>यस अभियान अन्तर्गत १० हजार स्वास्थ्य कार्यकर्ताहरू देशभरि विभिन्न समुदायमा जाने योजना छ। त्यसैले घरको वरिपरि पानी जम्न नदिनु, मच्छर मार्ने दवाको प्रयोग गर्नु र शारीरिक सुरक्षा प्रयोग गर्न सार्वजनिकलाई सुझाव दिइएको छ।</p>
+
+${img(images.society2, "डेंगु रोकथामका लागि मच्छर नियन्त्रण कार्यक्रम — Mosquito control program for dengue prevention")}
+
+<p>गत वर्ष देशभरि २५०० भन्दा बढी डेंगु मरीजहरू थिए जसमा १२ जनाको मृत्यु भएको थियो। स्वास्थ्य मन्त्रालयले यस वर्ष यो संख्या घटाउन दृढ प्रयास गरिरहेको छ।</p>`,
+
+    contentEn: `<p>Kathmandu, April 20. The Ministry of Health has launched a nationwide awareness campaign amid growing dengue risk across the country. Over 150 dengue patients have been identified so far this year.</p>
+
+<p>Health Secretary Dr. Rajesh Dhakal informed, "We are strengthening dengue detection capacity across all health facilities. This campaign will also include targeted mosquito control programs in high-risk areas."</p>
+
+${img(images.inline_hospital, "Health workers conducting door-to-door dengue awareness in communities")}
+
+<p>Main symptoms of dengue include high fever, body aches, loss of appetite and skin rashes. People are urged to immediately visit the nearest health facility if they experience these symptoms.</p>
+
+<p>Under this campaign, 10,000 health workers will be deployed to communities across the country. The public is advised not to allow water accumulation around homes, use mosquito repellents and practice physical protection measures.</p>
+
+${img(images.society2, "Vector control program being implemented for dengue prevention in urban areas")}
+
+<p>Last year there were over 2,500 dengue patients nationwide with 12 fatalities recorded. The Health Ministry is making concerted efforts to reduce these numbers significantly this year through proactive measures.</p>`,
+
     categoryId: swasthya.id,
     authorId: author4.id,
     isFeatured: false,
     tagIds: [tagHealth.id, tagNepal.id],
     publishedAt: new Date(Date.now() - 6 * 60 * 60 * 1000),
   });
-  console.log("  ✓ Health 1: Dengue prevention");
+  console.log("  ✓ Health 1: Dengue prevention campaign");
 
   // Lifestyle category
   await createArticle({
-    slug: "yoga-day-celebration-nepal-2082",
+    slug: "international-yoga-day-nepal-celebrations-2026",
     coverImageUrl: images.sports3,
     coverImageFilename: "yoga-day-cover.jpg",
     uploadedById: superAdmin.id,
-    titleNe: "अन्तर्राष्ट्रिय योग दिवस: स्वस्थ जीवनको मार्ग",
-    titleEn: "International Day of Yoga: Path to Healthy Life",
+    titleNe: "अन्तर्राष्ट्रिय योग दिवस: देशभरि हजारौंले योग अभ्यास गरे",
+    titleEn: "International Yoga Day: Thousands Practice Yoga Across Nepal",
     excerptNe:
-      "अन्तर्राष्ट्रिय योग दिवसको अवसरमा विभिन्न कार्यक्रमहरू आयोजना गरिए।",
+      "अन्तर्राष्ट्रिय योग दिवसको अवसरमा देशभरि विभिन्न कार्यक्रमहरू आयोजना गरिएका छन्। काठमाडौंको तुढिखेलमा ५ हजारभन्दा बढी मानिसहरूले संयुक्त रूपमा योग अभ्यास गरेका थिए।",
     excerptEn:
-      "Various programs were organized on the occasion of International Day of Yoga.",
-    contentNe: `<p>काठमाडौं। अन्तर्राष्ट्रिय योग दिवसको अवसरमा योग शिविर आयोजना गरियो।</p>
-    <p>हजारौं मानिसहरूले योग अभ्यासमा भाग लिए।</p>`,
-    contentEn: `<p>Kathmandu. Yoga camp was organized on the occasion of International Day of Yoga.</p>
-    <p>Thousands of people participated in yoga practice.</p>`,
+      "Various programs were organized across the country on the occasion of International Yoga Day. More than 5,000 people collectively practiced yoga at Kathmandu's Tundikhel.",
+    contentNe: `<p>काठमाडौं, वैशाख ५ । अन्तर्राष्ट्रिय योग दिवसको अवसरमा देशभरि विभिन्न कार्यक्रमहरू आयोजना गरिएका छन्। काठमाडौंको तुढिखेलमा ५ हजारभन्दा बढी मानिसहरूले संयुक्त रूपमा योग अभ्यास गरेका थिए।</p>
+
+<p>यस कार्यक्रममा स्वास्थ्य मन्त्री, खेलकुद मन्त्री सहित विभिन्न मन्त्रीहरू, दिप्लोम्याट, खेलाडी र सामान्य नागरिकहरू सहभागी भएका थिए। कार्यक्रमलाई विश्व योग सम्मेलनले सञ्चालन गरेको थियो।</p>
+
+${img(images.inline_marathon, "तुढिखेलमा संयुक्त योग अभ्यास — Collective yoga practice at Tundikhel")}
+
+<p>मुख्य अतिथि प्रधानमन्त्रीले योगको महत्त्वबारे सम्बोधन गर्दै भन्नुभयो, "योग नेपालको प्राचीन संस्कृतिको अमूल्य धरोहर हो। यसले शारीरिक र मानसिक स्वास्थ्य दुवै सुधार गर्न मद्दत गर्छ।"</p>
+
+<p>पोखरा, चितवन, विराटनगर, नेपालगञ्ज लगायत देशका प्रमुख सहरहरूमा पनि यस दिवसको अवसरमा विशेष योग शिविरहरू आयोजना गरिएका थिए। विभिन्न स्कूल र कार्यालयहरूमा पनि योग दिवस मनाइएको छ।</p>
+
+${img(images.sports3, "योग अभ्यासमा सहभागी बालबालिकाहरू — Children participating in yoga practice")}
+
+<p>यस वर्षको योग दिवसको विषय थियो "योग मानवताको लागि" जसले योगको लाभ सबैलाई प्रविधान गर्ने उद्देश्य राखेको थियो।</p>`,
+
+    contentEn: `<p>Kathmandu, April 18. Various programs were organized across the country on the occasion of International Yoga Day. More than 5,000 people collectively practiced yoga at Kathmandu's Tundikhel in the main event.</p>
+
+<p>Ministers, diplomats, athletes and ordinary citizens participated in this program organized by the World Yoga Federation. The massive demonstration created a spectacular view at the historic grounds.</p>
+
+${img(images.inline_marathon, "Collective yoga demonstration at Tundikhel drawing thousands of participants")}
+
+<p>The Prime Minister, who was the chief guest, addressed the gathering saying, "Yoga is an invaluable heritage of Nepal's ancient culture. It helps improve both physical and mental health while bringing peace to individuals and communities."</p>
+
+<p>Special yoga camps were also organized in major cities including Pokhara, Chitwan, Biratnagar and Nepalgunj. Various schools and offices across the nation also observed Yoga Day with special activities.</p>
+
+${img(images.sports3, "School children actively participating in yoga practice on International Yoga Day")}
+
+<p>This year's Yoga Day theme was "Yoga for Humanity" aiming to make the benefits of yoga accessible to everyone regardless of age, ability or background.</p>`,
+
     categoryId: jeevanShaili.id,
     authorId: author4.id,
     isFeatured: false,
@@ -2668,6 +2545,247 @@ ${img(images.society2, "Community health services being expanded to reach the mo
     publishedAt: new Date(Date.now() - 8 * 60 * 60 * 1000),
   });
   console.log("  ✓ Lifestyle 1: Yoga Day");
+
+  // ─────────────────────────────────────────
+  // DIASPORA — 5 articles
+  // ─────────────────────────────────────────
+
+  console.log("📰 Seeding Diaspora articles...\n");
+
+  await createArticle({
+    slug: "nepali-diaspora-uk-cultural-event-2026",
+    coverImageUrl: images.entertain2,
+    coverImageFilename: "diaspora-uk-cultural-event.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "यूकेमा नेपाली समुदायले सांस्कृतिक महोत्सव सफलतापूर्वक सम्पन्न",
+    titleEn: "Nepali Community in UK Successfully Organizes Cultural Festival",
+    excerptNe:
+      "लन्डनमा आयोजित महानेपाली सांस्कृतिक महोत्सवमा ५ हजारभन्दा बढी नेपाली विदेशीहरू सहभागी भएका छन्। यस कार्यक्रममा परम्परागत नृत्य, संगीत र खानेकुराको प्रदर्शन गरिएको थियो।",
+    excerptEn:
+      "Over 5,000 Nepali diaspora members participated in the Great Nepali Cultural Festival held in London. The event featured traditional dances, music and food exhibitions.",
+    contentNe: `<p>लन्डन, एप्रिल २१ । युनाइटेड किङ्डममा बसोबास गर्ने नेपाली समुदायले आयोजना गरेको महानेपाली सांस्कृतिक महोत्सव हालै सफलतापूर्वक सम्पन्न भएको छ।</p>
+
+<p>लन्डनको ब्रिक्सटन एक्सपो सेन्टरमा आयोजित यो दुई दिने कार्यक्रममा ५ हजारभन्दा बढी नेपाली विदेशीहरू सहभागी भएका छन्। कार्यक्रममा परम्परागत नेपाली नृत्य, संगीत प्रस्तुति, कला प्रदर्शन र विभिन्न खानेकुराको स्टलहरू राखिएको थियो।</p>
+
+${img(images.inline_concert, "यूकेमा आयोजित नेपाली सांस्कृतिक कार्यक्रम — Nepali cultural program held in UK")}
+
+<p>कार्यक्रमको आयोजक संस्था नेपाली कम्युनिटी यूकेका अध्यक्ष डा. राम कार्कीले भने, "यस कार्यक्रमको मुख्य उद्देश्य विदेशमा बसोबास गर्ने नेपालीहरूलाई आफ्नो संस्कृतिसँग जोडनु र सङ्घर्ष गर्नु हो।"</p>
+
+<p>यस कार्यक्रममा बेलायती संसदका विभिन्न सांसदहरू पनि पहुँचेका थिए र नेपाली समुदायको योगदानबारे प्रशंसा गरेका थिए।</p>
+
+${img(images.entertain2, "नेपाली समुदायको सांस्कृतिक प्रस्तुति — Cultural performance by Nepali community")}
+
+<p>कार्यक्रममा बालबालिकाहरूको लागि विशेष कार्यक्रमहरू पनि आयोजना गरिएको थियो जहाँ उनीहरूले नेपाली परम्परा र संस्कृति बारे सिक्न पाएका थिए।</p>`,
+
+    contentEn: `<p>London, April 21. The Great Nepali Cultural Festival organized by the Nepali community residing in the United Kingdom has been successfully concluded recently.</p>
+
+<p>More than 5,000 Nepali diaspora members participated in this two-day event held at Brixton Expo Center in London. The program featured traditional Nepali dances, musical performances, art exhibitions and various food stalls.</p>
+
+${img(images.inline_concert, "Nepali cultural program held in London gathering diaspora community")}
+
+<p>Dr. Ram Karki, President of the organizing body Nepali Community UK said, "The main objective of this event is to connect Nepalis living abroad with their culture and foster unity."</p>
+
+<p>Various British Parliament members also attended the event and praised the contribution of the Nepali community to British society.</p>
+
+${img(images.entertain2, "Cultural performance showcasing Nepali traditions to the diaspora audience")}
+
+<p>Special programs were also organized for children in the event where they could learn about Nepali traditions and culture through interactive activities.</p>`,
+
+    categoryId: diaspora.id,
+    authorId: author1.id,
+    isFeatured: true,
+    tagIds: [tagNepal.id],
+    publishedAt: new Date(Date.now() - 5 * 60 * 60 * 1000),
+  });
+  console.log("  ✓ Diaspora 1: UK cultural festival");
+
+  await createArticle({
+    slug: "nepali-diaspora-qatar-labor-rights-improvement",
+    coverImageUrl: images.society1,
+    coverImageFilename: "diaspora-qatar-labor.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "कतारमा नेपाली श्रमिकहरूको अधिकारमा सुधार, नयाँ नियम लागू",
+    titleEn: "Improvement in Nepali Workers' Rights in Qatar, New Regulations Implemented",
+    excerptNe:
+      "कतार सरकारले विदेशी श्रमिकहरूको अधिकार संरक्षण गर्न नयाँ कानुन लागू गरेको छ। यसले त्यहाँ काम गर्ने ४ लाखभन्दा बढी नेपाली श्रमिकहरूलाई सिधा लाभ पुर्‍याउनेछ।",
+    excerptEn:
+      "The Qatari government has implemented new laws to protect foreign workers' rights. This will directly benefit more than 400,000 Nepali workers employed there.",
+    contentNe: `<p>दोहा, एप्रिल २० । कतार सरकारले विदेशी श्रमिकहरूको अधिकार संरक्षण गर्न नयाँ कानुन लागू गरेको छ जसले त्यहाँ काम गर्ने ४ लाखभन्दा बढी नेपाली श्रमिकहरूलाई सिधा लाभ पुर्‍याउनेछ।</p>
+
+<p>नयाँ नियमअनुसार अब श्रमिकहरूलाई काममा स्वच्छ वातावरण, पर्याप्त आराम, समयमा तलब प्राप्त गर्ने अधिकार सुनिश्चित गरिएको छ। साथै कुनै पनि कारणले श्रमिकलाई कामबाट निकाल्न सक्ने कानुनी प्रावधान पनि संशोधन गरिएको छ।</p>
+
+${img(images.inline_bank, "कतारमा काम गर्ने नेपाली श्रमिकहरू — Nepali workers employed in Qatar")}
+
+<p>नेपाली एम्बेसी कतारका प्रथम सचिव शेर बहादुर राईले बताउनुभयो, "हामी कतार सरकारसँग निरन्तर वार्ता गरिरहेका छौं र नयाँ नियमहरूले नेपाली श्रमिकहरूको जीवनमा सकारात्मक परिवर्तन ल्याउनेछ।"</p>
+
+<p>यो नियम लागू भएपछि श्रमिकहरूले आफ्नो पासपोर्ट आफ्नै कब्जामा राख्न सक्नेछन् र कुनै पनि समयमा देश फर्कन इच्छा गरेमा अवरोध नहुने व्यवस्था गरिएको छ।</p>
+
+${img(images.society1, "नेपाली श्रमिक सङ्गठनको बैठक — Nepali labor organization meeting")}
+
+<p>गत वर्ष कतारमा ४ लाख २० हजार नेपाली श्रमिकहरू काम गरिरहेका थिए जसले प्रतिवर्ष करोडौं रुपैयाँ रेमिट्यान्सको रूपमा नेपालमा पठाउँछन्।</p>`,
+
+    contentEn: `<p>Doha, April 20. The Qatari government has implemented new laws to protect foreign workers' rights which will directly benefit more than 400,000 Nepali workers employed there.</p>
+
+<p>According to the new regulations, workers are now guaranteed clean working conditions, adequate rest, and timely salary payments. The legal provisions for terminating workers without cause have also been revised.</p>
+
+${img(images.inline_bank, "Nepali workers at their workplace in Qatar benefiting from new labor laws")}
+
+<p>Sher Bahadur Rai, First Secretary at the Nepali Embassy in Qatar informed, "We have been in continuous dialogue with the Qatari government and these new regulations will bring positive changes in the lives of Nepali workers."</p>
+
+<p>With this implementation, workers can keep their passports in their own possession and face no obstacles if they wish to return home at any time.</p>
+
+${img(images.society1, "Nepali labor association representatives meeting to discuss workers' rights")}
+
+<p>Last year, 420,000 Nepali workers were employed in Qatar who send billions of rupees annually to Nepal in the form of remittances, constituting a major portion of the country's foreign currency earnings.</p>`,
+
+    categoryId: diaspora.id,
+    authorId: author4.id,
+    isFeatured: false,
+    tagIds: [tagNepal.id],
+    publishedAt: new Date(Date.now() - 12 * 60 * 60 * 1000),
+  });
+  console.log("  ✓ Diaspora 2: Qatar labor rights");
+
+  await createArticle({
+    slug: "nepali-diaspora-us-education-scholarship-program",
+    coverImageUrl: images.society2,
+    coverImageFilename: "diaspora-us-scholarship.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "अमेरिकामा नेपाली विद्यार्थीहरूको लागि नवीन छात्रवृत्ति कार्यक्रम सुरु",
+    titleEn: "New Scholarship Program Launched for Nepali Students in USA",
+    excerptNe:
+      "अमेरिकामा बसोबास गर्ने नेपाली समुदायले आफ्नो देशका विद्यार्थीहरूको लागि १० करोड रुपैयाँको छात्रवृत्ति कार्यक्रम सुरु गरेको छ। यस कार्यक्रम अन्तर्गत प्रतिवर्ष ५० विद्यार्थीहरूलाई लाभ पुर्‍याइनेछ।",
+    excerptEn:
+      "The Nepali community residing in the USA has launched a Rs 100 million scholarship program for students from Nepal. Under this program, 50 students will benefit annually.",
+    contentNe: `<p>वाशिंगटन डिसी, एप्रिल १९ । अमेरिकामा बसोबास गर्ने नेपाली समुदायले आफ्नो देशका योग्य तर आर्थिक रूपमा कमजोर विद्यार्थीहरूको लागि १० करोड रुपैयाँको छात्रवृत्ति कार्यक्रम सुरु गरेको छ।</p>
+
+<p>नेपाली अमेरिकन फाउन्डेसनले सञ्चालन गर्ने यस कार्यक्रम अन्तर्गत प्रतिवर्ष ५० वटा स्नातक स्तरको छात्रवृत्ति प्रदान गरिनेछ जसले पूर्ण शैक्षिक शुल्क, पुस्तक खर्च र जीवन व्यय समेट्नेछ।</p>
+
+${img(images.inline_school, "अमेरिकामा अध्ययनरत नेपाली विद्यार्थीहरू — Nepali students studying in USA")}
+
+<p>फाउन्डेसनका अध्यक्ष डा. स्मृती श्रेष्ठले भने, "हामी युनाइटेड स्टेट्समा अध्ययन गर्न चाहने नेपाली विद्यार्थीहरूको आर्थिक बाधा हटाउन चाहन्छौं। यो छात्रवृत्ति तिनीहरूको सपना साकार गर्न मद्दत गर्नेछ।"</p>
+
+<p>यस छात्रवृत्तिको लागि आवेदन प्रक्रिया आजदेखि सुरु भएको छ र जून सम्म आवेदन गर्न सकिनेछ। योग्यता कसोटी, लिखित परीक्षा र अन्तर्वार्ता मार्फत विद्यार्थीहरूको छनोट गरिनेछ।</p>
+
+${img(images.society2, "छात्रवृत्ति कार्यक्रमको उद्घाटन समारोह — Scholarship program inauguration ceremony")}
+
+<p>गत पाँच वर्षमा अमेरिकामा नेपाली विद्यार्थीहरूको संख्या तीन गुणा बढेको छ जसले गर्दा यस्तो छात्रवृत्ति कार्यक्रमको आवश्यकता महसुस भएको फाउन्डेसनले जनाएको छ।</p>`,
+
+    contentEn: `<p>Washington DC, April 19. The Nepali community residing in the United States has launched a Rs 100 million scholarship program for meritorious yet financially disadvantaged students from Nepal.</p>
+
+<p>To be administered by the Nepali American Foundation, this program will provide 50 undergraduate scholarships annually covering full tuition fees, book expenses and living costs for deserving students.</p>
+
+${img(images.inline_school, "Nepali students currently studying at American universities")}
+
+<p>Dr. Smriti Shrestha, President of the Foundation said, "We want to remove financial barriers for Nepali students who wish to study in the United States. This scholarship will help turn their dreams into reality."</p>
+
+<p>The application process for this scholarship has begun today and will remain open until June. Students will be selected through eligibility screening, written examination and personal interview rounds.</p>
+
+${img(images.society2, "Inauguration ceremony of the new scholarship program for Nepali students")}
+
+<p>The Foundation noted that the number of Nepali students in America has tripled over the past five years, creating the need for such scholarship programs to support growing aspirations.</p>`,
+
+    categoryId: diaspora.id,
+    authorId: author3.id,
+    isFeatured: false,
+    tagIds: [tagNepal.id, tagEducation.id],
+    publishedAt: new Date(Date.now() - 18 * 60 * 60 * 1000),
+  });
+  console.log("  ✓ Diaspora 3: USA scholarship program");
+
+  await createArticle({
+    slug: "nepali-diaspora-australia-business-summit-2026",
+    coverImageUrl: images.economy3,
+    coverImageFilename: "diaspora-australia-summit.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "अष्ट्रेलियामा नेपाली व्यवसायी समिट आयोजना, लगानीको अवसरहरू चर्चा",
+    titleEn: "Nepali Business Summit Organized in Australia, Investment Opportunities Discussed",
+    excerptNe:
+      "सिड्नीमा आयोजित प्रथम नेपाली व्यवसायी समिटमा २०० भन्दा बढी नेपाली उद्यमीहरू सहभागी भएका छन्। कार्यक्रममा नेपालमा लगानी गर्ने अवसरहरूबारे विस्तृत चर्चा भएको थियो।",
+    excerptEn:
+      "More than 200 Nepali entrepreneurs participated in the first Nepali Business Summit held in Sydney. The program extensively discussed investment opportunities in Nepal.",
+    contentNe: `<p>सिड्नी, एप्रिल १८ । अष्ट्रेलियाको सिड्नीमा आयोजित प्रथम नेपाली व्यवसायी समिटमा २०० भन्दा बढी नेपाली उद्यमीहरू सहभागी भएका छन्।</p>
+
+<p>यो तीन दिने समिटमा अष्ट्रेलिया, न्यूजिल्याण्ड र फिजी सहित प्रशान्त महासागर क्षेत्रका नेपाली व्यवसायीहरू एकसाथ जम्मा भएका थिए। कार्यक्रमको मुख्य उद्देश्य नेपालमा लगानी गर्ने अवसरहरू पहिचान गर्नु र समुदाय बीच व्यावसायिक सहकार्य सुदृढ गर्नु थियो।</p>
+
+${img(images.inline_market, "सिड्नीमा आयोजित नेपाली व्यवसायी समिट — Nepali Business Summit in Sydney")}
+
+<p>समिटमा नेपालका विभिन्न उद्योग संघका प्रतिनिधिहरू पनि उपस्थित थिए र हाइड्रोपावर, पर्यटन, कृषि र प्रविधि क्षेत्रमा लगानीका सम्भावनाहरू प्रस्तुत गरेका थिए।</p>
+
+<p>कार्यक्रमको अवसरमा १२ वटा व्यवसाय सम्झौतामा हस्ताक्षर गरिएको छ जसमा नेपालका स्थानीय उत्पादनहरूको अष्ट्रेलियाली बजारमा पहुँच विस्तार समेत रहेको छ।</p>
+
+${img(images.economy3, "व्यवसाय समिटमा सम्झौतामा हस्ताक्षर — Agreement signing at business summit")}
+
+<p>अष्ट्रेलियामा हाल लगभग ६० हजार नेपालीहरू बसोबास गरिरहेका छन् जसमा धेरै जसो सफल उद्यमीहरू बनिसकेका छन्।</p>`,
+
+    contentEn: `<p>Sydney, April 18. More than 200 Nepali entrepreneurs participated in the first Nepali Business Summit held in Sydney, Australia.</p>
+
+<p>Nepali business people from across Australia, New Zealand and Fiji gathered at this three-day summit. The main objective was to identify investment opportunities in Nepal and strengthen business cooperation within the community.</p>
+
+${img(images.inline_market, "First Nepali Business Summit held in Sydney gathering regional entrepreneurs")}
+
+<p>Representatives from various Nepali industry associations were also present at the summit and presented investment possibilities in hydropower, tourism, agriculture and technology sectors.</p>
+
+<p>Twelve business memoranda of understanding were signed during the event, including agreements to expand market access for Nepali local products in Australia.</p>
+
+${img(images.economy3, "Business representatives signing cooperative agreements at the summit")}
+
+<p>Approximately 60,000 Nepalis currently reside in Australia, many of whom have become successful entrepreneurs contributing to both economies.</p>`,
+
+    categoryId: diaspora.id,
+    authorId: author4.id,
+    isFeatured: true,
+    tagIds: [tagNepal.id],
+    publishedAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
+  });
+  console.log("  ✓ Diaspora 4: Australia business summit");
+
+  await createArticle({
+    slug: "nepali-diaspora-japan-language-training-program",
+    coverImageUrl: images.tech2,
+    coverImageFilename: "diaspora-japan-training.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "जापानमा नेपाली श्रमिकहरूको लागि भाषा तथा सांस्कृतिक तालिम कार्यक्रम सुरु",
+    titleEn: "Language and Cultural Training Program Launched for Nepali Workers in Japan",
+    excerptNe:
+      "जापान सरकार र नेपाली एम्बेसीको संयुक्त पहलमा त्यहाँ काम गर्ने नेपाली श्रमिकहरूको लागि विशेष भाषा तथा सांस्कृतिक तालिम कार्यक्रम सुरु गरिएको छ। यसले श्रमिकहरूलाई त्यहाँको वातावरणमा सजिलै समायोजन हुन मद्दत गर्नेछ।",
+    excerptEn:
+      "A special language and cultural training program has been launched for Nepali workers in Japan through a joint initiative by the Japanese government and Nepali Embassy. This will help workers adapt more easily to the environment there.",
+    contentNe: `<p>टोक्यो, एप्रिल १७ । जापान सरकार र नेपाली एम्बेसी टोक्योको संयुक्त पहलमा त्यहाँ काम गर्ने नेपाली श्रमिकहरूको लागि विशेष भाषा तथा सांस्कृतिक तालिम कार्यक्रम सुरु गरिएको छ।</p>
+
+<p>यस तालिम कार्यक्रमको मुख्य उद्देश्य नेपाली श्रमिकहरूलाई जापानी भाषा सिकाउनु र त्यहाँको सांस्कृतिक मूल्य र कामको वातावरणसँग परिचित गराउनु हो। प्रत्येक महिना ५०० नयाँ श्रमिकहरूलाई यो तालिम प्रदान गरिने योजना छ।</p>
+
+${img(images.inline_coding, "जापानमा भाषा तालिम प्राप्त गर्दै नेपाली श्रमिकहरू — Nepali workers receiving language training in Japan")}
+
+<p>नेपाली एम्बेसडर डा. गंगा प्रसाद लामाले भने, "हाम्रा श्रमिकहरू जापानमा जहिले पनि उत्कृष्ट काम गर्छन् तर भाषा र सांस्कृतिक बाधाले तिनीहरूलाई थप कष्ट दिन्छ। यो तालिम कार्यक्रमले त्यो समस्या समाधान गर्न मद्दत गर्नेछ।"</p>
+
+<p>तालिम अन्त्यमा सफलतापूर्वक पूरा गर्नेहरूलाई सरकारले प्रमाणपत्र प्रदान गर्नेछ जसले तिनीहरूको जापानमा कामको अवसरहरू पनि बढाउनेछ।</p>
+
+${img(images.tech2, "जापानमा काम गर्ने नेपाली टेक्निशियनहरू — Nepali technicians working in Japan")}
+
+<p>हाल जापानमा लगभग १ लाख २० हजार नेपाली श्रमिकहरू विभिन्न क्षेत्रमा काम गरिरहेका छन् जसमा प्रायः भन्दा बढी विशेषज्ञ टेक्निशियनहरू हुन्।</p>`,
+
+    contentEn: `<p>Tokyo, April 17. A special language and cultural training program has been launched for Nepali workers in Japan through a joint initiative by the Japanese government and Nepali Embassy in Tokyo.</p>
+
+<p>The main objective of this training program is to teach the Japanese language to Nepali workers and familiarize them with the cultural values and work environment there. The plan is to provide this training to 500 new workers every month.</p>
+
+${img(images.inline_coding, "Nepali workers participating in Japanese language training classes")}
+
+<p>Nepali Ambassador Dr. Ganga Prasad Lama said, "Our workers always do excellent work in Japan but language and cultural barriers cause them additional difficulties. This training program will help solve that problem."</p>
+
+<p>Workers who successfully complete the training will receive a government certificate that will also enhance their employment opportunities in Japan.</p>
+
+${img(images.tech2, "Nepali technicians contributing to various industries across Japan")}
+
+<p>Currently, approximately 120,000 Nepali workers are employed in various sectors in Japan, the majority being skilled technical professionals.</p>`,
+
+    categoryId: diaspora.id,
+    authorId: author1.id,
+    isFeatured: false,
+    tagIds: [tagNepal.id, tagEducation.id],
+    publishedAt: new Date(Date.now() - 36 * 60 * 60 * 1000),
+  });
+  console.log("  ✓ Diaspora 5: Japan training program");
 
   // Interview category
   await createArticle({
@@ -2727,10 +2845,8 @@ ${img(images.society2, "Community health services being expanded to reach the mo
     titleEn: "Tourist Activities Increase in Koshi Province Tea Gardens",
     subheadingNe: "इलामको चिया बगान क्षेत्रमा पर्यटकहरूको आगमन बढेको छ",
     subheadingEn: "Tourist arrivals have increased in Ilam tea garden area",
-    excerptNe:
-      "इलामको चिया बगानहरूमा पर्यटकहरूको आगमन बढेको छ। यस वर्ष लगभग ५० हजार पर्यटकहरूले इलामको चिया बगान भ्रमण गरेका छन्।",
-    excerptEn:
-      "Tourist arrivals have increased in Ilam tea gardens. About 50,000 tourists visited Ilam tea gardens this year.",
+    excerptNe: "इलामको चिया बगानहरूमा पर्यटकहरूको आगमन बढेको छ। यस वर्ष लगभग ५० हजार पर्यटकहरूले इलामको चिया बगान भ्रमण गरेका छन्।",
+    excerptEn: "Tourist arrivals have increased in Ilam tea gardens. About 50,000 tourists visited Ilam tea gardens this year.",
     contentNe: `<p>इलामको चिया बगान क्षेत्रमा पर्यटकहरूको आगमन बढेको छ। यस वर्ष लगभग ५० हजार पर्यटकहरूले इलामको चिया बगान भ्रमण गरेका छन्।</p>
 
 <p>इलाम जिल्लाका चिया बगानहरू नेपालको सबैभन्दा ठूलो चिया उत्पादन क्षेत्र हो। यहाँको हरियो भर्पय्यानले पर्यटकहरूलाई आकर्षित गर्दै आएको छ।</p>
@@ -2760,10 +2876,8 @@ ${img(images.society1, "Ilam tea gardens attract tourists")}
     uploadedById: superAdmin.id,
     titleNe: "कोशी प्रदेशमा बाढी पीडितहरूका लागि राहत वितरण",
     titleEn: "Relief Distribution for Flood Victims in Koshi Province",
-    excerptNe:
-      "कोशी प्रदेशमा बाढी पीडितहरूका लागि राहत सामग्री वितरण गरिएको छ।",
-    excerptEn:
-      "Relief materials are being distributed to flood victims in Koshi Province.",
+    excerptNe: "कोशी प्रदेशमा बाढी पीडितहरूका लागि राहत सामग्री वितरण गरिएको छ।",
+    excerptEn: "Relief materials are being distributed to flood victims in Koshi Province.",
     contentNe: `<p>कोशी प्रदेशमा बाढी पीडितहरूका लागि राहत सामग्री वितरण गरिएको छ।</p>
 
 <p>जिल्ला प्रशासन कार्यालय इलामको नेतृत्वमा राहत वितरण अभियान सञ्चालन गरिएको छ।</p>`,
@@ -2781,10 +2895,8 @@ ${img(images.society1, "Ilam tea gardens attract tourists")}
     uploadedById: superAdmin.id,
     titleNe: "कोशी प्रदेशमा सडक पूर्वाधार विकास",
     titleEn: "Road Infrastructure Development in Koshi Province",
-    excerptNe:
-      "कोशी प्रदेशमा सडक पूर्वाधार विकासका काम तीव्र गतिमा अघि बढेका छन्।",
-    excerptEn:
-      "Road infrastructure development works are proceeding rapidly in Koshi Province.",
+    excerptNe: "कोशी प्रदेशमा सडक पूर्वाधार विकासका काम तीव्र गतिमा अघि बढेका छन्।",
+    excerptEn: "Road infrastructure development works are proceeding rapidly in Koshi Province.",
     contentNe: `<p>कोशी प्रदेशमा सडक पूर्वाधार विकासका काम तीव्र गतिमा अघि बढेका छन्।</p>
 
 <p>इलाम-काठमाडौं सडकलाई चौडा बनाउने काम भइरहेको छ।</p>`,
@@ -2805,10 +2917,8 @@ ${img(images.society1, "Ilam tea gardens attract tourists")}
     titleEn: "Tourist Activities Increase in Koshi Province Tea Gardens",
     subheadingNe: "इलामको चिया बगान क्षेत्रमा पर्यटकहरूको आगमन बढेको छ",
     subheadingEn: "Tourist arrivals have increased in Ilam tea garden area",
-    excerptNe:
-      "इलामको चिया बगानहरूमा पर्यटकहरूको आगमन बढेको छ। यस वर्ष लगभग ५० हजार पर्यटकहरूले इलामको चिया बगान भ्रमण गरेका छन्।",
-    excerptEn:
-      "Tourist arrivals have increased in Ilam tea gardens. About 50,000 tourists visited Ilam tea gardens this year.",
+    excerptNe: "इलामको चिया बगानहरूमा पर्यटकहरूको आगमन बढेको छ। यस वर्ष लगभग ५० हजार पर्यटकहरूले इलामको चिया बगान भ्रमण गरेका छन्।",
+    excerptEn: "Tourist arrivals have increased in Ilam tea gardens. About 50,000 tourists visited Ilam tea gardens this year.",
     contentNe: `<p>इलामको चिया बगान क्षेत्रमा पर्यटकहरूको आगमन बढेको छ। यस वर्ष लगभग ५० हजार पर्यटकहरूले इलामको चिया बगान भ्रमण गरेका छन्।</p>
 
 <p>इलाम जिल्लाका चिया बगानहरू नेपालको सबैभन्दा ठूलो चिया उत्पादन क्षेत्र हो। यहाँको हरियो भर्पय्यानले पर्यटकहरूलाई आकर्षित गर्दै आएको छ।</p>
@@ -2838,10 +2948,8 @@ ${img(images.society1, "Ilam tea gardens attract tourists")}
     uploadedById: superAdmin.id,
     titleNe: "कोशी प्रदेशमा बाढी पीडितहरूका लागि राहत वितरण",
     titleEn: "Relief Distribution for Flood Victims in Koshi Province",
-    excerptNe:
-      "कोशी प्रदेशमा बाढी पीडितहरूका लागि राहत सामग्री वितरण गरिएको छ।",
-    excerptEn:
-      "Relief materials are being distributed to flood victims in Koshi Province.",
+    excerptNe: "कोशी प्रदेशमा बाढी पीडितहरूका लागि राहत सामग्री वितरण गरिएको छ।",
+    excerptEn: "Relief materials are being distributed to flood victims in Koshi Province.",
     contentNe: `<p>कोशी प्रदेशमा बाढी पीडितहरूका लागि राहत सामग्री वितरण गरिएको छ।</p>
 
 <p>जिल्ला प्रशासन कार्यालय इलामको नेतृत्वमा राहत वितरण अभियान सञ्चालन गरिएको छ।</p>`,
@@ -2859,10 +2967,8 @@ ${img(images.society1, "Ilam tea gardens attract tourists")}
     uploadedById: superAdmin.id,
     titleNe: "कोशी प्रदेशमा सडक पूर्वाधार विकास",
     titleEn: "Road Infrastructure Development in Koshi Province",
-    excerptNe:
-      "कोशी प्रदेशमा सडक पूर्वाधार विकासका काम तीव्र गतिमा अघि बढेका छन्।",
-    excerptEn:
-      "Road infrastructure development works are proceeding rapidly in Koshi Province.",
+    excerptNe: "कोशी प्रदेशमा सडक पूर्वाधार विकासका काम तीव्र गतिमा अघि बढेका छन्।",
+    excerptEn: "Road infrastructure development works are proceeding rapidly in Koshi Province.",
     contentNe: `<p>कोशी प्रदेशमा सडक पूर्वाधार विकासका काम तीव्र गतिमा अघि बढेका छन्।</p>
 
 <p>इलाम-काठमाडौं सडकलाई चौडा बनाउने काम भइरहेको छ।</p>`,
@@ -2941,7 +3047,7 @@ ${img(images.society1, "Ilam tea gardens attract tourists")}
     authorId: author2.id,
   });
 
-  await createArticle({
+await createArticle({
     slug: "bagmati-province-kathmandu-transport",
     coverImageUrl: images.economy1,
     coverImageFilename: "province4-hydro.jpg",
@@ -2966,10 +3072,8 @@ ${img(images.society1, "Ilam tea gardens attract tourists")}
     uploadedById: superAdmin.id,
     titleNe: "गण्डकी प्रदेशमा जलविद्युत् र पर्यटन परियोजना",
     titleEn: "Hydropower and Tourism Projects in Gandaki Province",
-    excerptNe:
-      "गण्डकी प्रदेशमा जलविद्युत् र पर्यटन परियोजनाहरू अघि बढिरहेका छन्।",
-    excerptEn:
-      "Hydropower and tourism projects are progressing in Gandaki Province.",
+    excerptNe: "गण्डकी प्रदेशमा जलविद्युत् र पर्यटन परियोजनाहरू अघि बढिरहेका छन्।",
+    excerptEn: "Hydropower and tourism projects are progressing in Gandaki Province.",
     contentNe: `<p>गण्डकी प्रदेशमा जलविद्युत् परियोजनाहरू अघि बढिरहेका छन्।</p>
     <p>पोखरा क्षेत्रमा पर्यटन विस्तार भइरहेको छ।</p>`,
     contentEn: `<p>Hydropower projects are progressing in Gandaki Province.</p>
@@ -3018,8 +3122,7 @@ ${img(images.society1, "Ilam tea gardens attract tourists")}
     titleEn: "Tourism Development in Lumbini Province",
     subheadingNe: "कपिलवस्तुमा नयाँ पर्यटन पूर्वाधार विकास",
     subheadingEn: "New tourism infrastructure development in Kapilvastu",
-    excerptNe:
-      "लुम्बिनी प्रदेशमा पर्यटन विकासका नयाँ योजनाहरू घोषणा गरिएका छन्।",
+    excerptNe: "लुम्बिनी प्रदेशमा पर्यटन विकासका नयाँ योजनाहरू घोषणा गरिएका छन्।",
     excerptEn: "New tourism development plans announced in Lumbini Province.",
     contentNe: `<p>लुम्बिनी प्रदेशमा पर्यटन विकासका नयाँ योजनाहरू घोषणा गरिएका छन्।</p>
     <p>कपिलवस्तुमा होटल निर्माण हुनेछ।</p>`,
@@ -3037,8 +3140,7 @@ ${img(images.society1, "Ilam tea gardens attract tourists")}
     titleNe: "लुम्बिनी प्रदेशमा कृषि विकास",
     titleEn: "Agriculture Development in Lumbini Province",
     excerptNe: "लुम्बिनी प्रदेशमा कृषि विकासका कार्यक्रम सञ्चालन गरिएका छन्।",
-    excerptEn:
-      "Agriculture development programs are being conducted in Lumbini Province.",
+    excerptEn: "Agriculture development programs are being conducted in Lumbini Province.",
     contentNe: `<p>लुम्बिनी प्रदेशमा कृषि विकासका कार्यक्रम सञ्चालन गरिएका छन्।</p>`,
     contentEn: `<p>Agriculture development programs are being conducted in Lumbini Province.</p>`,
     categoryId: lumbiniProvince!.id,
@@ -3052,17 +3154,15 @@ ${img(images.society1, "Ilam tea gardens attract tourists")}
     uploadedById: superAdmin.id,
     titleNe: "बुद्ध धर्म पर्यटन क्षेत्र विकास",
     titleEn: "Buddhist Circuit Tourism Development",
-    excerptNe:
-      "कपिलवस्तुमा बुद्ध धर्म पर्यटन क्षेत्र विकासका योजनाहरू अघि बढेका छन्।",
-    excerptEn:
-      "Buddhist circuit tourism area development plans are progressing in Kapilvastu.",
+    excerptNe: "कपिलवस्तुमा बुद्ध धर्म पर्यटन क्षेत्र विकासका योजनाहरू अघि बढेका छन्।",
+    excerptEn: "Buddhist circuit tourism area development plans are progressing in Kapilvastu.",
     contentNe: `<p>कपिलवस्तुमा बुद्ध धर्म पर्यटन क्षेत्र विकासका योजनाहरू अघि बढेका छन्।</p>`,
     contentEn: `<p>Buddhist circuit tourism area development plans are progressing in Kapilvastu.</p>`,
     categoryId: lumbiniProvince!.id,
     authorId: author3.id,
   });
 
-  // Karnali Province Articles
+// Karnali Province Articles
   await createArticle({
     slug: "karnali-province-mining-exploration",
     coverImageUrl: images.economy1,
@@ -3121,8 +3221,7 @@ ${img(images.society1, "Ilam tea gardens attract tourists")}
     titleNe: "सुदूरपश्चिम प्रदेशमा सीमा व्यापार वृद्धि",
     titleEn: "Border Trade Increases in Sudurpashchim Province",
     excerptNe: "सुदूरपश्चिम प्रदेशमा भारतसँगको सीमा व्यापार बढेको छ।",
-    excerptEn:
-      "Border trade with India has increased in Sudurpashchim Province.",
+    excerptEn: "Border trade with India has increased in Sudurpashchim Province.",
     contentNe: `<p>सुदूरपश्चिम प्रदेशमा भारतसँगको सीमा व्यापार बढेको छ।</p>
     <p>दार्चुला नाकाबाट आयात निर्यात बढेको छ।</p>`,
     contentEn: `<p>Border trade with India has increased in Sudurpashchim Province.</p>
@@ -3159,7 +3258,7 @@ ${img(images.society1, "Ilam tea gardens attract tourists")}
     contentEn: `<p>Tourism area development works are progressing in Darchula.</p>`,
     categoryId: sudurpashchimProvince!.id,
     authorId: author3.id,
-  });
+});
 
   console.log("  ✓ Province articles seeded");
 
@@ -3754,138 +3853,22 @@ ${img(images.society1, "Ilam tea gardens attract tourists")}
   // Get subcategory IDs
   const subcategoryMap: Record<string, string> = {};
   const subcategorySlugs = [
-    "federal-politics",
-    "provincial-politics",
-    "local-politics",
-    "elections",
-    "political-parties",
-    "parliament",
-    "government",
-    "opposition",
-    "political-analysis",
-    "political-news",
-    "cricket",
-    "football",
-    "volleyball",
-    "basketball",
-    "hockey",
-    "athletics",
-    "swimming",
-    "boxing",
-    "martial-arts",
-    "sports-news",
-    "gadgets",
-    "ai-artificial-intelligence",
-    "startups",
-    "cybersecurity",
-    "mobile-phones",
-    "computers",
-    "internet",
-    "social-media",
-    "tech-news",
-    "software-apps",
-    "bollywood",
-    "hollywood",
-    "nepali-cinema",
-    "music",
-    "television",
-    "movies",
-    "celebrity",
-    "fashion",
-    "gossip",
-    "entertainment-news",
-    "stock-market",
-    "banking",
-    "investment",
-    "business",
-    "trade",
-    "tourism",
-    "agriculture",
-    "real-estate",
-    "jobs",
-    "economy-news",
-    "asia",
-    "europe",
-    "americas",
-    "africa",
-    "middle-east",
-    "un",
-    "diplomacy",
-    "global-economy",
-    "climate-change",
-    "world-news",
-    "education",
-    "health",
-    "women-empowerment",
-    "children",
-    "senior-citizens",
-    "social-issues",
-    "community",
-    "volunteer",
-    "ngos",
-    "society-news",
-    "mental-health",
-    "nutrition",
-    "fitness",
-    "diseases",
-    "hospitals",
-    "doctors",
-    "medicine",
-    "ayurveda",
-    "covid19",
-    "health-tips",
-    "food-recipes",
-    "travel",
-    "fashion-style",
-    "home-living",
-    "relationships",
-    "parenting",
-    "pets",
-    "beauty-skincare",
-    "fitness-yoga",
-    "lifestyle-news",
-    "festivals",
-    "temples",
-    "rituals",
-    "astrology",
-    "spiritual",
-    "puja-path",
-    "religious-places",
-    "culture-heritage",
-    "traditions",
-    "dharma-news",
-    "nri-news",
-    "remittance",
-    "overseas-jobs",
-    "diaspora-community",
-    "cultural-association",
-    "diaspora-events",
-    "nepal-embassy",
-    "citizenship-abroad",
-    "diaspora-investment",
-    "diaspora-news",
-    "news-story",
-    "feature-story",
-    " investigative-story",
-    "human-interest",
-    "success-story",
-    "frontline",
-    "profile",
-    "opinion-piece",
-    "analysis-piece",
-    "special-report",
-    "editorial",
-    "opinion-column",
-    "guest-article",
-    "letter-to-editor",
-    "political-opinion",
-    "social-commentary",
-    "economic-analysis",
-    "cultural-review",
-    "sports-view",
-    "opinion-news",
+    "federal-politics", "provincial-politics", "local-politics", "elections", "political-parties",
+    "parliament", "government", "opposition", "political-analysis", "political-news",
+    "cricket", "football", "volleyball", "basketball", "hockey", "athletics", "swimming", "boxing", "martial-arts", "sports-news",
+    "gadgets", "ai-artificial-intelligence", "startups", "cybersecurity", "mobile-phones", "computers", "internet", "social-media", "tech-news", "software-apps",
+    "bollywood", "hollywood", "nepali-cinema", "music", "television", "movies", "celebrity", "fashion", "gossip", "entertainment-news",
+    "stock-market", "banking", "investment", "business", "trade", "tourism", "agriculture", "real-estate", "jobs", "economy-news",
+    "asia", "europe", "americas", "africa", "middle-east", "un", "diplomacy", "global-economy", "climate-change", "world-news",
+    "education", "health", "women-empowerment", "children", "senior-citizens", "social-issues", "community", "volunteer", "ngos", "society-news",
+    "mental-health", "nutrition", "fitness", "diseases", "hospitals", "doctors", "medicine", "ayurveda", "covid19", "health-tips",
+    "food-recipes", "travel", "fashion-style", "home-living", "relationships", "parenting", "pets", "beauty-skincare", "fitness-yoga", "lifestyle-news",
+    "festivals", "temples", "rituals", "astrology", "spiritual", "puja-path", "religious-places", "culture-heritage", "traditions", "dharma-news",
+    "nri-news", "remittance", "overseas-jobs", "diaspora-community", "cultural-association", "diaspora-events", "nepal-embassy", "citizenship-abroad", "diaspora-investment", "diaspora-news",
+    "news-story", "feature-story", " investigative-story", "human-interest", "success-story", "frontline", "profile", "opinion-piece", "analysis-piece", "special-report",
+    "editorial", "opinion-column", "guest-article", "letter-to-editor", "political-opinion", "social-commentary", "economic-analysis", "cultural-review", "sports-view", "opinion-news",
   ];
-
+  
   for (const slug of subcategorySlugs) {
     const cat = await prisma.category.findUnique({ where: { slug } });
     if (cat) subcategoryMap[slug] = cat.id;
@@ -3910,13 +3893,10 @@ ${img(images.society1, "Ilam tea gardens attract tourists")}
 
     for (let i = 1; i <= 5; i++) {
       const slug = `${subSlug}-article-${i}`;
-      const imgUrl =
-        articleImages[(articleCount + i - 1) % articleImages.length];
+      const imgUrl = articleImages[(articleCount + i - 1) % articleImages.length];
       const imgFilename = `subcat-${subSlug}-${i}.jpg`;
 
-      let media = await prisma.media.findFirst({
-        where: { filename: imgFilename },
-      });
+      let media = await prisma.media.findFirst({ where: { filename: imgFilename } });
       if (!media) {
         media = await prisma.media.create({
           data: {
@@ -3926,7 +3906,7 @@ ${img(images.society1, "Ilam tea gardens attract tourists")}
             altText: `Image for ${slug}`,
             size: 350000,
             uploadedBy: author1.id,
-          },
+          }
         });
       }
 
@@ -3934,8 +3914,8 @@ ${img(images.society1, "Ilam tea gardens attract tourists")}
         where: { slug },
         update: {},
         create: {
-          titleNe: `${subSlug.replace(/-/g, " ")} सम्बन्धी समाचार ${i}`,
-          titleEn: `News about ${subSlug.replace(/-/g, " ")} ${i}`,
+          titleNe: `${subSlug.replace(/-/g, ' ')} सम्बन्धी समाचार ${i}`,
+          titleEn: `News about ${subSlug.replace(/-/g, ' ')} ${i}`,
           contentNe: `<p>यो ${subSlug} सम्बन्धी लेख ${i} हो।</p><p>नेपालमा यस विषयमा धेरै चासो छ।</p>`,
           contentEn: `<p>This is article ${i} about ${subSlug}.</p><p>There is great interest in this topic in Nepal.</p>`,
           excerptNe: `${subSlug} सम्बन्धी छोटो समाचार ${i}`,
@@ -3946,17 +3926,15 @@ ${img(images.society1, "Ilam tea gardens attract tourists")}
           isFlashUpdate: i === 1 && articleCount < 3,
           categoryId,
           authorId: author1.id,
-          publishedAt: new Date(Date.now() - articleCount * 60 * 60 * 1000),
+          publishedAt: new Date(Date.now() - (articleCount * 60 * 60 * 1000)),
           featuredImageId: media.id,
-        },
+        }
       });
     }
     articleCount += 5;
   }
 
-  console.log(
-    `✅ Subcategory Articles: ${articleCount} articles created for ${targetSubcategories.length} subcategories`,
-  );
+console.log(`✅ Subcategory Articles: ${articleCount} articles created for ${targetSubcategories.length} subcategories`);
 
   // ═══════════════════════════════════════════
   // TEAM MEMBERS
@@ -4096,9 +4074,7 @@ ${img(images.society1, "Ilam tea gardens attract tourists")}
   );
   console.log("   Categories:   15 main + 130 subcategories (145 total)");
   console.log("   Tags:         15");
-  console.log(
-    "   Articles:     20 main + 650 subcategory articles (670 total)",
-  );
+  console.log("   Articles:     20 main + 650 subcategory articles (670 total)");
   console.log("   Comments:     20  (with various statuses)");
   console.log("   Videos:       10  (published)");
   console.log("   Horoscopes:   12  (all zodiac signs)");

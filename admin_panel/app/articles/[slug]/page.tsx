@@ -44,13 +44,13 @@ export default function ArticlePage() {
   const slug = params?.slug as string
   const urlParams = typeof window !== 'undefined' ? new URL(window.location.href).searchParams : null
   const isPreview = urlParams ? urlParams.get('preview') === 'true' : false
-
+  
   const { data: article, isLoading, error } = useQuery({
     queryKey: ['article', slug, isPreview],
     queryFn: () => fetchArticleBySlug(slug, isPreview),
     enabled: !!slug,
   })
-
+  
   const [activeContent, setActiveContent] = useState<'en' | 'ne'>('en')
 
   if (isLoading) {
@@ -71,7 +71,7 @@ export default function ArticlePage() {
             {isPreview ? 'Preview Unavailable' : 'Article Not Found'}
           </h1>
           <p className="text-muted-foreground mb-6">
-            {isPreview
+            {isPreview 
               ? 'This article is not yet published. Go to edit page to preview.'
               : 'The article you are looking for does not exist or has been removed.'}
           </p>

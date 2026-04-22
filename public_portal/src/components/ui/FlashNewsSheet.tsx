@@ -13,12 +13,12 @@ export function FlashNewsSheet() {
   const { isNepali } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-
+  
   const { data: articlesResponse } = useQuery({
     queryKey: ['articles', 'flash-updates'],
     queryFn: () => fetchPublishedArticles({ isFlashUpdate: true, limit: 20 }),
   });
-
+  
   const flashUpdates = articlesResponse || [];
 
   useEffect(() => {

@@ -26,11 +26,9 @@ export async function GET(req: NextRequest) {
     }
     const authenticatedReq = authResult as AuthenticatedRequest;
 
-    const roleResult = await roleMiddleware([
-      Role.ADMIN,
-      Role.SUPERADMIN,
-      Role.AUTHOR,
-    ])(authenticatedReq);
+    const roleResult = await roleMiddleware([Role.ADMIN, Role.SUPERADMIN, Role.AUTHOR])(
+      authenticatedReq
+    );
     if (roleResult instanceof NextResponse) {
       return roleResult;
     }
@@ -45,7 +43,7 @@ export async function GET(req: NextRequest) {
           data: { errors: pagination.errors },
           message: "Invalid query parameters",
         },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -86,7 +84,7 @@ export async function POST(req: NextRequest) {
     const authenticatedReq = authResult as AuthenticatedRequest;
 
     const roleResult = await roleMiddleware([Role.ADMIN, Role.SUPERADMIN])(
-      authenticatedReq,
+      authenticatedReq
     );
     if (roleResult instanceof NextResponse) {
       return roleResult;
@@ -94,23 +92,7 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
 
-    const {
-      name,
-      nameNe,
-      department,
-      departmentNe,
-      designation,
-      designationNe,
-      image,
-      bio,
-      bioNe,
-      email,
-      phone,
-      newsEmail,
-      facebook,
-      order,
-      isActive,
-    } = body;
+    const { name, nameNe, department, departmentNe, designation, designationNe, image, bio, bioNe, email, phone, newsEmail, facebook, order, isActive } = body;
 
     if (!name || !department || !designation) {
       return NextResponse.json(
@@ -119,7 +101,7 @@ export async function POST(req: NextRequest) {
           data: null,
           message: "Name, department and designation are required",
         },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -149,7 +131,7 @@ export async function POST(req: NextRequest) {
         data: member,
         message: "Team member created successfully",
       },
-      { status: 201 },
+      { status: 201 }
     );
   } catch (error) {
     return errorHandler(error);
