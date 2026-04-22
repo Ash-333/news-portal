@@ -8,7 +8,7 @@ export interface ArticleListParams {
   category?: string;
   tag?: string;
   featured?: boolean;
-  breaking?: boolean;
+  flashUpdate?: boolean;
   author?: string;
   province?: string;
 }
@@ -23,7 +23,7 @@ export function getArticles(
   if (params.category) query.set("categorySlug", params.category);
   if (params.tag) query.set("tag", params.tag);
   if (params.featured) query.set("isFeatured", "true");
-  if (params.breaking) query.set("isBreaking", "true");
+  if (params.flashUpdate) query.set("isFlashUpdate", "true");
   if (params.author) query.set("author", params.author);
   if (params.province) query.set("province", params.province);
 
@@ -50,8 +50,8 @@ export async function incrementView(slug: string): Promise<void> {
   }
 }
 
-export function getBreakingArticles(): Promise<ApiResponse<Article[]>> {
-  return getArticles({ breaking: true });
+export function getFlashUpdateArticles(): Promise<ApiResponse<Article[]>> {
+  return getArticles({ flashUpdate: true });
 }
 
 export function getFeaturedArticles(): Promise<ApiResponse<Article[]>> {

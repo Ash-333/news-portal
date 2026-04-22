@@ -11,7 +11,7 @@ import {
 // GET /api/admin/team-members/:id - Get single team member
 export async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const authResult = await authMiddleware(req);
@@ -20,9 +20,11 @@ export async function GET(
     }
     const authenticatedReq = authResult as AuthenticatedRequest;
 
-    const roleResult = await roleMiddleware([Role.ADMIN, Role.SUPERADMIN, Role.AUTHOR])(
-      authenticatedReq
-    );
+    const roleResult = await roleMiddleware([
+      Role.ADMIN,
+      Role.SUPERADMIN,
+      Role.AUTHOR,
+    ])(authenticatedReq);
     if (roleResult instanceof NextResponse) {
       return roleResult;
     }
@@ -36,7 +38,7 @@ export async function GET(
     if (!member) {
       return NextResponse.json(
         { success: false, data: null, message: "Team member not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -53,7 +55,7 @@ export async function GET(
 // PATCH /api/admin/team-members/:id - Update team member
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const authResult = await authMiddleware(req);
@@ -63,7 +65,7 @@ export async function PATCH(
     const authenticatedReq = authResult as AuthenticatedRequest;
 
     const roleResult = await roleMiddleware([Role.ADMIN, Role.SUPERADMIN])(
-      authenticatedReq
+      authenticatedReq,
     );
     if (roleResult instanceof NextResponse) {
       return roleResult;
@@ -79,7 +81,7 @@ export async function PATCH(
     if (!existing) {
       return NextResponse.json(
         { success: false, data: null, message: "Team member not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -97,8 +99,13 @@ export async function PATCH(
         bioNe: body.bioNe !== undefined ? body.bioNe : existing.bioNe,
         email: body.email !== undefined ? body.email : existing.email,
         phone: body.phone !== undefined ? body.phone : existing.phone,
+        newsEmail:
+          body.newsEmail !== undefined ? body.newsEmail : existing.newsEmail,
+        facebook:
+          body.facebook !== undefined ? body.facebook : existing.facebook,
         order: body.order !== undefined ? body.order : existing.order,
-        isActive: body.isActive !== undefined ? body.isActive : existing.isActive,
+        isActive:
+          body.isActive !== undefined ? body.isActive : existing.isActive,
       },
     });
 
@@ -115,7 +122,7 @@ export async function PATCH(
 // DELETE /api/admin/team-members/:id - Delete team member
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const authResult = await authMiddleware(req);
@@ -125,7 +132,7 @@ export async function DELETE(
     const authenticatedReq = authResult as AuthenticatedRequest;
 
     const roleResult = await roleMiddleware([Role.ADMIN, Role.SUPERADMIN])(
-      authenticatedReq
+      authenticatedReq,
     );
     if (roleResult instanceof NextResponse) {
       return roleResult;
@@ -140,7 +147,7 @@ export async function DELETE(
     if (!existing) {
       return NextResponse.json(
         { success: false, data: null, message: "Team member not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 

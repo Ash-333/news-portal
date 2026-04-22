@@ -1,23 +1,23 @@
-'use client';
+"use client";
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
 import {
   getArticles,
   getArticleBySlug,
-  getBreakingArticles,
+  getFlashUpdateArticles,
   getFeaturedArticles,
   getLatestArticles,
   getPopularArticles,
-} from '@/lib/api/articles';
-import { Article } from '@/types';
+} from "@/lib/api/articles";
+import { Article } from "@/types";
 
 export const articleKeys = {
-  list: (params?: Record<string, unknown>) => ['articles', params] as const,
-  detail: (slug: string) => ['article', slug] as const,
-  breaking: ['articles', 'breaking'] as const,
-  featured: ['articles', 'featured'] as const,
-  popular: (period?: string) => ['articles', 'popular', period] as const,
-  latest: (limit?: number) => ['articles', 'latest', limit] as const,
+  list: (params?: Record<string, unknown>) => ["articles", params] as const,
+  detail: (slug: string) => ["article", slug] as const,
+  breaking: ["articles", "flash-update"] as const,
+  featured: ["articles", "featured"] as const,
+  popular: (period?: string) => ["articles", "popular", period] as const,
+  latest: (limit?: number) => ["articles", "latest", limit] as const,
 };
 
 export function useArticles(params?: {
@@ -55,7 +55,7 @@ export function useBreakingArticles() {
   return useQuery({
     queryKey: articleKeys.breaking,
     queryFn: async () => {
-      const res = await getBreakingArticles();
+      const res = await getFlashUpdateArticles();
       return res.data as Article[];
     },
     staleTime: 60 * 1000,
@@ -73,7 +73,7 @@ export function useFeaturedArticles() {
   });
 }
 
-export function usePopularArticles(period?: 'today' | 'week' | 'month') {
+export function usePopularArticles(period?: "today" | "week" | "month") {
   return useQuery({
     queryKey: articleKeys.popular(period),
     queryFn: async () => {

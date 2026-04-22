@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 import { fetchPublishedArticles, fetchCategories } from "@/lib/api";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 export const revalidate = 300;
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://yoursite.com";
@@ -48,12 +48,6 @@ const STATIC_ROUTES: MetadataRoute.Sitemap = [
     lastModified: new Date(),
     changeFrequency: "daily",
     priority: 0.6,
-  },
-  {
-    url: `${SITE_URL}/flash-updates`,
-    lastModified: new Date(),
-    changeFrequency: "hourly",
-    priority: 0.7,
   },
 ];
 

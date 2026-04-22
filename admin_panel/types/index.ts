@@ -5,7 +5,6 @@ import {
   MediaType,
   CommentStatus,
   Language,
-  Province,
 } from "@prisma/client";
 
 export type {
@@ -15,7 +14,6 @@ export type {
   MediaType,
   CommentStatus,
   Language,
-  Province,
 };
 
 // API Response Types
@@ -58,15 +56,16 @@ export interface Article {
   id: string;
   titleNe: string;
   titleEn: string;
+  subheadingNe?: string;
+  subheadingEn?: string;
   contentNe: string;
   contentEn: string;
   excerptNe?: string;
   excerptEn?: string;
   slug: string;
   status: ArticleStatus;
-  isBreaking: boolean;
+  isFlashUpdate: boolean;
   isFeatured: boolean;
-  province?: Province;
   scheduledAt?: Date;
   publishedAt?: Date;
   viewCount: number;
@@ -301,7 +300,7 @@ export interface ArticleFormData {
   metaTitle?: string;
   metaDescription?: string;
   ogImage?: string;
-  isBreaking: boolean;
+  isFlashUpdate: boolean;
   isFeatured: boolean;
   scheduledAt?: Date;
   featuredImageId?: string;
@@ -318,142 +317,6 @@ export interface TagFormData {
   nameNe: string;
   nameEn: string;
   slug: string;
-}
-
-export interface UserInviteFormData {
-  email: string;
-  name: string;
-  role: Role;
-}
-
-export interface SiteSettingsFormData {
-  siteName: string;
-  siteLogo?: string;
-  favicon?: string;
-  defaultLanguage: Language;
-  smtpHost: string;
-  smtpPort: number;
-  smtpUser: string;
-  smtpPassword: string;
-  smtpFrom: string;
-  facebookUrl?: string;
-  twitterUrl?: string;
-  youtubeUrl?: string;
-  instagramUrl?: string;
-  autoApproveComments: boolean;
-  bannedWords: string;
-  maxReportsBeforeHide: number;
-  force2FA: boolean;
-  ipWhitelist: string;
-  sessionTimeout: number;
-}
-
-export interface VideoFormData {
-  titleNe: string;
-  titleEn: string;
-  youtubeUrl: string;
-}
-
-export interface AdvertisementFormData {
-  titleNe: string;
-  titleEn: string;
-  mediaUrl: string;
-  mediaType: string;
-  linkUrl?: string;
-  position: string;
-  isActive: boolean;
-  startDate?: string;
-  endDate?: string;
-}
-
-export interface FlashUpdateFormData {
-  titleNe: string;
-  titleEn: string;
-  contentNe: string;
-  contentEn: string;
-  excerptNe?: string;
-  excerptEn?: string;
-  metaTitle?: string;
-  metaDescription?: string;
-  ogImage?: string;
-  featuredImageId?: string;
-}
-
-// Photo Gallery Types
-export interface PhotoGallery {
-  id: string;
-  titleNe: string;
-  titleEn: string;
-  excerptNe?: string;
-  excerptEn?: string;
-  slug: string;
-  isPublished: boolean;
-  authorId: string;
-  coverImageId?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface PhotoGalleryWithRelations extends PhotoGallery {
-  author: Pick<User, "id" | "name" | "profilePhoto">;
-  coverImage?: Media;
-  photos: PhotoGalleryPhotoWithMedia[];
-  _count?: {
-    photos: number;
-  };
-}
-
-export interface PhotoGalleryPhoto {
-  id: string;
-  photoGalleryId: string;
-  mediaId: string;
-  order: number;
-  captionNe?: string;
-  captionEn?: string;
-  createdAt: Date;
-}
-
-export interface PhotoGalleryPhotoWithMedia extends PhotoGalleryPhoto {
-  media: Media;
-}
-
-export interface PhotoGalleryFormData {
-  titleNe: string;
-  titleEn: string;
-  excerptNe?: string;
-  excerptEn?: string;
-  coverImageId?: string;
-  isPublished?: boolean;
-  photos: Array<{
-    mediaId: string;
-    captionNe?: string;
-    captionEn?: string;
-    order: number;
-  }>;
-}
-
-// Filter Types
-export interface ArticleFilter {
-  status?: ArticleStatus;
-  search?: string;
-  categoryId?: string;
-  authorId?: string;
-  isBreaking?: boolean;
-  isFeatured?: boolean;
-  dateFrom?: Date;
-  dateTo?: Date;
-}
-
-export interface UserFilter {
-  role?: Role;
-  status?: UserStatus;
-  search?: string;
-}
-
-export interface CommentFilter {
-  status?: CommentStatus;
-  articleId?: string;
-  search?: string;
 }
 
 export interface VideoFilter {
@@ -516,4 +379,39 @@ export interface PollFormData {
     textNe: string;
     textEn: string;
   }>;
+}
+
+// Photo Gallery Types
+export interface PhotoGallery {
+  id: string;
+  titleNe: string;
+  titleEn: string;
+  excerptNe?: string;
+  excerptEn?: string;
+  slug: string;
+  isPublished: boolean;
+  authorId: string;
+  coverImageId?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface PhotoGalleryWithRelations extends PhotoGallery {
+  author: Pick<User, "id" | "name" | "profilePhoto">;
+  coverImage?: Media;
+  photos: PhotoGalleryPhoto[];
+  _count?: {
+    photos: number;
+  };
+}
+
+export interface PhotoGalleryPhoto {
+  id: string;
+  photoGalleryId: string;
+  mediaId: string;
+  order: number;
+  captionNe?: string;
+  captionEn?: string;
+  createdAt: Date;
+  media?: Media;
 }

@@ -76,10 +76,10 @@ export function PhotoGalleryForm({ galleryId, isEditing }: PhotoGalleryFormProps
       setCoverMedia(existingGallery.coverImage || null)
       setSelectedPhotos(
         existingGallery.photos.map((p) => ({
-          id: p.media.id,
-          filename: p.media.filename,
-          url: p.media.url,
-          type: p.media.type,
+          id: p.media?.id || p.mediaId,
+          filename: p.media?.filename || '',
+          url: p.media?.url || '',
+          type: p.media?.type || 'IMAGE',
           size: 0,
           uploadedBy: '',
           createdAt: new Date(),

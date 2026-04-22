@@ -4,16 +4,22 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Zap, X, Clock, Flame } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
-import { useFlashUpdatesQuery } from '@/hooks/useNewsQueries';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
+import { useQuery } from '@tanstack/react-query';
+import { fetchPublishedArticles } from '@/lib/api';
 
 export function FlashNewsSheet() {
   const { isNepali } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const { data: flashUpdatesResponse } = useFlashUpdatesQuery({ limit: 20 });
-  const flashUpdates = flashUpdatesResponse?.data || [];
+
+  const { data: articlesResponse } = useQuery({
+    queryKey: ['articles', 'flash-updates'],
+    queryFn: () => fetchPublishedArticles({ isFlashUpdate: true, limit: 20 }),
+  });
+
+  const flashUpdates = articlesResponse || [];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -60,10 +66,10 @@ export function FlashNewsSheet() {
               </p>
             ) : (
               <ul className="divide-y divide-news-border">
-                {flashUpdates.map((update) => (
-                  <li key={update.id}>
+                {flashUpdates.map((article) => (
+                  <li key={article.id}>
                     <Link
-                      href={`/flash-updates/${update.slug}`}
+                      href={`/articles/${article.slug}`}
                       onClick={() => setIsOpen(false)}
                       className="block p-4 hover:bg-gray-50 dark:hover:bg-news-card-dark"
                     >
@@ -74,12 +80,12 @@ export function FlashNewsSheet() {
                             'font-medium text-gray-900 dark:text-white line-clamp-2',
                             isNepali ? 'font-nepali' : ''
                           )}>
-                            {isNepali ? update.titleNe : update.titleEn}
+                            {isNepali ? article.titleNe : article.titleEn}
                           </h3>
                           <div className="flex items-center gap-2 mt-1 text-xs text-gray-500">
                             <Clock className="w-3 h-3" />
                             <time>
-                              {new Date(update.createdAt).toLocaleString(isNepali ? 'ne-NP' : 'en-US', {
+                              {new Date(article.publishedAt).toLocaleString(isNepali ? 'ne-NP' : 'en-US', {
                                 month: 'short',
                                 day: 'numeric',
                                 hour: '2-digit',

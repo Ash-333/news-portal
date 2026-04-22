@@ -1,24 +1,22 @@
-'use client';
+"use client";
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createComment,
   fetchArticleBySlug,
   fetchCategories,
   fetchComments,
   fetchPublishedArticles,
-} from '@/lib/api';
-import { getFlashUpdates } from '@/lib/api/flash-updates';
-import { getVideos } from '@/lib/api/videos';
-import { getAds } from '@/lib/api/ads';
+} from "@/lib/api";
+import { getVideos } from "@/lib/api/videos";
+import { getAds } from "@/lib/api/ads";
 export const newsQueryKeys = {
-  articles: ['articles'] as const,
-  article: (slug: string) => ['articles', slug] as const,
-  categories: ['categories'] as const,
-  comments: (articleId: string) => ['comments', articleId] as const,
-  flashUpdates: ['flash-updates'] as const,
-  videos: ['videos'] as const,
-  ads: ['ads'] as const,
+  articles: ["articles"] as const,
+  article: (slug: string) => ["articles", slug] as const,
+  categories: ["categories"] as const,
+  comments: (articleId: string) => ["comments", articleId] as const,
+  videos: ["videos"] as const,
+  ads: ["ads"] as const,
 };
 
 export function usePublishedArticlesQuery() {
@@ -57,15 +55,10 @@ export function useCreateCommentMutation(articleId: string) {
   return useMutation({
     mutationFn: createComment,
     onSuccess: () => {
-      return queryClient.invalidateQueries({ queryKey: newsQueryKeys.comments(articleId) });
+      return queryClient.invalidateQueries({
+        queryKey: newsQueryKeys.comments(articleId),
+      });
     },
-  });
-}
-
-export function useFlashUpdatesQuery(params = {}) {
-  return useQuery({
-    queryKey: [...newsQueryKeys.flashUpdates, params],
-    queryFn: () => getFlashUpdates(params),
   });
 }
 
@@ -82,5 +75,3 @@ export function useAdsQuery() {
     queryFn: () => getAds(),
   });
 }
-
-

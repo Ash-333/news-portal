@@ -5,13 +5,18 @@ import Link from 'next/link';
 import { AlertCircle } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { cn } from '@/lib/utils';
-import { useBreakingArticles } from '@/hooks/useArticles';
+import { useBreakingArticles, useLatestArticles } from '@/hooks/useArticles';
 import { getTitle } from '@/lib/utils/lang';
 
 export function BreakingNewsTicker() {
   const { isNepali, language, t } = useLanguage();
   const [isPaused, setIsPaused] = useState(false);
-  const { data: articles = [] } = useBreakingArticles();
+
+  const { data: flashUpdateArticles = [] } = useBreakingArticles();
+  const { data: latestArticles = [] } = useLatestArticles(5);
+
+  const articles = flashUpdateArticles.length > 0 ? flashUpdateArticles : latestArticles;
+
   const breakingNews = articles.slice(0, 6).map((article) => ({
     id: article.id,
     title: getTitle(article, language),
@@ -21,14 +26,12 @@ export function BreakingNewsTicker() {
 
   if (breakingNews.length === 0) return null;
 
-  // Duplicate news items for seamless scrolling
   const duplicatedNews = [...breakingNews, ...breakingNews];
 
   return (
     <div className="bg-news-red text-white py-2 overflow-hidden">
       <div className="container mx-auto px-4">
         <div className="flex items-center gap-4">
-          {/* Breaking News Label */}
           <div className="flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full shrink-0">
             <AlertCircle className="h-4 w-4 animate-pulse" />
             <span className={cn('text-sm font-bold uppercase', isNepali ? 'font-nepali' : '')}>
@@ -36,7 +39,6 @@ export function BreakingNewsTicker() {
             </span>
           </div>
 
-          {/* Ticker Content */}
           <div
             className="flex-1 overflow-hidden"
             onMouseEnter={() => setIsPaused(true)}

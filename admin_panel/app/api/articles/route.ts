@@ -24,7 +24,7 @@ async function getAllCategoryIds(categoryId: string): Promise<string[]> {
   const allCategories = await prisma.category.findMany({
     select: { id: true, parentId: true },
   });
-  
+
   const ids: string[] = [];
   const findChildren = (parentId: string) => {
     ids.push(parentId);
@@ -33,7 +33,7 @@ async function getAllCategoryIds(categoryId: string): Promise<string[]> {
       findChildren(child.id);
     }
   };
-  
+
   findChildren(categoryId);
   return ids;
 }
@@ -61,9 +61,8 @@ export async function GET(req: NextRequest) {
     const categoryId = searchParams.get("categoryId");
     const categorySlug = searchParams.get("categorySlug");
     const tagId = searchParams.get("tagId");
-    const isBreaking = searchParams.get("isBreaking");
+    const isFlashUpdate = searchParams.get("isFlashUpdate");
     const isFeatured = searchParams.get("isFeatured");
-    const province = searchParams.get("province");
 
     const cacheParams = {
       page,
@@ -74,9 +73,8 @@ export async function GET(req: NextRequest) {
       categoryId,
       categorySlug,
       tagId,
-      isBreaking,
+      isFlashUpdate,
       isFeatured,
-      province,
     };
 
     const result = await cachedApi(
@@ -103,7 +101,7 @@ export async function GET(req: NextRequest) {
             where: { slug: categorySlug },
             select: { id: true },
           });
-          
+
           if (category) {
             const allCategoryIds = await getAllCategoryIds(category.id);
             where.categoryId = { in: allCategoryIds };
@@ -111,9 +109,8 @@ export async function GET(req: NextRequest) {
         } else if (categoryId) {
           where.categoryId = categoryId;
         }
-        if (isBreaking === "true") where.isBreaking = true;
+        if (isFlashUpdate === "true") where.isFlashUpdate = true;
         if (isFeatured === "true") where.isFeatured = true;
-        if (province) where.province = province;
 
         if (tagId) {
           where.tags = {
@@ -131,9 +128,8 @@ export async function GET(req: NextRequest) {
               excerptNe: true,
               excerptEn: true,
               slug: true,
-              isBreaking: true,
+              isFlashUpdate: true,
               isFeatured: true,
-              province: true,
               publishedAt: true,
               viewCount: true,
               ogImage: true,
@@ -141,7 +137,12 @@ export async function GET(req: NextRequest) {
                 select: { id: true, url: true },
               },
               author: {
-                select: { id: true, name: true, nameNe: true, profilePhoto: true },
+                select: {
+                  id: true,
+                  name: true,
+                  nameNe: true,
+                  profilePhoto: true,
+                },
               },
               category: {
                 select: { id: true, nameNe: true, nameEn: true, slug: true },

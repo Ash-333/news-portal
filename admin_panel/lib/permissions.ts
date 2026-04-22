@@ -20,8 +20,6 @@ export const permissions = {
   videosCreate: "videos.create",
   adsView: "ads.view",
   adsManage: "ads.manage",
-  flashUpdatesView: "flash-updates.view",
-  flashUpdatesCreate: "flash-updates.create",
   pollsView: "polls.view",
   pollsManage: "polls.manage",
 } as const;
@@ -39,8 +37,6 @@ const rolePermissions: Record<Role, Permission[]> = {
     permissions.categoriesView,
     permissions.videosView,
     permissions.videosCreate,
-    permissions.flashUpdatesView,
-    permissions.flashUpdatesCreate,
   ],
   [Role.ADMIN]: [
     permissions.dashboardView,
@@ -59,8 +55,6 @@ const rolePermissions: Record<Role, Permission[]> = {
     permissions.videosCreate,
     permissions.adsView,
     permissions.adsManage,
-    permissions.flashUpdatesView,
-    permissions.flashUpdatesCreate,
     permissions.pollsView,
     permissions.pollsManage,
   ],
@@ -84,8 +78,6 @@ const rolePermissions: Record<Role, Permission[]> = {
     permissions.videosCreate,
     permissions.adsView,
     permissions.adsManage,
-    permissions.flashUpdatesView,
-    permissions.flashUpdatesCreate,
     permissions.pollsView,
     permissions.pollsManage,
   ],
@@ -166,11 +158,6 @@ export const permissionGroups: Array<{
       {
         permission: permissions.videosCreate,
         label: "Create and manage videos",
-      },
-      { permission: permissions.flashUpdatesView, label: "View 24hrs updates" },
-      {
-        permission: permissions.flashUpdatesCreate,
-        label: "Create and manage 24hrs updates",
       },
     ],
   },

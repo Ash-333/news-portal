@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Role, ArticleStatus, Province, Prisma } from "@prisma/client";
+import { Role, ArticleStatus, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import {
   articleSchema,
@@ -53,7 +53,7 @@ export async function GET(req: NextRequest) {
     }
 
     const { page = 1, limit = 10, sortBy, order } = pagination.data;
-    const { status, search, categoryId, authorId, isBreaking, isFeatured } =
+    const { status, search, categoryId, authorId, isFlashUpdate, isFeatured } =
       filters.success ? filters.data : {};
 
     // Build where clause
@@ -68,7 +68,7 @@ export async function GET(req: NextRequest) {
 
     if (status) where.status = status;
     if (categoryId) where.categoryId = categoryId;
-    if (isBreaking !== undefined) where.isBreaking = isBreaking;
+    if (isFlashUpdate !== undefined) where.isFlashUpdate = isFlashUpdate;
     if (isFeatured !== undefined) where.isFeatured = isFeatured;
 
     if (search) {
@@ -88,7 +88,7 @@ export async function GET(req: NextRequest) {
           titleEn: true,
           slug: true,
           status: true,
-          isBreaking: true,
+          isFlashUpdate: true,
           isFeatured: true,
           scheduledAt: true,
           publishedAt: true,
@@ -251,9 +251,8 @@ export async function POST(req: NextRequest) {
         metaTitle: articleData.metaTitle as string | undefined,
         metaDescription: articleData.metaDescription as string | undefined,
         ogImage: articleData.ogImage as string | undefined,
-        isBreaking: articleData.isBreaking as boolean | undefined,
+        isFlashUpdate: articleData.isFlashUpdate as boolean | undefined,
         isFeatured: articleData.isFeatured as boolean | undefined,
-        province: articleData.province as Province | null | undefined,
         slug,
         authorId: authenticatedReq.user!.id,
         status: (articleData.status as ArticleStatus) || ArticleStatus.DRAFT,

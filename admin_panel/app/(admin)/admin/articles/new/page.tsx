@@ -23,16 +23,6 @@ import { Select } from '@/components/ui/select'
 import type { Media, CategoryWithChildren } from '@/types'
 import { toast } from 'sonner'
 
-const provinces = [
-  { value: 'PROVINCE_1', label: 'Province 1 (Koshi)' },
-  { value: 'PROVINCE_2', label: 'Province 2 (Madhesh)' },
-  { value: 'PROVINCE_3', label: 'Province 3 (Bagmati)' },
-  { value: 'PROVINCE_4', label: 'Province 4 (Gandaki)' },
-  { value: 'PROVINCE_5', label: 'Province 5 (Lumbini)' },
-  { value: 'PROVINCE_6', label: 'Province 6 (Karnali)' },
-  { value: 'PROVINCE_7', label: 'Province 7 (Sudurpashchim)' },
-]
-
 const articleSchema = z.object({
   titleNe: z.string().min(1, 'Nepali title is required'),
   titleEn: z.string().min(1, 'English title is required'),
@@ -47,9 +37,8 @@ const articleSchema = z.object({
   tagIds: z.array(z.string()).optional(),
   metaTitle: z.string().optional(),
   metaDescription: z.string().optional(),
-  isBreaking: z.boolean().default(false),
+  isFlashUpdate: z.boolean().default(false),
   isFeatured: z.boolean().default(false),
-  province: z.enum(['PROVINCE_1', 'PROVINCE_2', 'PROVINCE_3', 'PROVINCE_4', 'PROVINCE_5', 'PROVINCE_6', 'PROVINCE_7']).optional(),
   featuredImageId: z.string().optional(),
   scheduledAt: z.string().optional(),
 })
@@ -76,14 +65,13 @@ export default function NewArticlePage() {
   } = useForm<ArticleFormData>({
     resolver: zodResolver(articleSchema),
     defaultValues: {
-      isBreaking: false,
+      isFlashUpdate: false,
       isFeatured: false,
     },
   })
 
-  const isBreaking = watch('isBreaking')
+  const isFlashUpdate = watch('isFlashUpdate')
   const isFeatured = watch('isFeatured')
-  const province = watch('province')
   const contentEn = watch('contentEn') || ''
   const contentNe = watch('contentNe') || ''
 
@@ -150,161 +138,161 @@ export default function NewArticlePage() {
                   <TabsTrigger value="nepali">Nepali</TabsTrigger>
                 </TabsList>
 
-<TabsContent value="english" className="space-y-4">
+                <TabsContent value="english" className="space-y-4">
+                  <div>
+                    <Label htmlFor="titleEn">Title (English)</Label>
+                    <Input
+                      id="titleEn"
+                      {...register('titleEn')}
+                      placeholder="Enter article title in English"
+                      className="mt-1"
+                    />
+                    {errors.titleEn && (
+                      <p className="text-sm text-red-600 mt-1">{errors.titleEn.message}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label htmlFor="subheadingEn">Subheading (English)</Label>
+                    <Input
+                      id="subheadingEn"
+                      {...register('subheadingEn')}
+                      placeholder="Enter subheading (optional)"
+                      className="mt-1"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="excerptEn">Excerpt (English)</Label>
+                    <textarea
+                      id="excerptEn"
+                      {...register('excerptEn')}
+                      placeholder="Brief summary of the article"
+                      className="mt-1 block w-full rounded-md border bg-background p-2 text-sm"
+                      rows={3}
+                    />
+                  </div>
+
+                  {/* SEO Settings - English */}
+                  <div className="space-y-4">
+                    <h4 className="text-sm font-medium text-muted-foreground">SEO Settings</h4>
                     <div>
-                      <Label htmlFor="titleEn">Title (English)</Label>
+                      <Label htmlFor="metaTitle">Meta Title</Label>
                       <Input
-                        id="titleEn"
-                        {...register('titleEn')}
-                        placeholder="Enter article title in English"
-                        className="mt-1"
-                      />
-                      {errors.titleEn && (
-                        <p className="text-sm text-red-600 mt-1">{errors.titleEn.message}</p>
-                      )}
-                    </div>
-
-                    <div>
-                      <Label htmlFor="subheadingEn">Subheading (English)</Label>
-                      <Input
-                        id="subheadingEn"
-                        {...register('subheadingEn')}
-                        placeholder="Enter subheading (optional)"
-                        className="mt-1"
-                      />
-                    </div>
-
-                    <div>
-                     <Label htmlFor="excerptEn">Excerpt (English)</Label>
-                     <textarea
-                       id="excerptEn"
-                       {...register('excerptEn')}
-                       placeholder="Brief summary of the article"
-                       className="mt-1 block w-full rounded-md border bg-background p-2 text-sm"
-                       rows={3}
-                     />
-                   </div>
-
-                   {/* SEO Settings - English */}
-                   <div className="space-y-4">
-                     <h4 className="text-sm font-medium text-muted-foreground">SEO Settings</h4>
-                     <div>
-                       <Label htmlFor="metaTitle">Meta Title</Label>
-                       <Input
-                         id="metaTitle"
-                         {...register('metaTitle')}
-                         placeholder="SEO title"
-                         className="mt-1"
-                       />
-                     </div>
-                     <div>
-                       <Label htmlFor="metaDescription">Meta Description</Label>
-                       <textarea
-                         id="metaDescription"
-                         {...register('metaDescription')}
-                         placeholder="SEO description"
-                         className="mt-1 block w-full rounded-md border bg-background p-2 text-sm"
-                         rows={3}
-                       />
-                     </div>
-                   </div>
-
-                   <div>
-                     <Label htmlFor="contentEn">Content (English)</Label>
-                     <div className="mt-1">
-                       <TipTapEditor
-                         value={contentEn}
-                         onChange={(html) => setValue('contentEn', html, { shouldDirty: true })}
-                         placeholder="Write your article content here..."
-                         onRequestImageInsert={(insertFn) => {
-                           setPendingImageInsert(() => insertFn)
-                           setIsMediaLibraryOpen(true)
-                         }}
-                       />
-                     </div>
-                     {errors.contentEn && (
-                       <p className="text-sm text-red-600 mt-1">{errors.contentEn.message}</p>
-                     )}
-                   </div>
-                 </TabsContent>
-
-<TabsContent value="nepali" className="space-y-4">
-                    <div>
-                      <Label htmlFor="titleNe">Title (Nepali)</Label>
-                      <Input
-                        id="titleNe"
-                        {...register('titleNe')}
-                        placeholder="Enter article title in Nepali"
-                        className="mt-1"
-                      />
-                      {errors.titleNe && (
-                        <p className="text-sm text-red-600 mt-1">{errors.titleNe.message}</p>
-                      )}
-                    </div>
-
-                    <div>
-                      <Label htmlFor="subheadingNe">Subheading (Nepali)</Label>
-                      <Input
-                        id="subheadingNe"
-                        {...register('subheadingNe')}
-                        placeholder="Enter subheading (optional)"
+                        id="metaTitle"
+                        {...register('metaTitle')}
+                        placeholder="SEO title"
                         className="mt-1"
                       />
                     </div>
-
                     <div>
-                     <Label htmlFor="excerptNe">Excerpt (Nepali)</Label>
-                     <textarea
-                       id="excerptNe"
-                       {...register('excerptNe')}
-                       placeholder="Brief summary of the article"
-                       className="mt-1 block w-full rounded-md border bg-background p-2 text-sm"
-                       rows={3}
-                     />
-                   </div>
+                      <Label htmlFor="metaDescription">Meta Description</Label>
+                      <textarea
+                        id="metaDescription"
+                        {...register('metaDescription')}
+                        placeholder="SEO description"
+                        className="mt-1 block w-full rounded-md border bg-background p-2 text-sm"
+                        rows={3}
+                      />
+                    </div>
+                  </div>
 
-                   {/* SEO Settings - Nepali */}
-                   <div className="space-y-4">
-                     <h4 className="text-sm font-medium text-muted-foreground">SEO Settings</h4>
-                     <div>
-                       <Label htmlFor="metaTitle">Meta Title</Label>
-                       <Input
-                         id="metaTitle"
-                         {...register('metaTitle')}
-                         placeholder="SEO title"
-                         className="mt-1"
-                       />
-                     </div>
-                     <div>
-                       <Label htmlFor="metaDescription">Meta Description</Label>
-                       <textarea
-                         id="metaDescription"
-                         {...register('metaDescription')}
-                         placeholder="SEO description"
-                         className="mt-1 block w-full rounded-md border bg-background p-2 text-sm"
-                         rows={3}
-                       />
-                     </div>
-                   </div>
+                  <div>
+                    <Label htmlFor="contentEn">Content (English)</Label>
+                    <div className="mt-1">
+                      <TipTapEditor
+                        value={contentEn}
+                        onChange={(html) => setValue('contentEn', html, { shouldDirty: true })}
+                        placeholder="Write your article content here..."
+                        onRequestImageInsert={(insertFn) => {
+                          setPendingImageInsert(() => insertFn)
+                          setIsMediaLibraryOpen(true)
+                        }}
+                      />
+                    </div>
+                    {errors.contentEn && (
+                      <p className="text-sm text-red-600 mt-1">{errors.contentEn.message}</p>
+                    )}
+                  </div>
+                </TabsContent>
 
-                   <div>
-                     <Label htmlFor="contentNe">Content (Nepali)</Label>
-                     <div className="mt-1">
-                       <TipTapEditor
-                         value={contentNe}
-                         onChange={(html) => setValue('contentNe', html, { shouldDirty: true })}
-                         placeholder="Write your article content here..."
-                         onRequestImageInsert={(insertFn) => {
-                           setPendingImageInsert(() => insertFn)
-                           setIsMediaLibraryOpen(true)
-                         }}
-                       />
-                     </div>
-                     {errors.contentNe && (
-                       <p className="text-sm text-red-600 mt-1">{errors.contentNe.message}</p>
-                     )}
-                   </div>
-                 </TabsContent>
+                <TabsContent value="nepali" className="space-y-4">
+                  <div>
+                    <Label htmlFor="titleNe">Title (Nepali)</Label>
+                    <Input
+                      id="titleNe"
+                      {...register('titleNe')}
+                      placeholder="Enter article title in Nepali"
+                      className="mt-1"
+                    />
+                    {errors.titleNe && (
+                      <p className="text-sm text-red-600 mt-1">{errors.titleNe.message}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <Label htmlFor="subheadingNe">Subheading (Nepali)</Label>
+                    <Input
+                      id="subheadingNe"
+                      {...register('subheadingNe')}
+                      placeholder="Enter subheading (optional)"
+                      className="mt-1"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="excerptNe">Excerpt (Nepali)</Label>
+                    <textarea
+                      id="excerptNe"
+                      {...register('excerptNe')}
+                      placeholder="Brief summary of the article"
+                      className="mt-1 block w-full rounded-md border bg-background p-2 text-sm"
+                      rows={3}
+                    />
+                  </div>
+
+                  {/* SEO Settings - Nepali */}
+                  <div className="space-y-4">
+                    <h4 className="text-sm font-medium text-muted-foreground">SEO Settings</h4>
+                    <div>
+                      <Label htmlFor="metaTitle">Meta Title</Label>
+                      <Input
+                        id="metaTitle"
+                        {...register('metaTitle')}
+                        placeholder="SEO title"
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="metaDescription">Meta Description</Label>
+                      <textarea
+                        id="metaDescription"
+                        {...register('metaDescription')}
+                        placeholder="SEO description"
+                        className="mt-1 block w-full rounded-md border bg-background p-2 text-sm"
+                        rows={3}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="contentNe">Content (Nepali)</Label>
+                    <div className="mt-1">
+                      <TipTapEditor
+                        value={contentNe}
+                        onChange={(html) => setValue('contentNe', html, { shouldDirty: true })}
+                        placeholder="Write your article content here..."
+                        onRequestImageInsert={(insertFn) => {
+                          setPendingImageInsert(() => insertFn)
+                          setIsMediaLibraryOpen(true)
+                        }}
+                      />
+                    </div>
+                    {errors.contentNe && (
+                      <p className="text-sm text-red-600 mt-1">{errors.contentNe.message}</p>
+                    )}
+                  </div>
+                </TabsContent>
               </Tabs>
             </CardContent>
           </Card>
@@ -318,8 +306,8 @@ export default function NewArticlePage() {
               <CardTitle className="text-sm font-medium">Publish Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 className="w-full"
                 disabled={createArticle.isPending}
               >
@@ -376,21 +364,6 @@ export default function NewArticlePage() {
             </CardContent>
           </Card>
 
-          {/* Province */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-sm font-medium">Province</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Select
-                options={provinces}
-                value={province || ''}
-                onChange={(val) => setValue('province', val as typeof province)}
-                placeholder="Select province (optional)"
-              />
-            </CardContent>
-          </Card>
-
           {/* Settings */}
           <Card>
             <CardHeader>
@@ -398,11 +371,11 @@ export default function NewArticlePage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
-                <Label htmlFor="isBreaking">Breaking News</Label>
+                <Label htmlFor="isFlashUpdate">Flash Update</Label>
                 <Switch
-                  id="isBreaking"
-                  checked={isBreaking}
-                  onCheckedChange={(checked) => setValue('isBreaking', checked)}
+                  id="isFlashUpdate"
+                  checked={isFlashUpdate}
+                  onCheckedChange={(checked) => setValue('isFlashUpdate', checked)}
                 />
               </div>
               <div className="flex items-center justify-between">

@@ -7,7 +7,7 @@ import Link from 'next/link'
 import {
   LayoutDashboard,
   FileText,
-Image,
+  Image,
   Images,
   Tag,
   FolderTree,
@@ -69,16 +69,6 @@ const navItems: NavItem[] = [
   { label: 'Tags', href: '/admin/tags', icon: Tag, permission: permissions.categoriesView },
   { label: 'Videos', href: '/admin/videos', icon: Video, permission: permissions.videosView },
   { label: 'Ads', href: '/admin/ads', icon: Megaphone, permission: permissions.adsView },
-  {
-    label: '24hrs Updates',
-    href: '/admin/flash-updates',
-    icon: Zap,
-    permission: permissions.flashUpdatesView,
-    children: [
-      { label: 'All Updates', href: '/admin/flash-updates', icon: Zap, permission: permissions.flashUpdatesView },
-      { label: 'Add New', href: '/admin/flash-updates/new', icon: Zap, permission: permissions.flashUpdatesCreate },
-    ]
-  },
   { label: 'Polls', href: '/admin/polls', icon: Vote, permission: permissions.pollsView },
   { label: 'Horoscopes', href: '/admin/horoscopes', icon: Sparkles, permission: permissions.videosView },
   { label: 'Audio News', href: '/admin/audio-news', icon: Headphones, permission: permissions.videosView },

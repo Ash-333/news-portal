@@ -6,7 +6,6 @@ import {
   MediaType,
   CommentStatus,
   Language,
-  Province,
 } from "@prisma/client";
 
 const booleanFromInput = z.preprocess((value) => {
@@ -112,19 +111,8 @@ export const articleSchema = z.object({
     .max(160, "Meta description should be less than 160 characters")
     .optional(),
   ogImage: z.string().url("Invalid URL").optional().or(z.literal("")),
-  isBreaking: booleanFromInput.default(false),
+  isFlashUpdate: booleanFromInput.default(false),
   isFeatured: booleanFromInput.default(false),
-  province: z
-    .enum([
-      Province.PROVINCE_1,
-      Province.PROVINCE_2,
-      Province.PROVINCE_3,
-      Province.PROVINCE_4,
-      Province.PROVINCE_5,
-      Province.PROVINCE_6,
-      Province.PROVINCE_7,
-    ])
-    .optional(),
   scheduledAt: z
     .string()
     .regex(
@@ -278,7 +266,7 @@ export const articleFilterSchema = z.object({
   search: z.string().optional(),
   categoryId: z.string().uuid().optional(),
   authorId: z.string().uuid().optional(),
-  isBreaking: z
+  isFlashUpdate: z
     .preprocess(
       (val) => (val === undefined ? undefined : val === "true" || val === true),
       z.boolean().optional(),
@@ -337,6 +325,11 @@ export const videoSchema = z.object({
     .min(1, "YouTube URL is required"),
 });
 
+export const videoFilterSchema = z.object({
+  search: z.string().optional(),
+  isPublished: z.preprocess((val) => val === "true", z.boolean()).optional(),
+});
+
 // Advertisement Validations
 export const advertisementSchema = z.object({
   titleNe: z.string().min(1, "Nepali title is required"),
@@ -348,47 +341,6 @@ export const advertisementSchema = z.object({
   isActive: booleanFromInput.default(true),
   startDate: z.string().datetime().optional().or(z.literal("")),
   endDate: z.string().datetime().optional().or(z.literal("")),
-});
-
-// Flash Update Validations
-export const flashUpdateSchema = z.object({
-  titleNe: z.string().min(1, "Nepali title is required"),
-  titleEn: z.string().min(1, "English title is required"),
-  contentNe: z.string().min(1, "Nepali content is required"),
-  contentEn: z.string().min(1, "English content is required"),
-  excerptNe: z
-    .string()
-    .max(500, "Excerpt must be less than 500 characters")
-    .optional(),
-  excerptEn: z
-    .string()
-    .max(500, "Excerpt must be less than 500 characters")
-    .optional(),
-  metaTitle: z
-    .string()
-    .max(70, "Meta title should be less than 70 characters")
-    .optional(),
-  metaDescription: z
-    .string()
-    .max(160, "Meta description should be less than 160 characters")
-    .optional(),
-  ogImage: z.string().url("Invalid URL").optional().or(z.literal("")),
-  featuredImageId: z
-    .string()
-    .uuid("Invalid featured image")
-    .optional()
-    .or(z.literal("")),
-});
-
-export const videoFilterSchema = z.object({
-  search: z.string().optional(),
-  isPublished: z.preprocess((val) => val === "true", z.boolean()).optional(),
-});
-
-export const flashUpdateFilterSchema = z.object({
-  search: z.string().optional(),
-  isPublished: z.preprocess((val) => val === "true", z.boolean()).optional(),
-  activeOnly: z.preprocess((val) => val === "true", z.boolean()).optional(),
 });
 
 // Horoscope Validations
@@ -445,7 +397,6 @@ export type VideoFormData = z.infer<typeof videoSchema>;
 export type AdvertisementFormData = z.infer<typeof advertisementSchema>;
 export type HoroscopeFormData = z.infer<typeof horoscopeSchema>;
 export type AudioNewsFormData = z.infer<typeof audioNewsSchema>;
-export type FlashUpdateFormData = z.infer<typeof flashUpdateSchema>;
 
 // Photo Gallery Validations
 export const photoGallerySchema = z.object({

@@ -191,7 +191,7 @@ export function Header() {
                       'border-b-2 border-transparent hover:border-news-red'
                     )}
                   >
-                    <span className={cn(isNepali ? 'font-nepali text-lg' : '')}>
+                    <span className={cn(isNepali ? 'font-nepali text-lg font-bold' : '')}>
                       {isNepali ? item.labelNe : item.label}
                     </span>
                     {item.children && <ChevronDown className="h-4 w-4" />}
@@ -207,7 +207,7 @@ export function Header() {
                               href={child.href}
                               className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-news-bg-dark hover:text-news-red"
                             >
-                              <span className={isNepali ? 'font-nepali text-base' : ''}>
+                              <span className={isNepali ? 'font-nepali text-lg font-bold' : ''}>
                                 {isNepali ? child.labelNe : child.label}
                               </span>
                             </Link>
@@ -227,7 +227,7 @@ export function Header() {
                   href={moreNavItem.href}
                   className="flex items-center gap-1 px-4 py-3 text-base font-bold transition-colors text-gray-800 dark:text-gray-200 hover:text-news-red dark:hover:text-news-red border-b-2 border-transparent hover:border-news-red"
                 >
-                  <span className={cn(isNepali ? 'font-nepali text-lg' : '')}>
+                  <span className={cn(isNepali ? 'font-nepali text-lg font-bold' : '')}>
                     {isNepali ? moreNavItem.labelNe : moreNavItem.label}
                   </span>
                   {moreNavItem.children && <ChevronDown className="h-4 w-4" />}
@@ -236,18 +236,18 @@ export function Header() {
                 {moreNavItem.children && activeDropdown === moreNavItem.href && (
                   <div className="absolute top-full left-0 w-64 bg-white dark:bg-news-card-dark shadow-lg rounded-b-lg border border-t-0 border-news-border dark:border-news-border-dark z-50">
                     <ul className="py-2">
-{moreNavItem.children.map((child: NavItem) => (
-                          <li key={child.href}>
-                            <Link
-                              href={child.href}
-                              className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-news-bg-dark hover:text-news-red"
-                            >
-                              <span className={isNepali ? 'font-nepali text-base' : ''}>
-                                {isNepali ? child.labelNe : child.label}
-                              </span>
-                            </Link>
-                          </li>
-                        ))}
+                      {moreNavItem.children.map((child: NavItem) => (
+                        <li key={child.href}>
+                          <Link
+                            href={child.href}
+                            className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-news-bg-dark hover:text-news-red"
+                          >
+                            <span className={isNepali ? 'font-nepali text-lg font-bold' : ''}>
+                              {isNepali ? child.labelNe : child.label}
+                            </span>
+                          </Link>
+                        </li>
+                      ))}
                     </ul>
                   </div>
                 )}

@@ -319,7 +319,7 @@ export function normalizeArticle(raw: any): Article {
       estimateReadTime(content),
     ),
     views: coerceNumber(raw?.views ?? raw?.viewCount ?? raw?.view_count, 0),
-    isBreaking: Boolean(raw?.isBreaking ?? raw?.breaking),
+    isFlashUpdate: Boolean(raw?.isFlashUpdate ?? raw?.breaking),
     isFeatured: Boolean(raw?.isFeatured ?? raw?.featured),
     isOpinion: Boolean(raw?.isOpinion ?? raw?.opinion),
   };
@@ -405,13 +405,26 @@ export function deriveAuthorsFromArticles(articles: Article[]) {
 
 export async function fetchPublishedArticles(options?: {
   revalidate?: number;
+  isFlashUpdate?: boolean;
+  limit?: number;
 }) {
   try {
-    const payload = await apiFetch<unknown>("/api/articles", {
-      next: options?.revalidate
-        ? { revalidate: options.revalidate }
-        : undefined,
-    });
+    const params = new URLSearchParams();
+    if (options?.isFlashUpdate) {
+      params.set("isFlashUpdate", "true");
+    }
+    if (options?.limit) {
+      params.set("limit", String(options.limit));
+    }
+    const queryString = params.toString();
+    const payload = await apiFetch<unknown>(
+      `/api/articles${queryString ? `?${queryString}` : ""}`,
+      {
+        next: options?.revalidate
+          ? { revalidate: options.revalidate }
+          : undefined,
+      },
+    );
 
     return unwrapList<any>(payload, ["articles"]).map(normalizeArticle);
   } catch (error) {

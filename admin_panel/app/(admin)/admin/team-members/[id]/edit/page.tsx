@@ -23,6 +23,10 @@ const teamMemberSchema = z.object({
   departmentNe: z.string().optional(),
   designation: z.string().min(1, 'Designation is required'),
   designationNe: z.string().optional(),
+  email: z.string().optional(),
+  phone: z.string().optional(),
+  newsEmail: z.string().optional(),
+  facebook: z.string().url().optional().or(z.literal('')),
   image: z.string().optional(),
   isActive: z.boolean().default(true),
 })
@@ -117,7 +121,7 @@ export default function EditTeamMemberPage() {
     setIsSubmitting(true)
     try {
       let imageUrl = data.image || ''
-      
+
       if (selectedFile) {
         const formData = new FormData()
         formData.append('file', selectedFile)
@@ -148,7 +152,7 @@ export default function EditTeamMemberPage() {
         }),
       })
       const result = await response.json()
-      
+
       if (result.success) {
         toast.success('Team member updated successfully')
         router.push('/admin/team-members')
@@ -240,10 +244,35 @@ export default function EditTeamMemberPage() {
               </div>
             </div>
 
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="email">Personal Email</Label>
+                <Input id="email" {...register('email')} placeholder="personal@email.com" type="email" />
+              </div>
+              <div>
+                <Label htmlFor="phone">Phone</Label>
+                <Input id="phone" {...register('phone')} placeholder="+977-9851000001" />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="newsEmail">News Email</Label>
+                <Input id="newsEmail" {...register('newsEmail')} placeholder="news@newsportal.com" type="email" />
+              </div>
+              <div>
+                <Label htmlFor="facebook">Facebook URL</Label>
+                <Input id="facebook" {...register('facebook')} placeholder="https://facebook.com/username" />
+                {errors.facebook && (
+                  <p className="text-sm text-red-600 mt-1">{errors.facebook.message}</p>
+                )}
+              </div>
+            </div>
+
             <div>
               <Label>Photo</Label>
               <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleFileSelect} />
-              
+
               {preview ? (
                 <div className="relative mt-2 w-32 h-32">
                   <img src={preview} alt="Preview" className="w-full h-full object-cover rounded-lg" />

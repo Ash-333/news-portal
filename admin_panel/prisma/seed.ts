@@ -5,7 +5,6 @@ import {
   MediaType,
   CommentStatus,
   Poll,
-  Province,
 } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
@@ -345,6 +344,505 @@ async function main() {
     update: {},
     create: { nameNe: "अन्तर्वार्ता", nameEn: "Interview", slug: "antarvarta" },
   });
+  const diaspora = await prisma.category.upsert({
+    where: { slug: "diaspora" },
+    update: {},
+    create: { nameNe: "प्रवास", nameEn: "Diaspora", slug: "diaspora" },
+  });
+  const story = await prisma.category.upsert({
+    where: { slug: "story" },
+    update: {},
+    create: { nameNe: "कथा", nameEn: "Story", slug: "story" },
+  });
+  const opinion = await prisma.category.upsert({
+    where: { slug: "opinion" },
+    update: {},
+    create: { nameNe: "विचार", nameEn: "Opinion", slug: "opinion" },
+  });
+
+  // ═══════════════════════════════════════════
+  // SUBCATEGORIES FOR EACH MAIN CATEGORY
+  // ═══════════════════════════════════════════
+
+  // Politics subcategories
+  const politicsSubcategories = [
+    {
+      slug: "federal-politics",
+      nameEn: "Federal Politics",
+      nameNe: "संघीय राजनीति",
+    },
+    {
+      slug: "provincial-politics",
+      nameEn: "Provincial Politics",
+      nameNe: "प्रादेशिक राजनीति",
+    },
+    {
+      slug: "local-politics",
+      nameEn: "Local Politics",
+      nameNe: "स्थानीय राजनीति",
+    },
+    { slug: "elections", nameEn: "Elections", nameNe: "निर्वाचन" },
+    {
+      slug: "political-parties",
+      nameEn: "Political Parties",
+      nameNe: "राजनीतिक दल",
+    },
+    { slug: "parliament", nameEn: "Parliament", nameNe: "संसद" },
+    { slug: "government", nameEn: "Government", nameNe: "सरकार" },
+    { slug: "opposition", nameEn: "Opposition", nameNe: "विपक्ष" },
+    {
+      slug: "political-analysis",
+      nameEn: "Political Analysis",
+      nameNe: "राजनीतिक विश्लेषण",
+    },
+    {
+      slug: "political-news",
+      nameEn: "Political News",
+      nameNe: "राजनीतिक समाचार",
+    },
+  ];
+  for (const sub of politicsSubcategories) {
+    await prisma.category.upsert({
+      where: { slug: sub.slug },
+      update: {},
+      create: {
+        nameNe: sub.nameNe,
+        nameEn: sub.nameEn,
+        slug: sub.slug,
+        parentId: politics.id,
+      },
+    });
+  }
+
+  // Sports subcategories
+  const sportsSubcategories = [
+    { slug: "cricket", nameEn: "Cricket", nameNe: "क्रिकेट" },
+    { slug: "football", nameEn: "Football", nameNe: "फुटबल" },
+    { slug: "volleyball", nameEn: "Volleyball", nameNe: "भलिवल" },
+    { slug: "basketball", nameEn: "Basketball", nameNe: "बास्केटबल" },
+    { slug: "hockey", nameEn: "Hockey", nameNe: "हक्की" },
+    { slug: "athletics", nameEn: "Athletics", nameNe: "एथलेटिक्स" },
+    { slug: "swimming", nameEn: "Swimming", nameNe: "स्विमिङ" },
+    { slug: "boxing", nameEn: "Boxing", nameNe: "बक्सिङ" },
+    { slug: "martial-arts", nameEn: "Martial Arts", nameNe: "मार्सल आर्ट्स" },
+    { slug: "sports-news", nameEn: "Sports News", nameNe: "खेल समाचार" },
+  ];
+  for (const sub of sportsSubcategories) {
+    await prisma.category.upsert({
+      where: { slug: sub.slug },
+      update: {},
+      create: {
+        nameNe: sub.nameNe,
+        nameEn: sub.nameEn,
+        slug: sub.slug,
+        parentId: sports.id,
+      },
+    });
+  }
+
+  // Technology subcategories
+  const technologySubcategories = [
+    { slug: "gadgets", nameEn: "Gadgets", nameNe: "ग्याजेट्स" },
+    {
+      slug: "ai-artificial-intelligence",
+      nameEn: "AI & Artificial Intelligence",
+      nameNe: "एआई र कृत्रिम बुद्धिमत्ता",
+    },
+    { slug: "startups", nameEn: "Startups", nameNe: "स्टार्टअप" },
+    { slug: "cybersecurity", nameEn: "Cybersecurity", nameNe: "साइबर सुरक्षा" },
+    { slug: "mobile-phones", nameEn: "Mobile Phones", nameNe: "मोबाइल फोन" },
+    { slug: "computers", nameEn: "Computers", nameNe: "कम्प्युटर" },
+    { slug: "internet", nameEn: "Internet", nameNe: "इन्टरनेट" },
+    { slug: "social-media", nameEn: "Social Media", nameNe: "सामाजिक मिडिया" },
+    { slug: "tech-news", nameEn: "Tech News", nameNe: "प्रविधि समाचार" },
+    {
+      slug: "software-apps",
+      nameEn: "Software & Apps",
+      nameNe: "सफ्टवेयर र एप्स",
+    },
+  ];
+  for (const sub of technologySubcategories) {
+    await prisma.category.upsert({
+      where: { slug: sub.slug },
+      update: {},
+      create: {
+        nameNe: sub.nameNe,
+        nameEn: sub.nameEn,
+        slug: sub.slug,
+        parentId: technology.id,
+      },
+    });
+  }
+
+  // Entertainment subcategories
+  const entertainmentSubcategories = [
+    { slug: "bollywood", nameEn: "Bollywood", nameNe: "बलिउड" },
+    { slug: "hollywood", nameEn: "Hollywood", nameNe: "हलिउड" },
+    { slug: "nepali-cinema", nameEn: "Nepali Cinema", nameNe: "नेपाली सिनेमा" },
+    { slug: "music", nameEn: "Music", nameNe: "संगीत" },
+    { slug: "television", nameEn: "Television", nameNe: "टेलिभिजन" },
+    { slug: "movies", nameEn: "Movies", nameNe: "चलचित्र" },
+    { slug: "celebrity", nameEn: "Celebrity", nameNe: "सेलिब्रिटी" },
+    { slug: "fashion", nameEn: "Fashion", nameNe: "फेसन" },
+    { slug: "gossip", nameEn: "Gossip", nameNe: "गपशप" },
+    {
+      slug: "entertainment-news",
+      nameEn: "Entertainment News",
+      nameNe: "मनोरञ्जन समाचार",
+    },
+  ];
+  for (const sub of entertainmentSubcategories) {
+    await prisma.category.upsert({
+      where: { slug: sub.slug },
+      update: {},
+      create: {
+        nameNe: sub.nameNe,
+        nameEn: sub.nameEn,
+        slug: sub.slug,
+        parentId: entertainment.id,
+      },
+    });
+  }
+
+  // Economy subcategories
+  const economySubcategories = [
+    { slug: "stock-market", nameEn: "Stock Market", nameNe: "शेयर बजार" },
+    { slug: "banking", nameEn: "Banking", nameNe: "बैंकिङ" },
+    { slug: "investment", nameEn: "Investment", nameNe: "लगानी" },
+    { slug: "business", nameEn: "Business", nameNe: "व्यापार" },
+    { slug: "trade", nameEn: "Trade", nameNe: "व्यापार" },
+    { slug: "tourism", nameEn: "Tourism", nameNe: "पर्यटन" },
+    { slug: "agriculture", nameEn: "Agriculture", nameNe: "कृषि" },
+    { slug: "real-estate", nameEn: "Real Estate", nameNe: "घर जग्गा" },
+    { slug: "jobs", nameEn: "Jobs", nameNe: "रोजगार" },
+    { slug: "economy-news", nameEn: "Economy News", nameNe: "अर्थ समाचार" },
+  ];
+  for (const sub of economySubcategories) {
+    await prisma.category.upsert({
+      where: { slug: sub.slug },
+      update: {},
+      create: {
+        nameNe: sub.nameNe,
+        nameEn: sub.nameEn,
+        slug: sub.slug,
+        parentId: economy.id,
+      },
+    });
+  }
+
+  // World subcategories
+  const worldSubcategories = [
+    { slug: "asia", nameEn: "Asia", nameNe: "एशिया" },
+    { slug: "europe", nameEn: "Europe", nameNe: "युरोप" },
+    { slug: "americas", nameEn: "Americas", nameNe: "अमेरिका" },
+    { slug: "africa", nameEn: "Africa", nameNe: "अफ्रिका" },
+    { slug: "middle-east", nameEn: "Middle East", nameNe: "मध्य पूर्व" },
+    { slug: "un", nameEn: "United Nations", nameNe: "संयुक्त राष्ट्र" },
+    { slug: "diplomacy", nameEn: "Diplomacy", nameNe: "कूटनीति" },
+    {
+      slug: "global-economy",
+      nameEn: "Global Economy",
+      nameNe: "विश्व अर्थतन्त्र",
+    },
+    {
+      slug: "climate-change",
+      nameEn: "Climate Change",
+      nameNe: "जलवायु परिवर्तन",
+    },
+    { slug: "world-news", nameEn: "World News", nameNe: "विश्व समाचार" },
+  ];
+  for (const sub of worldSubcategories) {
+    await prisma.category.upsert({
+      where: { slug: sub.slug },
+      update: {},
+      create: {
+        nameNe: sub.nameNe,
+        nameEn: sub.nameEn,
+        slug: sub.slug,
+        parentId: world.id,
+      },
+    });
+  }
+
+  // Society subcategories
+  const societySubcategories = [
+    { slug: "education", nameEn: "Education", nameNe: "शिक्षा" },
+    { slug: "health", nameEn: "Health", nameNe: "स्वास्थ्य" },
+    {
+      slug: "women-empowerment",
+      nameEn: "Women Empowerment",
+      nameNe: "महिला सशक्तिकरण",
+    },
+    { slug: "children", nameEn: "Children", nameNe: "बालबालिका" },
+    {
+      slug: "senior-citizens",
+      nameEn: "Senior Citizens",
+      nameNe: "ज्येष्ठ नागरिक",
+    },
+    {
+      slug: "social-issues",
+      nameEn: "Social Issues",
+      nameNe: "सामाजिक मुद्दा",
+    },
+    { slug: "community", nameEn: "Community", nameNe: "समुदाय" },
+    { slug: "volunteer", nameEn: "Volunteer", nameNe: "स्वयंसेवक" },
+    { slug: "ngos", nameEn: "NGOs", nameNe: "गैरसरकारी संगठन" },
+    { slug: "society-news", nameEn: "Society News", nameNe: "समाज समाचार" },
+  ];
+  for (const sub of societySubcategories) {
+    await prisma.category.upsert({
+      where: { slug: sub.slug },
+      update: {},
+      create: {
+        nameNe: sub.nameNe,
+        nameEn: sub.nameEn,
+        slug: sub.slug,
+        parentId: society.id,
+      },
+    });
+  }
+
+  // Health subcategories (under swasthya)
+  const healthSubcategories = [
+    {
+      slug: "mental-health",
+      nameEn: "Mental Health",
+      nameNe: "मानसिक स्वास्थ्य",
+    },
+    { slug: "nutrition", nameEn: "Nutrition", nameNe: "पोषण" },
+    { slug: "fitness", nameEn: "Fitness", nameNe: "फिटनेस" },
+    { slug: "diseases", nameEn: "Diseases", nameNe: "रोगहरु" },
+    { slug: "hospitals", nameEn: "Hospitals", nameNe: "अस्पताल" },
+    { slug: "doctors", nameEn: "Doctors", nameNe: "डाक्टर" },
+    { slug: "medicine", nameEn: "Medicine", nameNe: "औषधि" },
+    { slug: "ayurveda", nameEn: "Ayurveda", nameNe: "आयुर्वेद" },
+    { slug: "covid19", nameEn: "COVID-19", nameNe: "कोभिड-19" },
+    { slug: "health-tips", nameEn: "Health Tips", nameNe: "स्वास्थ्य सुझाव" },
+  ];
+  for (const sub of healthSubcategories) {
+    await prisma.category.upsert({
+      where: { slug: sub.slug },
+      update: {},
+      create: {
+        nameNe: sub.nameNe,
+        nameEn: sub.nameEn,
+        slug: sub.slug,
+        parentId: swasthya.id,
+      },
+    });
+  }
+
+  // Lifestyle subcategories (under jeevanShaili)
+  const lifestyleSubcategories = [
+    { slug: "food-recipes", nameEn: "Food & Recipes", nameNe: "खाना र रेसिपी" },
+    { slug: "travel", nameEn: "Travel", nameNe: "यात्रा" },
+    {
+      slug: "fashion-style",
+      nameEn: "Fashion & Style",
+      nameNe: "फेसन र स्टाइल",
+    },
+    { slug: "home-living", nameEn: "Home & Living", nameNe: "घर र बसोबास" },
+    { slug: "relationships", nameEn: "Relationships", nameNe: "सम्बन्ध" },
+    { slug: "parenting", nameEn: "Parenting", nameNe: "पालनपोषण" },
+    { slug: "pets", nameEn: "Pets", nameNe: "पाल्तु जनावर" },
+    {
+      slug: "beauty-skincare",
+      nameEn: "Beauty & Skincare",
+      nameNe: "सौन्दर्य र हेरचाह",
+    },
+    { slug: "fitness-yoga", nameEn: "Fitness & Yoga", nameNe: "फिटनेस र योग" },
+    {
+      slug: "lifestyle-news",
+      nameEn: "Lifestyle News",
+      nameNe: "जीवनशैली समाचार",
+    },
+  ];
+  for (const sub of lifestyleSubcategories) {
+    await prisma.category.upsert({
+      where: { slug: sub.slug },
+      update: {},
+      create: {
+        nameNe: sub.nameNe,
+        nameEn: sub.nameEn,
+        slug: sub.slug,
+        parentId: jeevanShaili.id,
+      },
+    });
+  }
+
+  // Dharma & Culture subcategories
+  const dharmaSubcategories = [
+    { slug: "festivals", nameEn: "Festivals", nameNe: "चाडपर्व" },
+    { slug: "temples", nameEn: "Temples", nameNe: "मन्दिर" },
+    { slug: "rituals", nameEn: "Rituals", nameNe: "धार्मिक अनुष्ठान" },
+    { slug: "astrology", nameEn: "Astrology", nameNe: "ज्योतिष" },
+    { slug: "spiritual", nameEn: "Spiritual", nameNe: "आध्यात्मिक" },
+    { slug: "puja-path", nameEn: "Puja & Path", nameNe: "पूजा र पाठ" },
+    {
+      slug: "religious-places",
+      nameEn: "Religious Places",
+      nameNe: "धार्मिक स्थल",
+    },
+    {
+      slug: "culture-heritage",
+      nameEn: "Culture & Heritage",
+      nameNe: "संस्कृति र विरासत",
+    },
+    { slug: "traditions", nameEn: "Traditions", nameNe: "परम्परा" },
+    { slug: "dharma-news", nameEn: "Dharma News", nameNe: "धर्म समाचार" },
+  ];
+  for (const sub of dharmaSubcategories) {
+    await prisma.category.upsert({
+      where: { slug: sub.slug },
+      update: {},
+      create: {
+        nameNe: sub.nameNe,
+        nameEn: sub.nameEn,
+        slug: sub.slug,
+        parentId: dharmaSanskriti.id,
+      },
+    });
+  }
+
+  // Diaspora subcategories
+  const diasporaSubcategories = [
+    { slug: "nri-news", nameEn: "NRI News", nameNe: "एनआरआई समाचार" },
+    { slug: "remittance", nameEn: "Remittance", nameNe: "रेमिट्यान्स" },
+    { slug: "overseas-jobs", nameEn: "Overseas Jobs", nameNe: "विदेशी रोजगार" },
+    {
+      slug: "diaspora-community",
+      nameEn: "Diaspora Community",
+      nameNe: "प्रवासी समुदाय",
+    },
+    {
+      slug: "cultural-association",
+      nameEn: "Cultural Association",
+      nameNe: "सांस्कृतिक संघ",
+    },
+    {
+      slug: "diaspora-events",
+      nameEn: "Diaspora Events",
+      nameNe: "प्रवासी कार्यक्रम",
+    },
+    {
+      slug: "nepal-embassy",
+      nameEn: "Nepal Embassy",
+      nameNe: "नेपाली दूतावास",
+    },
+    {
+      slug: "citizenship-abroad",
+      nameEn: "Citizenship Abroad",
+      nameNe: "विदेशमा नागरिकता",
+    },
+    {
+      slug: "diaspora-investment",
+      nameEn: "Diaspora Investment",
+      nameNe: "प्रवासी लगानी",
+    },
+    { slug: "diaspora-news", nameEn: "Diaspora News", nameNe: "प्रवास समाचार" },
+  ];
+  for (const sub of diasporaSubcategories) {
+    await prisma.category.upsert({
+      where: { slug: sub.slug },
+      update: {},
+      create: {
+        nameNe: sub.nameNe,
+        nameEn: sub.nameEn,
+        slug: sub.slug,
+        parentId: diaspora.id,
+      },
+    });
+  }
+
+  // Story subcategories
+  const storySubcategories = [
+    { slug: "news-story", nameEn: "News Story", nameNe: "समाचार कथा" },
+    { slug: "feature-story", nameEn: "Feature Story", nameNe: "फिचर कथा" },
+    {
+      slug: " investigative-story",
+      nameEn: "Investigative Story",
+      nameNe: "अनुसन्धानात्मक कथा",
+    },
+    { slug: "human-interest", nameEn: "Human Interest", nameNe: "मानवीय चासो" },
+    { slug: "success-story", nameEn: "Success Story", nameNe: "सफलता कथा" },
+    { slug: "frontline", nameEn: "Frontline", nameNe: "अग्रपंक्ति" },
+    { slug: "profile", nameEn: "Profile", nameNe: "प्रोफाइल" },
+    { slug: "opinion-piece", nameEn: "Opinion Piece", nameNe: "विचार लेख" },
+    {
+      slug: "analysis-piece",
+      nameEn: "Analysis Piece",
+      nameNe: "विश्लेषण लेख",
+    },
+    {
+      slug: "special-report",
+      nameEn: "Special Report",
+      nameNe: "विशेष रिपोर्ट",
+    },
+  ];
+  for (const sub of storySubcategories) {
+    await prisma.category.upsert({
+      where: { slug: sub.slug },
+      update: {},
+      create: {
+        nameNe: sub.nameNe,
+        nameEn: sub.nameEn,
+        slug: sub.slug,
+        parentId: story.id,
+      },
+    });
+  }
+
+  // Opinion subcategories
+  const opinionSubcategories = [
+    { slug: "editorial", nameEn: "Editorial", nameNe: "प्रमुख सम्पादकीय" },
+    {
+      slug: "opinion-column",
+      nameEn: "Opinion Column",
+      nameNe: "विचार स्तम्भ",
+    },
+    { slug: "guest-article", nameEn: "Guest Article", nameNe: "अतिथि लेख" },
+    {
+      slug: "letter-to-editor",
+      nameEn: "Letter to Editor",
+      nameNe: "सम्पादकको चिठ्ठी",
+    },
+    {
+      slug: "political-opinion",
+      nameEn: "Political Opinion",
+      nameNe: "राजनीतिक विचार",
+    },
+    {
+      slug: "social-commentary",
+      nameEn: "Social Commentary",
+      nameNe: "सामाजिक टिप्पणी",
+    },
+    {
+      slug: "economic-analysis",
+      nameEn: "Economic Analysis",
+      nameNe: "आर्थिक विश्लेषण",
+    },
+    {
+      slug: "cultural-review",
+      nameEn: "Cultural Review",
+      nameNe: "सांस्कृतिक समीक्षा",
+    },
+    { slug: "sports-view", nameEn: "Sports View", nameNe: "खेल दृष्टिकोण" },
+    { slug: "opinion-news", nameEn: "Opinion News", nameNe: "विचार समाचार" },
+  ];
+  for (const sub of opinionSubcategories) {
+    await prisma.category.upsert({
+      where: { slug: sub.slug },
+      update: {},
+      create: {
+        nameNe: sub.nameNe,
+        nameEn: sub.nameEn,
+        slug: sub.slug,
+        parentId: opinion.id,
+      },
+    });
+  }
+
+  console.log("✅ Categories: 15 main + 130 subcategories created");
 
   // Provinces category (parent)
   const provincesCategory = await prisma.category.upsert({
@@ -401,8 +899,31 @@ async function main() {
     });
   }
 
+  // Get province subcategory IDs for article assignment
+  const koshiProvince = await prisma.category.findUnique({
+    where: { slug: "koshi-province" },
+  });
+  const madheshProvince = await prisma.category.findUnique({
+    where: { slug: "madhesh-province" },
+  });
+  const bagmatiProvince = await prisma.category.findUnique({
+    where: { slug: "bagmati-province" },
+  });
+  const gandakiProvince = await prisma.category.findUnique({
+    where: { slug: "gandaki-province" },
+  });
+  const lumbiniProvince = await prisma.category.findUnique({
+    where: { slug: "lumbini-province" },
+  });
+  const karnaliProvince = await prisma.category.findUnique({
+    where: { slug: "karnali-province" },
+  });
+  const sudurpashchimProvince = await prisma.category.findUnique({
+    where: { slug: "sudurpashchim-province" },
+  });
+
   console.log(
-    "✅ Categories: 21 created (13 + provinces with 7 subcategories)",
+    "✅ Categories: 24 created (16 + provinces with 7 subcategories)",
   );
 
   // ═══════════════════════════════════════════
@@ -877,12 +1398,10 @@ async function main() {
     authorId,
     status = ArticleStatus.PUBLISHED,
     isFeatured = false,
-    isBreaking = false,
     tagIds = [],
     metaTitle,
     metaDescription,
     publishedAt,
-    province,
   }: {
     slug: string;
     coverImageUrl: string;
@@ -900,8 +1419,6 @@ async function main() {
     authorId: string;
     status?: ArticleStatus;
     isFeatured?: boolean;
-    province?: Province;
-    isBreaking?: boolean;
     tagIds?: string[];
     metaTitle?: string;
     metaDescription?: string;
@@ -945,8 +1462,6 @@ async function main() {
         excerptEn,
         status,
         isFeatured,
-        isBreaking,
-        province,
         categoryId,
         authorId,
         featuredImageId: media.id,
@@ -966,8 +1481,6 @@ async function main() {
         slug,
         status,
         isFeatured,
-        isBreaking,
-        province,
         categoryId,
         authorId,
         featuredImageId: media.id,
@@ -1063,7 +1576,6 @@ ${img(images.inline_parliament, "Parliament session in progress during budget pr
     categoryId: politics.id,
     authorId: author1.id,
     isFeatured: true,
-    isBreaking: false,
     tagIds: [tagNepal.id, tagGovt.id, tagBudget.id],
     publishedAt: new Date(Date.now() - 1 * 60 * 60 * 1000),
   });
@@ -1115,7 +1627,6 @@ ${img(images.inline_election, "Citizens rally outside parliament demanding fair 
     categoryId: politics.id,
     authorId: author1.id,
     isFeatured: false,
-    isBreaking: true,
     tagIds: [tagNepal.id, tagGovt.id, tagBreaking.id],
     publishedAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
   });
@@ -1169,7 +1680,6 @@ ${img(images.inline_parliament, "Political parties meeting to finalize their ele
     categoryId: politics.id,
     authorId: author1.id,
     isFeatured: false,
-    isBreaking: false,
     tagIds: [tagNepal.id, tagGovt.id],
     publishedAt: new Date(Date.now() - 5 * 60 * 60 * 1000),
   });
@@ -1221,7 +1731,6 @@ ${img(images.inline_market, "Nepali products displayed at an Indian trade fair s
     categoryId: politics.id,
     authorId: author1.id,
     isFeatured: true,
-    isBreaking: false,
     tagIds: [tagNepal.id, tagGovt.id],
     publishedAt: new Date(Date.now() - 8 * 60 * 60 * 1000),
   });
@@ -1277,7 +1786,6 @@ ${img(images.inline_cricket2, "Nepal players celebrate after Sandeep Lamichhane 
     categoryId: sports.id,
     authorId: author2.id,
     isFeatured: true,
-    isBreaking: false,
     tagIds: [tagCricket.id, tagNepal.id],
     publishedAt: new Date(Date.now() - 3 * 60 * 60 * 1000),
   });
@@ -1331,7 +1839,6 @@ ${img(images.sports2, "Rising stars of Nepal football who have been selected for
     categoryId: sports.id,
     authorId: author2.id,
     isFeatured: false,
-    isBreaking: false,
     tagIds: [tagFootball.id, tagNepal.id],
     publishedAt: new Date(Date.now() - 6 * 60 * 60 * 1000),
   });
@@ -1385,7 +1892,6 @@ ${img(images.sports3, "Rekha Pun receives congratulations from coaches and offic
     categoryId: sports.id,
     authorId: author2.id,
     isFeatured: false,
-    isBreaking: false,
     tagIds: [tagNepal.id, tagKtm.id],
     publishedAt: new Date(Date.now() - 10 * 60 * 60 * 1000),
   });
@@ -1435,7 +1941,6 @@ ${img(images.inline_marathon, "Nepal players studying match strategies as they p
     categoryId: sports.id,
     authorId: author2.id,
     isFeatured: false,
-    isBreaking: false,
     tagIds: [tagNepal.id],
     publishedAt: new Date(Date.now() - 14 * 60 * 60 * 1000),
   });
@@ -1492,7 +1997,6 @@ ${img(images.inline_mobile, "PaySewa mobile app interface showing their digital 
     categoryId: technology.id,
     authorId: author3.id,
     isFeatured: true,
-    isBreaking: false,
     tagIds: [tagStartup.id, tagFintech.id, tagNepal.id],
     publishedAt: new Date(Date.now() - 4 * 60 * 60 * 1000),
   });
@@ -1542,7 +2046,6 @@ ${img(images.tech2, "Young entrepreneurs thriving in Nepal's growing technology 
     categoryId: technology.id,
     authorId: author3.id,
     isFeatured: false,
-    isBreaking: false,
     tagIds: [tagNepal.id, tagEducation.id],
     publishedAt: new Date(Date.now() - 12 * 60 * 60 * 1000),
   });
@@ -1596,7 +2099,6 @@ ${img(images.tech3, "Nepali students engaged in hands-on technology learning in 
     categoryId: technology.id,
     authorId: author3.id,
     isFeatured: false,
-    isBreaking: false,
     tagIds: [tagEducation.id, tagNepal.id, tagStartup.id],
     publishedAt: new Date(Date.now() - 18 * 60 * 60 * 1000),
   });
@@ -1652,7 +2154,6 @@ ${img(images.inline_gold, "Trends in gold and stock market investment as Nepali 
     categoryId: economy.id,
     authorId: author4.id,
     isFeatured: true,
-    isBreaking: true,
     tagIds: [tagNepal.id, tagBreaking.id],
     publishedAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
   });
@@ -1700,7 +2201,6 @@ ${img(images.economy2, "Nepal's growing financial sector and banking infrastruct
     categoryId: economy.id,
     authorId: author4.id,
     isFeatured: false,
-    isBreaking: false,
     tagIds: [tagNepal.id, tagBudget.id],
     publishedAt: new Date(Date.now() - 9 * 60 * 60 * 1000),
   });
@@ -1753,7 +2253,6 @@ ${img(images.economy3, "Growing crowds at Nepal's popular tourist destinations s
     categoryId: economy.id,
     authorId: author4.id,
     isFeatured: false,
-    isBreaking: false,
     tagIds: [tagNepal.id, tagTourism.id],
     publishedAt: new Date(Date.now() - 16 * 60 * 60 * 1000),
   });
@@ -1806,7 +2305,6 @@ ${img(images.entertain1, "The growing influence and reach of the Nepali film ind
     categoryId: entertainment.id,
     authorId: author5.id,
     isFeatured: false,
-    isBreaking: false,
     tagIds: [tagFilm.id, tagNepal.id],
     publishedAt: new Date(Date.now() - 7 * 60 * 60 * 1000),
   });
@@ -1855,7 +2353,6 @@ ${img(images.entertain2, "Nepali music artists delivering a powerful performance
     categoryId: entertainment.id,
     authorId: author5.id,
     isFeatured: false,
-    isBreaking: false,
     tagIds: [tagMusic.id, tagNepal.id],
     publishedAt: new Date(Date.now() - 11 * 60 * 60 * 1000),
   });
@@ -1908,7 +2405,6 @@ ${img(images.world1, "The majestic Himalayas now face unprecedented and accelera
     categoryId: world.id,
     authorId: author1.id,
     isFeatured: false,
-    isBreaking: false,
     tagIds: [tagClimate.id, tagNepal.id],
     publishedAt: new Date(Date.now() - 20 * 60 * 60 * 1000),
   });
@@ -1958,7 +2454,6 @@ ${img(images.world2, "International cooperation and multilateral diplomacy suppo
     categoryId: world.id,
     authorId: author1.id,
     isFeatured: false,
-    isBreaking: false,
     tagIds: [tagNepal.id, tagClimate.id],
     publishedAt: new Date(Date.now() - 22 * 60 * 60 * 1000),
   });
@@ -2015,7 +2510,6 @@ ${img(images.society1, "Nepal's comprehensive efforts in reforming and modernizi
     categoryId: society.id,
     authorId: author3.id,
     isFeatured: false,
-    isBreaking: false,
     tagIds: [tagEducation.id, tagNepal.id],
     publishedAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
   });
@@ -2068,7 +2562,6 @@ ${img(images.society2, "Community health services being expanded to reach the mo
     categoryId: society.id,
     authorId: author4.id,
     isFeatured: false,
-    isBreaking: false,
     tagIds: [tagHealth.id, tagNepal.id],
     publishedAt: new Date(Date.now() - 30 * 60 * 60 * 1000),
   });
@@ -2099,7 +2592,6 @@ ${img(images.society2, "Community health services being expanded to reach the mo
     categoryId: news.id,
     authorId: author1.id,
     isFeatured: false,
-    isBreaking: false,
     tagIds: [tagNepal.id, tagBreaking.id],
     publishedAt: new Date(Date.now() - 1 * 60 * 60 * 1000),
   });
@@ -2124,7 +2616,6 @@ ${img(images.society2, "Community health services being expanded to reach the mo
     categoryId: dharmaSanskriti.id,
     authorId: author5.id,
     isFeatured: false,
-    isBreaking: false,
     tagIds: [tagNepal.id],
     publishedAt: new Date(Date.now() - 4 * 60 * 60 * 1000),
   });
@@ -2149,7 +2640,6 @@ ${img(images.society2, "Community health services being expanded to reach the mo
     categoryId: swasthya.id,
     authorId: author4.id,
     isFeatured: false,
-    isBreaking: false,
     tagIds: [tagHealth.id, tagNepal.id],
     publishedAt: new Date(Date.now() - 6 * 60 * 60 * 1000),
   });
@@ -2174,7 +2664,6 @@ ${img(images.society2, "Community health services being expanded to reach the mo
     categoryId: jeevanShaili.id,
     authorId: author4.id,
     isFeatured: false,
-    isBreaking: false,
     tagIds: [tagHealth.id, tagNepal.id],
     publishedAt: new Date(Date.now() - 8 * 60 * 60 * 1000),
   });
@@ -2199,7 +2688,6 @@ ${img(images.society2, "Community health services being expanded to reach the mo
     categoryId: antarvarta.id,
     authorId: author1.id,
     isFeatured: false,
-    isBreaking: false,
     tagIds: [tagNepal.id, tagGovt.id],
     publishedAt: new Date(Date.now() - 12 * 60 * 60 * 1000),
   });
@@ -2227,33 +2715,172 @@ ${img(images.society2, "Community health services being expanded to reach the mo
     <p>The road from Ilam to Bajhang will be upgraded.</p>`,
     categoryId: politics.id,
     authorId: author1.id,
-    province: Province.PROVINCE_1,
   });
 
+  // Koshi Province Articles
   await createArticle({
-    slug: "province-1-tea-gardens-tourism",
-    coverImageUrl: images.entertain1,
-    coverImageFilename: "province1-tea.jpg",
+    slug: "koshi-province-tea-tourism",
+    coverImageUrl: images.society1,
+    coverImageFilename: "koshi-tea-tourism.jpg",
     uploadedById: superAdmin.id,
     titleNe: "कोशी प्रदेशको चिया बगानमा पर्यटकीय गतिविधि बढ्यो",
     titleEn: "Tourist Activities Increase in Koshi Province Tea Gardens",
-    excerptNe: "इलामको चिया बगानहरूमा पर्यटकहरूको आगमन बढेको छ।",
-    excerptEn: "Tourist arrivals have increased in Ilam tea gardens.",
-    contentNe: `<p>इलामको चिया बगान क्षेत्रमा पर्यटकहरूको आगमन बढेको छ।</p>`,
-    contentEn: `<p>Tourist arrivals have increased in Ilam tea garden area.</p>`,
-    categoryId: society.id,
+    subheadingNe: "इलामको चिया बगान क्षेत्रमा पर्यटकहरूको आगमन बढेको छ",
+    subheadingEn: "Tourist arrivals have increased in Ilam tea garden area",
+    excerptNe:
+      "इलामको चिया बगानहरूमा पर्यटकहरूको आगमन बढेको छ। यस वर्ष लगभग ५० हजार पर्यटकहरूले इलामको चिया बगान भ्रमण गरेका छन्।",
+    excerptEn:
+      "Tourist arrivals have increased in Ilam tea gardens. About 50,000 tourists visited Ilam tea gardens this year.",
+    contentNe: `<p>इलामको चिया बगान क्षेत्रमा पर्यटकहरूको आगमन बढेको छ। यस वर्ष लगभग ५० हजार पर्यटकहरूले इलामको चिया बगान भ्रमण गरेका छन्।</p>
+
+<p>इलाम जिल्लाका चिया बगानहरू नेपालको सबैभन्दा ठूलो चिया उत्पादन क्षेत्र हो। यहाँको हरियो भर्पय्यानले पर्यटकहरूलाई आकर्षित गर्दै आएको छ।</p>
+
+<p>स्थानीय व्यवसायीहरूले पर्यटन पूर्वाधारमा लगानी बढाएका छन्। नयाँ होटल र रेस्टुरेन्टहरू खोलिएका छन्।</p>
+
+${img(images.society1, "इलामको चिया बगान — Ilam tea gardens")}
+
+<p>चिया पर्यटन बढाउन स्थानीय सरकारले विभिन्न कार्यक्रम सञ्चालन गरेको छ।</p>`,
+    contentEn: `<p>Tourist arrivals have increased in Ilam tea garden area. About 50,000 tourists visited Ilam tea gardens this year.</p>
+
+<p>Ilam district is the largest tea production area in Nepal. The lush green plantations have attracted tourists.</p>
+
+<p>Local entrepreneurs have increased investment in tourism infrastructure. New hotels and restaurants have opened.</p>
+
+${img(images.society1, "Ilam tea gardens attract tourists")}
+
+<p>Local government has launched various programs to boost tea tourism.</p>`,
+    categoryId: koshiProvince!.id,
     authorId: author2.id,
-    province: Province.PROVINCE_1,
   });
 
-  // Province 2 - Madhesh
   await createArticle({
-    slug: "province-2-industrial-zone-development",
+    slug: "koshi-province-flood-relief",
+    coverImageUrl: images.society2,
+    coverImageFilename: "koshi-flood-relief.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "कोशी प्रदेशमा बाढी पीडितहरूका लागि राहत वितरण",
+    titleEn: "Relief Distribution for Flood Victims in Koshi Province",
+    excerptNe:
+      "कोशी प्रदेशमा बाढी पीडितहरूका लागि राहत सामग्री वितरण गरिएको छ।",
+    excerptEn:
+      "Relief materials are being distributed to flood victims in Koshi Province.",
+    contentNe: `<p>कोशी प्रदेशमा बाढी पीडितहरूका लागि राहत सामग्री वितरण गरिएको छ।</p>
+
+<p>जिल्ला प्रशासन कार्यालय इलामको नेतृत्वमा राहत वितरण अभियान सञ्चालन गरिएको छ।</p>`,
+    contentEn: `<p>Relief materials are being distributed to flood victims in Koshi Province.</p>
+
+<p>The relief distribution campaign is being conducted under the leadership of the Ilam District Administration Office.</p>`,
+    categoryId: koshiProvince!.id,
+    authorId: author1.id,
+  });
+
+  await createArticle({
+    slug: "koshi-province-infrastructure",
+    coverImageUrl: images.economy2,
+    coverImageFilename: "koshi-infrastructure.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "कोशी प्रदेशमा सडक पूर्वाधार विकास",
+    titleEn: "Road Infrastructure Development in Koshi Province",
+    excerptNe:
+      "कोशी प्रदेशमा सडक पूर्वाधार विकासका काम तीव्र गतिमा अघि बढेका छन्।",
+    excerptEn:
+      "Road infrastructure development works are proceeding rapidly in Koshi Province.",
+    contentNe: `<p>कोशी प्रदेशमा सडक पूर्वाधार विकासका काम तीव्र गतिमा अघि बढेका छन्।</p>
+
+<p>इलाम-काठमाडौं सडकलाई चौडा बनाउने काम भइरहेको छ।</p>`,
+    contentEn: `<p>Road infrastructure development works are proceeding rapidly in Koshi Province.</p>
+
+<p>Work is underway to widen the Ilam-Kathmandu road.</p>`,
+    categoryId: koshiProvince!.id,
+    authorId: author3.id,
+  });
+
+  // Madhesh Province Articles
+  await createArticle({
+    slug: "koshi-province-tea-tourism",
+    coverImageUrl: images.society1,
+    coverImageFilename: "koshi-tea-tourism.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "कोशी प्रदेशको चिया बगानमा पर्यटकीय गतिविधि बढ्यो",
+    titleEn: "Tourist Activities Increase in Koshi Province Tea Gardens",
+    subheadingNe: "इलामको चिया बगान क्षेत्रमा पर्यटकहरूको आगमन बढेको छ",
+    subheadingEn: "Tourist arrivals have increased in Ilam tea garden area",
+    excerptNe:
+      "इलामको चिया बगानहरूमा पर्यटकहरूको आगमन बढेको छ। यस वर्ष लगभग ५० हजार पर्यटकहरूले इलामको चिया बगान भ्रमण गरेका छन्।",
+    excerptEn:
+      "Tourist arrivals have increased in Ilam tea gardens. About 50,000 tourists visited Ilam tea gardens this year.",
+    contentNe: `<p>इलामको चिया बगान क्षेत्रमा पर्यटकहरूको आगमन बढेको छ। यस वर्ष लगभग ५० हजार पर्यटकहरूले इलामको चिया बगान भ्रमण गरेका छन्।</p>
+
+<p>इलाम जिल्लाका चिया बगानहरू नेपालको सबैभन्दा ठूलो चिया उत्पादन क्षेत्र हो। यहाँको हरियो भर्पय्यानले पर्यटकहरूलाई आकर्षित गर्दै आएको छ।</p>
+
+<p>स्थानीय व्यवसायीहरूले पर्यटन पूर्वाधारमा लगानी बढाएका छन्। नयाँ होटल र रेस्टुरेन्टहरू खोलिएका छन्।</p>
+
+${img(images.society1, "इलामको चिया बगान — Ilam tea gardens")}
+
+<p>चिया पर्यटन बढाउन स्थानीय सरकारले विभिन्न कार्यक्रम सञ्चालन गरेको छ।</p>`,
+    contentEn: `<p>Tourist arrivals have increased in Ilam tea garden area. About 50,000 tourists visited Ilam tea gardens this year.</p>
+
+<p>Ilam district is the largest tea production area in Nepal. The lush green plantations have attracted tourists.</p>
+
+<p>Local entrepreneurs have increased investment in tourism infrastructure. New hotels and restaurants have opened.</p>
+
+${img(images.society1, "Ilam tea gardens attract tourists")}
+
+<p>Local government has launched various programs to boost tea tourism.</p>`,
+    categoryId: koshiProvince!.id,
+    authorId: author2.id,
+  });
+
+  await createArticle({
+    slug: "koshi-province-flood-relief",
+    coverImageUrl: images.society2,
+    coverImageFilename: "koshi-flood-relief.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "कोशी प्रदेशमा बाढी पीडितहरूका लागि राहत वितरण",
+    titleEn: "Relief Distribution for Flood Victims in Koshi Province",
+    excerptNe:
+      "कोशी प्रदेशमा बाढी पीडितहरूका लागि राहत सामग्री वितरण गरिएको छ।",
+    excerptEn:
+      "Relief materials are being distributed to flood victims in Koshi Province.",
+    contentNe: `<p>कोशी प्रदेशमा बाढी पीडितहरूका लागि राहत सामग्री वितरण गरिएको छ।</p>
+
+<p>जिल्ला प्रशासन कार्यालय इलामको नेतृत्वमा राहत वितरण अभियान सञ्चालन गरिएको छ।</p>`,
+    contentEn: `<p>Relief materials are being distributed to flood victims in Koshi Province.</p>
+
+<p>The relief distribution campaign is being conducted under the leadership of the Ilam District Administration Office.</p>`,
+    categoryId: koshiProvince!.id,
+    authorId: author1.id,
+  });
+
+  await createArticle({
+    slug: "koshi-province-infrastructure",
+    coverImageUrl: images.economy2,
+    coverImageFilename: "koshi-infrastructure.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "कोशी प्रदेशमा सडक पूर्वाधार विकास",
+    titleEn: "Road Infrastructure Development in Koshi Province",
+    excerptNe:
+      "कोशी प्रदेशमा सडक पूर्वाधार विकासका काम तीव्र गतिमा अघि बढेका छन्।",
+    excerptEn:
+      "Road infrastructure development works are proceeding rapidly in Koshi Province.",
+    contentNe: `<p>कोशी प्रदेशमा सडक पूर्वाधार विकासका काम तीव्र गतिमा अघि बढेका छन्।</p>
+
+<p>इलाम-काठमाडौं सडकलाई चौडा बनाउने काम भइरहेको छ।</p>`,
+    contentEn: `<p>Road infrastructure development works are proceeding rapidly in Koshi Province.</p>
+
+<p>Work is underway to widen the Ilam-Kathmandu road.</p>`,
+    categoryId: koshiProvince!.id,
+    authorId: author3.id,
+  });
+
+  // Madhesh Province Articles
+  await createArticle({
+    slug: "madhesh-province-industrial-zone-development",
     coverImageUrl: images.economy1,
     coverImageFilename: "province2-industrial.jpg",
     uploadedById: superAdmin.id,
-    titleNe: "प्रदेश २ मा औद्योगिक क्षेत्र विकास योजना",
-    titleEn: "Industrial Zone Development Plan in Province 2",
+    titleNe: "मधेश प्रदेशमा औद्योगिक क्षेत्र विकास योजना",
+    titleEn: "Industrial Zone Development Plan in Madhesh Province",
     excerptNe:
       "मधेश प्रदेशमा नयाँ औद्योगिक क्षेत्र विकास योजना घोषणा गरिएको छ।",
     excerptEn:
@@ -2262,13 +2889,12 @@ ${img(images.society2, "Community health services being expanded to reach the mo
     <p>बिरगञ्जमा नयाँ औद्योगिक पार्क स्थापना हुनेछ।</p>`,
     contentEn: `<p>New industrial zone development plan announced in Madhesh Province.</p>
     <p>A new industrial park will be established in Birgunj.</p>`,
-    categoryId: economy.id,
+    categoryId: madheshProvince!.id,
     authorId: author1.id,
-    province: Province.PROVINCE_2,
   });
 
   await createArticle({
-    slug: "province-2-agriculture-rice-production",
+    slug: "madhesh-province-agriculture-rice-production",
     coverImageUrl: images.politics1,
     coverImageFilename: "province2-rice.jpg",
     uploadedById: superAdmin.id,
@@ -2278,14 +2904,12 @@ ${img(images.society2, "Community health services being expanded to reach the mo
     excerptEn: "Rice production has increased in Province 2 this year.",
     contentNe: `<p>मधेश प्रदेशमा धान उत्पादन बढेको छ।</p>`,
     contentEn: `<p>Rice production has increased in Province 2.</p>`,
-    categoryId: society.id,
+    categoryId: madheshProvince!.id,
     authorId: author3.id,
-    province: Province.PROVINCE_2,
   });
 
-  // Province 3 - Bagmati
   await createArticle({
-    slug: "province-3-kathmandu-metro-rail-study",
+    slug: "madhesh-province-industrial-rice-festival",
     coverImageUrl: images.politics1,
     coverImageFilename: "province3-metro.jpg",
     uploadedById: superAdmin.id,
@@ -2297,13 +2921,12 @@ ${img(images.society2, "Community health services being expanded to reach the mo
     <p>तीन वर्षभित्र अध्ययन पूरा हुनेछ।</p>`,
     contentEn: `<p>Metro rail feasibility study has begun in Kathmandu.</p>
     <p>The study will be completed within three years.</p>`,
-    categoryId: politics.id,
+    categoryId: bagmatiProvince!.id,
     authorId: author1.id,
-    province: Province.PROVINCE_3,
   });
 
   await createArticle({
-    slug: "province-3-education-reform",
+    slug: "bagmati-province-education-reform",
     coverImageUrl: images.sports1,
     coverImageFilename: "province3-education.jpg",
     uploadedById: superAdmin.id,
@@ -2314,18 +2937,34 @@ ${img(images.society2, "Community health services being expanded to reach the mo
       "New education reform plan will be implemented in Bagmati Province.",
     contentNe: `<p>बागमती प्रदेशमा शिक्षा सुधार योजना लागू हुनेछ।</p>`,
     contentEn: `<p>New education reform plan will be implemented in Bagmati Province.</p>`,
-    categoryId: society.id,
+    categoryId: bagmatiProvince!.id,
     authorId: author2.id,
-    province: Province.PROVINCE_3,
   });
 
-  // Province 4 - Gandaki
   await createArticle({
-    slug: "province-4- hydropower-tourism",
+    slug: "bagmati-province-kathmandu-transport",
     coverImageUrl: images.economy1,
     coverImageFilename: "province4-hydro.jpg",
     uploadedById: superAdmin.id,
-    titleNe: "���ण्डकी प्रदेशमा जलविद्युत् र पर्यटन परियोजना",
+    titleNe: "काठमाडौंमा यातायात सुधार योजना",
+    titleEn: "Kathmandu Transport Improvement Plan",
+    excerptNe: "काठमाडौंमा यातायात सुधारका नयाँ योजनाहरू घोषणा गरिएका छन्।",
+    excerptEn: "New transport improvement plans announced for Kathmandu.",
+    contentNe: `<p>काठमाडौंमा यातायात सुधारका नयाँ योजनाहरू घोषणा गरिएका छन्।</p>
+    <p>बस लेन र पार्किङ सुविधाहरू विस्तार गर्ने योजना छ।</p>`,
+    contentEn: `<p>New transport improvement plans announced for Kathmandu.</p>
+    <p>Plans include bus lanes and expanded parking facilities.</p>`,
+    categoryId: bagmatiProvince!.id,
+    authorId: author3.id,
+  });
+
+  // Gandaki Province Articles
+  await createArticle({
+    slug: "gandaki-province-hydropower-tourism",
+    coverImageUrl: images.economy1,
+    coverImageFilename: "province4-hydro.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "गण्डकी प्रदेशमा जलविद्युत् र पर्यटन परियोजना",
     titleEn: "Hydropower and Tourism Projects in Gandaki Province",
     excerptNe:
       "गण्डकी प्रदेशमा जलविद्युत् र पर्यटन परियोजनाहरू अघि बढिरहेका छन्।",
@@ -2335,19 +2974,50 @@ ${img(images.society2, "Community health services being expanded to reach the mo
     <p>पोखरा क्षेत्रमा पर्यटन विस्तार भइरहेको छ।</p>`,
     contentEn: `<p>Hydropower projects are progressing in Gandaki Province.</p>
     <p>Tourism expansion is underway in Pokhara area.</p>`,
-    categoryId: economy.id,
+    categoryId: gandakiProvince!.id,
     authorId: author1.id,
-    province: Province.PROVINCE_4,
   });
 
-  // Province 5 - Lumbini
   await createArticle({
-    slug: "province-5-tourism-lumbini",
+    slug: "gandaki-province-pokhara-airport",
+    coverImageUrl: images.society2,
+    coverImageFilename: "gandaki-airport.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "पोखरा विमानस्थलको स्तरोन्नति शुरु",
+    titleEn: "Pokhara Airport Upgrade Begins",
+    excerptNe: "पोखरा विमानस्थलको स्तरोन्नति कार्य शुरु भएको छ।",
+    excerptEn: "Pokhara airport upgrade work has begun.",
+    contentNe: `<p>पोखरा विमानस्थलको स्तरोन्नति कार्य शुरु भएको छ।</p>`,
+    contentEn: `<p>Pokhara airport upgrade work has begun.</p>`,
+    categoryId: gandakiProvince!.id,
+    authorId: author2.id,
+  });
+
+  await createArticle({
+    slug: "gandaki-province-lake-conservation",
+    coverImageUrl: images.entertain2,
+    coverImageFilename: "gandaki-lake.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "फेवाताल संरक्षण अभियान सञ्चालन",
+    titleEn: "Phewa Lake Conservation Campaign Launched",
+    excerptNe: "फेवाताल संरक्षणका लागि नयाँ अभियान सञ्चालन गरिएको छ।",
+    excerptEn: "New campaign launched for Phewa Lake conservation.",
+    contentNe: `<p>फेवाताल संरक्षणका लागि नयाँ अभियान सञ्चालन गरिएको छ।</p>`,
+    contentEn: `<p>New campaign launched for Phewa Lake conservation.</p>`,
+    categoryId: gandakiProvince!.id,
+    authorId: author3.id,
+  });
+
+  // Lumbini Province Articles
+  await createArticle({
+    slug: "lumbini-province-tourism-development",
     coverImageUrl: images.entertain1,
     coverImageFilename: "province5-lumbini.jpg",
     uploadedById: superAdmin.id,
     titleNe: "लुम्बिनी प्रदेशमा पर्यटन विकास",
     titleEn: "Tourism Development in Lumbini Province",
+    subheadingNe: "कपिलवस्तुमा नयाँ पर्यटन पूर्वाधार विकास",
+    subheadingEn: "New tourism infrastructure development in Kapilvastu",
     excerptNe:
       "लुम्बिनी प्रदेशमा पर्यटन विकासका नयाँ योजनाहरू घोषणा गरिएका छन्।",
     excerptEn: "New tourism development plans announced in Lumbini Province.",
@@ -2355,48 +3025,140 @@ ${img(images.society2, "Community health services being expanded to reach the mo
     <p>कपिलवस्तुमा होटल निर्माण हुनेछ।</p>`,
     contentEn: `<p>New tourism development plans announced in Lumbini Province.</p>
     <p>Hotels will be built in Kapilvastu.</p>`,
-    categoryId: economy.id,
+    categoryId: lumbiniProvince!.id,
     authorId: author2.id,
-    province: Province.PROVINCE_5,
   });
 
-  // Province 6 - Karnali
   await createArticle({
-    slug: "province-6-mining-exploration",
+    slug: "lumbini-province-agriculture",
+    coverImageUrl: images.economy2,
+    coverImageFilename: "lumbini-agriculture.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "लुम्बिनी प्रदेशमा कृषि विकास",
+    titleEn: "Agriculture Development in Lumbini Province",
+    excerptNe: "लुम्बिनी प्रदेशमा कृषि विकासका कार्यक्रम सञ्चालन गरिएका छन्।",
+    excerptEn:
+      "Agriculture development programs are being conducted in Lumbini Province.",
+    contentNe: `<p>लुम्बिनी प्रदेशमा कृषि विकासका कार्यक्रम सञ्चालन गरिएका छन्।</p>`,
+    contentEn: `<p>Agriculture development programs are being conducted in Lumbini Province.</p>`,
+    categoryId: lumbiniProvince!.id,
+    authorId: author1.id,
+  });
+
+  await createArticle({
+    slug: "lumbini-province-buddhist-circuit",
+    coverImageUrl: images.entertain2,
+    coverImageFilename: "lumbini-buddhist.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "बुद्ध धर्म पर्यटन क्षेत्र विकास",
+    titleEn: "Buddhist Circuit Tourism Development",
+    excerptNe:
+      "कपिलवस्तुमा बुद्ध धर्म पर्यटन क्षेत्र विकासका योजनाहरू अघि बढेका छन्।",
+    excerptEn:
+      "Buddhist circuit tourism area development plans are progressing in Kapilvastu.",
+    contentNe: `<p>कपिलवस्तुमा बुद्ध धर्म पर्यटन क्षेत्र विकासका योजनाहरू अघि बढेका छन्।</p>`,
+    contentEn: `<p>Buddhist circuit tourism area development plans are progressing in Kapilvastu.</p>`,
+    categoryId: lumbiniProvince!.id,
+    authorId: author3.id,
+  });
+
+  // Karnali Province Articles
+  await createArticle({
+    slug: "karnali-province-mining-exploration",
     coverImageUrl: images.economy1,
     coverImageFilename: "province6-mining.jpg",
     uploadedById: superAdmin.id,
     titleNe: "कर्णाली प्रदेशमा खानी पदार्थ अन्वेषण",
     titleEn: "Mineral Exploration in Karnali Province",
+    subheadingNe: "छोरला क्षेत्रमा खानी खोजी कार्य शुरु",
+    subheadingEn: "Mining exploration begins in Chhetra area",
     excerptNe: "कर्णाली प्रदेशमा खानी पदार्थ अन्वेषण कार्य शुरु भएको छ।",
     excerptEn: "Mineral exploration work has begun in Karnali Province.",
     contentNe: `<p>कर्णाली प्रदेशमा खानी पदार्थ अन्वेषण कार्य शुरु भएको छ।</p>
     <p>छोरला क्षेत्रमा तामा र सुनको खोजी भइरहेको छ।</p>`,
     contentEn: `<p>Mineral exploration work has begun in Karnali Province.</p>
     <p>Exploration for copper and gold is underway in Chhetra area.</p>`,
-    categoryId: economy.id,
+    categoryId: karnaliProvince!.id,
     authorId: author1.id,
-    province: Province.PROVINCE_6,
   });
 
-  // Province 7 - Sudurpashchim
   await createArticle({
-    slug: "province-7-border-trade",
+    slug: "karnali-province-tourism-rafting",
+    coverImageUrl: images.society2,
+    coverImageFilename: "karnali-rafting.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "कर्णाली नदीमा राफ्टिङ पर्यटन",
+    titleEn: "Karnali River Rafting Tourism",
+    excerptNe: "कर्णाली नदीमा राफ्टिङ पर्यटन लोकप्रिय हुँदै गएको छ।",
+    excerptEn: "Karnali River rafting tourism is becoming popular.",
+    contentNe: `<p>कर्णाली नदीमा राफ्टिङ पर्यटन लोकप्रिय हुँदै गएको छ।</p>`,
+    contentEn: `<p>Karnali River rafting tourism is becoming popular.</p>`,
+    categoryId: karnaliProvince!.id,
+    authorId: author2.id,
+  });
+
+  await createArticle({
+    slug: "karnali-province-mountain-conservation",
+    coverImageUrl: images.entertain2,
+    coverImageFilename: "karnali-mountain.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "कर्णाली हिमाल संरक्षण अभियान",
+    titleEn: "Karnali Mountain Conservation Campaign",
+    excerptNe: "कर्णाली हिमाल संरक्षणका लागि नयाँ अभियान सञ्चालन गरिएको छ।",
+    excerptEn: "New campaign launched for Karnali mountain conservation.",
+    contentNe: `<p>कर्णाली हिमाल संरक्षणका लागि नयाँ अभियान सञ्चालन गरिएको छ।</p>`,
+    contentEn: `<p>New campaign launched for Karnali mountain conservation.</p>`,
+    categoryId: karnaliProvince!.id,
+    authorId: author3.id,
+  });
+
+  // Sudurpashchim Province Articles
+  await createArticle({
+    slug: "sudurpashchim-province-border-trade",
     coverImageUrl: images.economy1,
     coverImageFilename: "province7-trade.jpg",
     uploadedById: superAdmin.id,
     titleNe: "सुदूरपश्चिम प्रदेशमा सीमा व्यापार वृद्धि",
     titleEn: "Border Trade Increases in Sudurpashchim Province",
-    excerptNe: "सुदूरपश्चिम प्रदेशमा ��ा��तसँगको सीमा व्यापार बढेको छ।",
+    excerptNe: "सुदूरपश्चिम प्रदेशमा भारतसँगको सीमा व्यापार बढेको छ।",
     excerptEn:
       "Border trade with India has increased in Sudurpashchim Province.",
     contentNe: `<p>सुदूरपश्चिम प्रदेशमा भारतसँगको सीमा व्यापार बढेको छ।</p>
     <p>दार्चुला नाकाबाट आयात निर्यात बढेको छ।</p>`,
     contentEn: `<p>Border trade with India has increased in Sudurpashchim Province.</p>
     <p>Import-export has increased through Darcula border point.</p>`,
-    categoryId: economy.id,
+    categoryId: sudurpashchimProvince!.id,
     authorId: author1.id,
-    province: Province.PROVINCE_7,
+  });
+
+  await createArticle({
+    slug: "sudurpashchim-province-apple-farming",
+    coverImageUrl: images.economy2,
+    coverImageFilename: "sudurpashchim-apple.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "सुदूरपश्चिममा स्याउ खेती विस्तार",
+    titleEn: "Apple Farming Expansion in Sudurpashchim",
+    excerptNe: "सुदूरपश्चिम प्रदेशमा स्याउ खेती विस्तार भइरहेको छ।",
+    excerptEn: "Apple farming is expanding in Sudurpashchim Province.",
+    contentNe: `<p>सुदूरपश्चिम प्रदेशमा स्याउ खेती विस्तार भइरहेको छ।</p>`,
+    contentEn: `<p>Apple farming is expanding in Sudurpashchim Province.</p>`,
+    categoryId: sudurpashchimProvince!.id,
+    authorId: author2.id,
+  });
+
+  await createArticle({
+    slug: "sudurpashchim-province-darchula-tourism",
+    coverImageUrl: images.society1,
+    coverImageFilename: "sudurpashchim-tourism.jpg",
+    uploadedById: superAdmin.id,
+    titleNe: "दार्चुला पर्यटन क्षेत्र विकास",
+    titleEn: "Darchula Tourism Area Development",
+    excerptNe: "दार्चुलामा पर्यटन क्षेत्र विकासका कार्यहरू अघि बढेका छन्।",
+    excerptEn: "Tourism area development works are progressing in Darchula.",
+    contentNe: `<p>दार्चुलामा पर्यटन क्षेत्र विकासका कार्यहरू अघि बढेका छन्।</p>`,
+    contentEn: `<p>Tourism area development works are progressing in Darchula.</p>`,
+    categoryId: sudurpashchimProvince!.id,
+    authorId: author3.id,
   });
 
   console.log("  ✓ Province articles seeded");
@@ -2907,132 +3669,6 @@ ${img(images.society2, "Community health services being expanded to reach the mo
   console.log(`✅ Advertisements: ${advertisements.length} created`);
 
   // ═══════════════════════════════════════════
-  // FLASH UPDATES
-  // ═══════════════════════════════════════════
-
-  console.log("⚡ Seeding flash updates...\n");
-
-  const flashUpdates = [
-    {
-      id: "seed-flash-1",
-      titleNe: "ताजा अपडेट: पहाडी भेगमा वर्षाको सम्भावना",
-      titleEn: "Flash Update: Rain Expected in Hilly Regions",
-      contentNe:
-        "जल तथा मौसम विज्ञान विभागका अनुसार आगामी २४ घण्टामा पहाडी भू-भागमा हल्का वर्षा हुने सम्भावना छ।",
-      contentEn:
-        "According to the Department of Hydrology and Meteorology, light rain is expected in hilly regions in the next 24 hours.",
-      slug: "rain-expected-hilly-regions",
-    },
-    {
-      id: "seed-flash-2",
-      titleNe: "काठमाडौंमा सवारी जाम",
-      titleEn: "Traffic Jam in Kathmandu",
-      contentNe:
-        "काठमाडौंको बुद्धनगर क्षेत्रमा सवारी जाम भएको छ। यातायात प्राधिकरणले मंगलबारसम्म समस्या समाधान हुने बताएको छ।",
-      contentEn:
-        "Traffic jam reported in Kathmandu's Budhanagar area. Traffic Department says the issue will be resolved by Tuesday.",
-      slug: "traffic-jam-kathmandu",
-    },
-    {
-      id: "seed-flash-3",
-      titleNe: "विद्युत् आपूर्ति सामान्य",
-      titleEn: "Electricity Supply Normal",
-      contentNe:
-        "नेपाल विद्युत् प्राधिकरणले आजदेखि देशभरि विद्युत् आपूर्ति सामान्य हुने जानकारी दिएको छ।",
-      contentEn:
-        "Nepal Electricity Authority has informed that electricity supply will be normal across the country from today.",
-      slug: "electricity-supply-normal",
-    },
-    {
-      id: "seed-flash-4",
-      titleNe: "मौसम पूर्वानुमान: देशभरि साँझमा वर्षा",
-      titleEn: "Weather Forecast: Rain Expected Nationwide Tonight",
-      contentNe:
-        "मौसम पूर्वानुमान केन्द्रका अनुसार आज साँझदेखि देशभरि हल्कादेखि मध्यम वर्षा हुने सम्भावना छ।",
-      contentEn:
-        "According to the Meteorological Forecasting Center, light to moderate rain is expected across the country from tonight.",
-      slug: "weather-forecast-rain-tonight",
-    },
-    {
-      id: "seed-flash-5",
-      titleNe: "काठमाडौं–पोखरा हवाई उडान सामान्य",
-      titleEn: "Kathmandu-Pokhara Flights Normal",
-      contentNe:
-        "हिमानी हवाई कम्पनीले काठमाडौं–पोखरा उडानहरू सामान्य रूपमा सञ्चालन भइरहेको जनाएको छ।",
-      contentEn:
-        "Himali Airlines has stated that Kathmandu-Pokhara flights are operating normally.",
-      slug: "kathmandu-pokhara-flights-normal",
-    },
-    {
-      id: "seed-flash-6",
-      titleNe: "भिसा सेवा सामान्य",
-      titleEn: "Visa Services Normal",
-      contentNe:
-        "नेपाल भिसा आवेदन केन्द्रले सबै भिसा सेवा सामान्य रूपमा सञ्चालन भइरहेको जानकारी दिएको छ।",
-      contentEn:
-        "Nepal Visa Application Center has informed that all visa services are operating normally.",
-      slug: "visa-services-normal",
-    },
-    {
-      id: "seed-flash-7",
-      titleNe: "सिनामंगलमा खुलाे बजार",
-      titleEn: "Open Market in Sinamangal",
-      contentNe: "काठमाडौंको सिनामंगलमा आज विशेष खुला बजार लागिएको छ।",
-      contentEn:
-        "A special open market has been set up in Kathmandu's Sinamangal today.",
-      slug: "open-market-sinamangal",
-    },
-    {
-      id: "seed-flash-8",
-      titleNe: "ट्राफिक जाम: थापाथली क्षेत्र",
-      titleEn: "Traffic Jam: Thapathali Area",
-      contentNe:
-        "थापाथली क्रसरोडमा सवारी जाम भएको छ। प्रहरीले वैकल्पिक मार्ग प्रयोग गर्न अनुरोध गरेको छ।",
-      contentEn:
-        "Traffic jam reported at Thapathali crossroads. Police has requested commuters to use alternative routes.",
-      slug: "traffic-jam-thapathali",
-    },
-    {
-      id: "seed-flash-9",
-      titleNe: "शेयर बजार उत्साहजनक",
-      titleEn: "Stock Market Enthusiastic",
-      contentNe: "आजको शेयर बजार उत्साहजनक छ। नेप्से सूचकांक २० अंकले बढेको छ।",
-      contentEn:
-        "Today's stock market is enthusiastic. NEPSE index has increased by 20 points.",
-      slug: "stock-market-up",
-    },
-    {
-      id: "seed-flash-10",
-      titleNe: "सोलुखम्बुकाे पर्यटक प्रवर्धन",
-      titleEn: "Solukhumbu Tourism Promotion",
-      contentNe: "सोलुखम्बु जिल्लामा पर्यटक प्रवर्धन अभियान सुरु भएको छ।",
-      contentEn:
-        "Tourism promotion campaign has started in Solukhumbu district.",
-      slug: "solukhumbu-tourism-campaign",
-    },
-  ];
-
-  for (const flash of flashUpdates) {
-    await prisma.flashUpdate.upsert({
-      where: { id: flash.id },
-      update: {},
-      create: {
-        id: flash.id,
-        titleNe: flash.titleNe,
-        titleEn: flash.titleEn,
-        contentNe: flash.contentNe,
-        contentEn: flash.contentEn,
-        slug: flash.slug,
-        isPublished: true,
-        publishedAt: new Date(),
-        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours from now
-        authorId: author1.id,
-      },
-    });
-  }
-
-  console.log(`✅ Flash Updates: ${flashUpdates.length} created`);
-
   // ═══════════════════════════════════════════
   // POLLS
   // ═══════════════════════════════════════════
@@ -3112,286 +3748,215 @@ ${img(images.society2, "Community health services being expanded to reach the mo
   );
 
   // ═══════════════════════════════════════════
-  // SPORTS SUBCATEGORIES
+  // ARTICLES FOR SUBCATEGORIES
   // ═══════════════════════════════════════════
 
-  const cricket = await prisma.category.upsert({
-    where: { slug: "cricket" },
-    update: { parentId: sports.id },
-    create: {
-      nameNe: "क्रिकेट",
-      nameEn: "Cricket",
-      slug: "cricket",
-      parentId: sports.id,
-    },
-  });
-  const football = await prisma.category.upsert({
-    where: { slug: "football" },
-    update: { parentId: sports.id },
-    create: {
-      nameNe: "फुटबल",
-      nameEn: "Football",
-      slug: "football",
-      parentId: sports.id,
-    },
-  });
-  const volleyball = await prisma.category.upsert({
-    where: { slug: "volleyball" },
-    update: { parentId: sports.id },
-    create: {
-      nameNe: "भलिवल",
-      nameEn: "Volleyball",
-      slug: "volleyball",
-      parentId: sports.id,
-    },
-  });
-  const basketball = await prisma.category.upsert({
-    where: { slug: "basketball" },
-    update: { parentId: sports.id },
-    create: {
-      nameNe: "बास्केटबल",
-      nameEn: "Basketball",
-      slug: "basketball",
-      parentId: sports.id,
-    },
-  });
-  const hockey = await prisma.category.upsert({
-    where: { slug: "hockey" },
-    update: { parentId: sports.id },
-    create: {
-      nameNe: "हक्की",
-      nameEn: "Hockey",
-      slug: "hockey",
-      parentId: sports.id,
-    },
-  });
+  // Get subcategory IDs
+  const subcategoryMap: Record<string, string> = {};
+  const subcategorySlugs = [
+    "federal-politics",
+    "provincial-politics",
+    "local-politics",
+    "elections",
+    "political-parties",
+    "parliament",
+    "government",
+    "opposition",
+    "political-analysis",
+    "political-news",
+    "cricket",
+    "football",
+    "volleyball",
+    "basketball",
+    "hockey",
+    "athletics",
+    "swimming",
+    "boxing",
+    "martial-arts",
+    "sports-news",
+    "gadgets",
+    "ai-artificial-intelligence",
+    "startups",
+    "cybersecurity",
+    "mobile-phones",
+    "computers",
+    "internet",
+    "social-media",
+    "tech-news",
+    "software-apps",
+    "bollywood",
+    "hollywood",
+    "nepali-cinema",
+    "music",
+    "television",
+    "movies",
+    "celebrity",
+    "fashion",
+    "gossip",
+    "entertainment-news",
+    "stock-market",
+    "banking",
+    "investment",
+    "business",
+    "trade",
+    "tourism",
+    "agriculture",
+    "real-estate",
+    "jobs",
+    "economy-news",
+    "asia",
+    "europe",
+    "americas",
+    "africa",
+    "middle-east",
+    "un",
+    "diplomacy",
+    "global-economy",
+    "climate-change",
+    "world-news",
+    "education",
+    "health",
+    "women-empowerment",
+    "children",
+    "senior-citizens",
+    "social-issues",
+    "community",
+    "volunteer",
+    "ngos",
+    "society-news",
+    "mental-health",
+    "nutrition",
+    "fitness",
+    "diseases",
+    "hospitals",
+    "doctors",
+    "medicine",
+    "ayurveda",
+    "covid19",
+    "health-tips",
+    "food-recipes",
+    "travel",
+    "fashion-style",
+    "home-living",
+    "relationships",
+    "parenting",
+    "pets",
+    "beauty-skincare",
+    "fitness-yoga",
+    "lifestyle-news",
+    "festivals",
+    "temples",
+    "rituals",
+    "astrology",
+    "spiritual",
+    "puja-path",
+    "religious-places",
+    "culture-heritage",
+    "traditions",
+    "dharma-news",
+    "nri-news",
+    "remittance",
+    "overseas-jobs",
+    "diaspora-community",
+    "cultural-association",
+    "diaspora-events",
+    "nepal-embassy",
+    "citizenship-abroad",
+    "diaspora-investment",
+    "diaspora-news",
+    "news-story",
+    "feature-story",
+    " investigative-story",
+    "human-interest",
+    "success-story",
+    "frontline",
+    "profile",
+    "opinion-piece",
+    "analysis-piece",
+    "special-report",
+    "editorial",
+    "opinion-column",
+    "guest-article",
+    "letter-to-editor",
+    "political-opinion",
+    "social-commentary",
+    "economic-analysis",
+    "cultural-review",
+    "sports-view",
+    "opinion-news",
+  ];
 
-  console.log("✅ Sports Subcategories: 5 created");
+  for (const slug of subcategorySlugs) {
+    const cat = await prisma.category.findUnique({ where: { slug } });
+    if (cat) subcategoryMap[slug] = cat.id;
+  }
 
-  // Sports images
-  const sportsImages = {
-    cricket1:
-      "https://images.unsplash.com/photo-1624526267942-ab0ff8a3e972?w=1200&q=80",
-    cricket2:
-      "https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=1200&q=80",
-    cricket3:
-      "https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=1200&q=80",
-    football1:
-      "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=1200&q=80",
-    football2:
-      "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1200&q=80",
-    football3:
-      "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=1200&q=80",
-    volleyball1:
-      "https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=1200&q=80",
-    volleyball2:
-      "https://images.unsplash.com/photo-1592655596760-0f3d3270e2e1?w=1200&q=80",
-    basketball1:
-      "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=1200&q=80",
-    hockey1:
-      "https://images.unsplash.com/photo-1515703403366-26c933a60058?w=1200&q=80",
-  };
+  // Generic article images
+  const articleImages = [
+    "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800&q=80",
+    "https://images.unsplash.com/photo-1495020689067-958852a7765e?w=800&q=80",
+    "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=800&q=80",
+    "https://images.unsplash.com/photo-1557804506-669a67965ba0?w=800&q=80",
+    "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800&q=80",
+  ];
 
-  // Helper for sports articles
-  async function createSportsArticle({
-    slug,
-    titleNe,
-    titleEn,
-    excerptNe,
-    excerptEn,
-    contentNe,
-    contentEn,
-    categoryId,
-    imageUrl,
-    imageFilename,
-    isFeatured = false,
-  }: any) {
-    let media = await prisma.media.findFirst({
-      where: { filename: imageFilename },
-    });
-    if (!media) {
-      media = await prisma.media.create({
-        data: {
-          filename: imageFilename,
-          url: imageUrl,
-          type: MediaType.IMAGE,
-          altText: titleEn,
-          size: 350000,
-          uploadedBy: superAdmin.id,
+  // Create 5 articles for each subcategory (all 100 subcategories = 500 articles)
+  const targetSubcategories = Object.keys(subcategoryMap);
+
+  let articleCount = 0;
+  for (const subSlug of targetSubcategories) {
+    const categoryId = subcategoryMap[subSlug];
+    if (!categoryId) continue;
+
+    for (let i = 1; i <= 5; i++) {
+      const slug = `${subSlug}-article-${i}`;
+      const imgUrl =
+        articleImages[(articleCount + i - 1) % articleImages.length];
+      const imgFilename = `subcat-${subSlug}-${i}.jpg`;
+
+      let media = await prisma.media.findFirst({
+        where: { filename: imgFilename },
+      });
+      if (!media) {
+        media = await prisma.media.create({
+          data: {
+            filename: imgFilename,
+            url: imgUrl,
+            type: MediaType.IMAGE,
+            altText: `Image for ${slug}`,
+            size: 350000,
+            uploadedBy: author1.id,
+          },
+        });
+      }
+
+      await prisma.article.upsert({
+        where: { slug },
+        update: {},
+        create: {
+          titleNe: `${subSlug.replace(/-/g, " ")} सम्बन्धी समाचार ${i}`,
+          titleEn: `News about ${subSlug.replace(/-/g, " ")} ${i}`,
+          contentNe: `<p>यो ${subSlug} सम्बन्धी लेख ${i} हो।</p><p>नेपालमा यस विषयमा धेरै चासो छ।</p>`,
+          contentEn: `<p>This is article ${i} about ${subSlug}.</p><p>There is great interest in this topic in Nepal.</p>`,
+          excerptNe: `${subSlug} सम्बन्धी छोटो समाचार ${i}`,
+          excerptEn: `Short news about ${subSlug} ${i}`,
+          slug,
+          status: ArticleStatus.PUBLISHED,
+          isFeatured: i === 1,
+          isFlashUpdate: i === 1 && articleCount < 3,
+          categoryId,
+          authorId: author1.id,
+          publishedAt: new Date(Date.now() - articleCount * 60 * 60 * 1000),
+          featuredImageId: media.id,
         },
       });
     }
-    await prisma.article.upsert({
-      where: { slug },
-      update: {
-        titleNe,
-        titleEn,
-        contentNe,
-        contentEn,
-        excerptNe,
-        excerptEn,
-        status: ArticleStatus.PUBLISHED,
-        isFeatured,
-        categoryId,
-        authorId: author2.id,
-        featuredImageId: media.id,
-        publishedAt: new Date(),
-      },
-      create: {
-        titleNe,
-        titleEn,
-        contentNe,
-        contentEn,
-        excerptNe,
-        excerptEn,
-        slug,
-        status: ArticleStatus.PUBLISHED,
-        isFeatured,
-        categoryId,
-        authorId: author2.id,
-        featuredImageId: media.id,
-        publishedAt: new Date(),
-      },
-    });
+    articleCount += 5;
   }
 
-  // Cricket articles
-  await createSportsArticle({
-    slug: "nepal-cricket-team-qualifies-asia-cup-2082",
-    titleNe: "नेपाली क्रिकेट टोली एसिया कपमा छानिए, ऐतिहासिक उपलब्धि",
-    titleEn: "Nepal Cricket Team Qualifies for Asia Cup, Historic Achievement",
-    excerptNe: "नेपाली क्रिकेट टोली पहिलो पटक एसिया कपमा छानिएको छ।",
-    excerptEn:
-      "The Nepal cricket team has qualified for the Asia Cup for the first time.",
-    contentNe:
-      "<p>काठमाडौं। नेपाली राष्ट्रिय क्रिकेट टोली पहिलो पटक एसिया कपमा छानिएको छ।</p><p>यो नेपाली क्रिकेटको इतिहासमा सबैभन्दा ठूलो उपलब्धि हो।</p>",
-    contentEn:
-      "<p>Kathmandu. The Nepal national cricket team has qualified for the Asia Cup for the first time.</p><p>This is the biggest achievement in Nepal cricket history.</p>",
-    categoryId: cricket.id,
-    imageUrl: sportsImages.cricket1,
-    imageFilename: "asia-cup-qualification.jpg",
-    isFeatured: true,
-  });
-  await createSportsArticle({
-    slug: "sandeep-lamichhane-wpl-draft-2082",
-    titleNe: "सन्दीप लामिछानेले डब्ल्यूपिएल ड्राफ्टमा छनोट भए",
-    titleEn: "Sandeep Lamichhane Selected in WPL Draft",
-    excerptNe:
-      "नेपालका प्रसिद्ध लेग स्पिनर सन्दीप लामिछाने डब्ल्यूपिएल ड्राफ्टमा छानिएका छन्।",
-    excerptEn: "Nepal's leg-spinner Sandeep Lamichhane selected in WPL draft.",
-    contentNe: "<p>सन्दीप लामिछाने डब्ल्यूपिएलमा छानिएका छन्।</p>",
-    contentEn: "<p>Sandeep Lamichhane has been selected in the WPL.</p>",
-    categoryId: cricket.id,
-    imageUrl: sportsImages.cricket2,
-    imageFilename: "lamichhane-wpl.jpg",
-  });
-  await createSportsArticle({
-    slug: "nepal-u19-cricket-team-wins-tournament",
-    titleNe: "नेपाल यु-१९ क्रिकेट टोलीले टूर्नामेंट जित्यो",
-    titleEn: "Nepal U19 Cricket Team Wins Tournament",
-    excerptNe: "नेपालको यु-१९ क्रिकेट टोलीले टूर्नामेंट जितेको छ।",
-    excerptEn: "Nepal's U19 cricket team has won the tournament.",
-    contentNe: "<p>नेपालको यु-१९ क्रिकेट टोलीले टूर्नामेंट जितेको छ।</p>",
-    contentEn: "<p>Nepal's U19 cricket team has won the tournament.</p>",
-    categoryId: cricket.id,
-    imageUrl: sportsImages.cricket3,
-    imageFilename: "u19-cricket-win.jpg",
-  });
-
-  // Football articles
-  await createSportsArticle({
-    slug: "nepal-national-football-team-fifa-rankings",
-    titleNe: "नेपाली फुटबल टोलीको फिफा र्याङ्किङ सुधार",
-    titleEn: "Nepal National Football Team FIFA Rankings Improve",
-    excerptNe: "नेपाली फुटबल टोलीको फिफा र्याङ्किङमा सुधार भएको छ।",
-    excerptEn: "Nepal football team's FIFA rankings have improved.",
-    contentNe: "<p>नेपाली फुटबल टोलीको फिफा र्याङ्किङ सुधार भएको छ।</p>",
-    contentEn: "<p>Nepal football team's FIFA rankings have improved.</p>",
-    categoryId: football.id,
-    imageUrl: sportsImages.football1,
-    imageFilename: "football-rankings.jpg",
-    isFeatured: true,
-  });
-  await createSportsArticle({
-    slug: "dashrath-stadium-renovation-complete",
-    titleNe: "दशरथ रङ्गशालाको सुधार कार्य पूरा",
-    titleEn: "Dashrath Stadium Renovation Complete",
-    excerptNe: "दशरथ रङ्गशालाको सुधार कार्य पूरा भएको छ।",
-    excerptEn: "Dashrath Stadium renovation is complete.",
-    contentNe: "<p>दशरथ रङ्गशालाको सुधार कार्य पूरा भएको छ।</p>",
-    contentEn: "<p>Dashrath Stadium renovation is complete.</p>",
-    categoryId: football.id,
-    imageUrl: sportsImages.football2,
-    imageFilename: "dashrath-renovation.jpg",
-  });
-  await createSportsArticle({
-    slug: "nepal-youth-football-academy-opens",
-    titleNe: "नेपालमा नयाँ युवा फुटबल एकेडेमी खुला",
-    titleEn: "New Youth Football Academy Opens in Nepal",
-    excerptNe: "काठमाडौंमा नयाँ युवा फुटबल एकेडेमी खुला भएको छ।",
-    excerptEn: "A new youth football academy has opened in Kathmandu.",
-    contentNe: "<p>नयाँ युवा फुटबल एकेडेमी खुला भएको छ।</p>",
-    contentEn: "<p>A new youth football academy has opened.</p>",
-    categoryId: football.id,
-    imageUrl: sportsImages.football3,
-    imageFilename: "football-academy.jpg",
-  });
-
-  // Volleyball articles
-  await createSportsArticle({
-    slug: "nepal-volleyball-team-south-asian-games",
-    titleNe: "नेपाली भलिवल टोली दक्षिण एशियाली खेलहरूमा",
-    titleEn: "Nepal Volleyball Team at South Asian Games",
-    excerptNe: "नेपाली भलिवल टोली दक्षिण एशियाली खेलहरूमा भाग लिन तयार छ।",
-    excerptEn: "Nepal volleyball team ready for South Asian Games.",
-    contentNe: "<p>नेपाली भलिवल टोली तयारीमा छ।</p>",
-    contentEn: "<p>Nepal volleyball team is preparing.</p>",
-    categoryId: volleyball.id,
-    imageUrl: sportsImages.volleyball1,
-    imageFilename: "volleyball-sag.jpg",
-  });
-  await createSportsArticle({
-    slug: "nepal-womens-volleyball-championship",
-    titleNe: "नेपाल महिला भलिवल च्याम्पियनसिप आयोजना",
-    titleEn: "Nepal Women's Volleyball Championship Organized",
-    excerptNe: "नेपाल महिला भलिवल च्याम्पियनसिप काठमाडौंमा हुनेछ।",
-    excerptEn: "Nepal Women's Volleyball Championship in Kathmandu.",
-    contentNe: "<p>महिला भलिवल च्याम्पियनसिप आयोजना हुनेछ।</p>",
-    contentEn: "<p>Women's volleyball championship to be organized.</p>",
-    categoryId: volleyball.id,
-    imageUrl: sportsImages.volleyball2,
-    imageFilename: "womens-volleyball.jpg",
-  });
-
-  // Basketball articles
-  await createSportsArticle({
-    slug: "nepal-basketball-league-starts-2082",
-    titleNe: "नेपाल बास्केटबल लिग सुरु",
-    titleEn: "Nepal Basketball League Starts",
-    excerptNe: "नेपाल बास्केटबल लिग सुरु भएको छ।",
-    excerptEn: "The Nepal Basketball League has started.",
-    contentNe: "<p>नेपाल बास्केटबल लिग सुरु भएको छ।</p>",
-    contentEn: "<p>The Nepal Basketball League has started.</p>",
-    categoryId: basketball.id,
-    imageUrl: sportsImages.basketball1,
-    imageFilename: "basketball-league.jpg",
-  });
-
-  // Hockey articles
-  await createSportsArticle({
-    slug: "nepal-field-hockey-team-training",
-    titleNe: "नेपाल हक्की टोलीको अभ्यास शिविर सुरु",
-    titleEn: "Nepal Hockey Team Training Camp Begins",
-    excerptNe: "नेपाली हक्की टोलीको अभ्यास शिविर सुरु भएको छ।",
-    excerptEn: "Nepal hockey team training camp has begun.",
-    contentNe: "<p>हक्की टोलीको अभ्यास शिविर सुरु भएको छ।</p>",
-    contentEn: "<p>Hockey team training camp has begun.</p>",
-    categoryId: hockey.id,
-    imageUrl: sportsImages.hockey1,
-    imageFilename: "hockey-training.jpg",
-  });
-
-  console.log("✅ Sports Articles: 10 created");
+  console.log(
+    `✅ Subcategory Articles: ${articleCount} articles created for ${targetSubcategories.length} subcategories`,
+  );
 
   // ═══════════════════════════════════════════
   // TEAM MEMBERS
@@ -3411,6 +3976,8 @@ ${img(images.society2, "Community health services being expanded to reach the mo
       bioNe: "पूर्व राष्ट्रिय क्रिकेट कप्तान।",
       email: "rajesh.sharma@newsportal.com",
       phone: "+977-9851000001",
+      newsEmail: "sports@newsportal.com",
+      facebook: "https://facebook.com/rajeshsharma",
       order: 1,
     },
     {
@@ -3426,6 +3993,8 @@ ${img(images.society2, "Community health services being expanded to reach the mo
       bioNe: "यूईएफए प्रमाणित फुटबल विश्लेषक।",
       email: "priya.rai@newsportal.com",
       phone: "+977-9851000002",
+      newsEmail: "sports@newsportal.com",
+      facebook: "https://facebook.com/priyarai",
       order: 2,
     },
     {
@@ -3441,6 +4010,8 @@ ${img(images.society2, "Community health services being expanded to reach the mo
       bioNe: "भलिवल कवरेज विशेषज्ञ।",
       email: "amit.gurung@newsportal.com",
       phone: "+977-9851000003",
+      newsEmail: "sports@newsportal.com",
+      facebook: "https://facebook.com/amitgurung",
       order: 3,
     },
     {
@@ -3456,6 +4027,8 @@ ${img(images.society2, "Community health services being expanded to reach the mo
       bioNe: "पूर्व कलेज बास्केटबल खेलाडी।",
       email: "bikash.karki@newsportal.com",
       phone: "+977-9851000004",
+      newsEmail: "sports@newsportal.com",
+      facebook: "https://facebook.com/bikashkarki",
       order: 4,
     },
     {
@@ -3471,6 +4044,8 @@ ${img(images.society2, "Community health services being expanded to reach the mo
       bioNe: "प्रमुख खेलकुद कवरेज।",
       email: "sita.thapa@newsportal.com",
       phone: "+977-9851000005",
+      newsEmail: "sports@newsportal.com",
+      facebook: "https://facebook.com/sitathapa",
       order: 5,
     },
     {
@@ -3486,6 +4061,8 @@ ${img(images.society2, "Community health services being expanded to reach the mo
       bioNe: "पूर्व राष्ट्रिय हक्की खेलाडी।",
       email: "deepak.lama@newsportal.com",
       phone: "+977-9851000006",
+      newsEmail: "sports@newsportal.com",
+      facebook: "https://facebook.com/deeplama",
       order: 6,
     },
   ];
@@ -3517,17 +4094,18 @@ ${img(images.society2, "Community health services being expanded to reach the mo
   console.log(
     "   Users:         10  (1 superadmin + 5 authors + 4 public users)",
   );
-  console.log("   Categories:    7 + 5 sports subcategories");
-  console.log("   Tags:          15");
-  console.log("   Articles:      20 + 10 sports articles");
-  console.log("   Comments:      20  (with various statuses)");
-  console.log("   Flash Updates: 10  (published with expiration)");
-  console.log("   Videos:        10  (published)");
-  console.log("   Horoscopes:    12  (all zodiac signs)");
-  console.log("   Ads:           5");
-  console.log("   Poll:          1   (active with 5 options)");
-  console.log("   Team Members:  6");
-  console.log("   Settings:      7");
+  console.log("   Categories:   15 main + 130 subcategories (145 total)");
+  console.log("   Tags:         15");
+  console.log(
+    "   Articles:     20 main + 650 subcategory articles (670 total)",
+  );
+  console.log("   Comments:     20  (with various statuses)");
+  console.log("   Videos:       10  (published)");
+  console.log("   Horoscopes:   12  (all zodiac signs)");
+  console.log("   Ads:          5");
+  console.log("   Poll:         1   (active with 5 options)");
+  console.log("   Team Members: 6");
+  console.log("   Settings:     7");
   console.log("");
   console.log("🔑 Login credentials:");
   console.log("   SuperAdmin:    admin@example.com   / admin123");

@@ -85,7 +85,7 @@ export interface Article {
   contentNe?: string;
   contentEn?: string;
   slug: string;
-  isBreaking?: boolean;
+  isFlashUpdate?: boolean;
   isFeatured?: boolean;
   isOpinion?: boolean;
   province?: string;
@@ -383,6 +383,8 @@ export interface TeamMember {
   bioNe?: string;
   email?: string;
   phone?: string;
+  newsEmail?: string;
+  facebook?: string;
   order: number;
   isActive: boolean;
   createdAt: string;

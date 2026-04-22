@@ -38,10 +38,10 @@ export default function ArticlesPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [categoryFilter, setCategoryFilter] = useState<string>('')
-  
+
   const status = activeTab === 'ALL' ? undefined : activeTab as ArticleStatus
-  const { data, isLoading, refetch } = useArticles({ 
-    status, 
+  const { data, isLoading, refetch } = useArticles({
+    status,
     search: searchQuery || undefined,
     categoryId: categoryFilter || undefined
   })
@@ -92,8 +92,8 @@ export default function ArticlesPage() {
       render: (article) => (
         <div>
           <p className="font-medium">{article.titleEn}</p>
-          {article.isBreaking && (
-            <span className="text-xs text-red-600 font-medium">Breaking News</span>
+          {article.isFlashUpdate && (
+            <span className="text-xs text-red-600 font-medium">Flash Update</span>
           )}
         </div>
       ),
@@ -116,8 +116,8 @@ export default function ArticlesPage() {
     {
       key: 'publishedAt',
       header: 'Published',
-      render: (article) => article.publishedAt 
-        ? new Date(article.publishedAt).toLocaleDateString() 
+      render: (article) => article.publishedAt
+        ? new Date(article.publishedAt).toLocaleDateString()
         : '-',
     },
     {
