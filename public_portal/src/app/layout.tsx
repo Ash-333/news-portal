@@ -128,7 +128,7 @@ export default function RootLayout({
                     <Footer />
                     <MobileBottomBar />
                     <FloatingWatchButton />
-                    <FlashNewsSheet />
+                    {/* <FlashNewsSheet /> */}
                   </div>
                 </AuthProvider>
               </QueryProvider>

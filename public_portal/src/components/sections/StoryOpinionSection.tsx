@@ -2,122 +2,170 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight } from 'lucide-react';
-import { Article } from '@/types';
+import { Article, Category } from '@/types';
 import { useLanguage } from '@/context/LanguageContext';
-import { getTitle } from '@/lib/utils/lang';
-import { getAuthorAvatar } from '@/lib/utils/image';
+import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { getArticleImage, getAuthorAvatar } from '@/lib/utils/image';
+import { getTitle, getAuthorName } from '@/lib/utils/lang';
 
 interface StoryOpinionSectionProps {
-  opinionArticles: Article[];
   storyArticles: Article[];
+  storyCategory: Category;
+  opinionArticles: Article[];
+  opinionCategory: Category;
 }
 
-export function StoryOpinionSection({ opinionArticles, storyArticles }: StoryOpinionSectionProps) {
-  const { isNepali, t } = useLanguage();
-  const { language } = useLanguage();
+export function StoryOpinionSection({
+  storyArticles,
+  storyCategory,
+  opinionArticles,
+  opinionCategory,
+}: StoryOpinionSectionProps) {
+  const { isNepali, language, t } = useLanguage();
 
-  if (opinionArticles.length === 0 && storyArticles.length === 0) {
-    return null;
-  }
+  const storyName = isNepali ? storyCategory.nameNe : storyCategory.nameEn;
+  const opinionName = isNepali ? opinionCategory.nameNe : opinionCategory.nameEn;
+
+  const displayStory = storyArticles.slice(0, 7);
+  const displayOpinion = opinionArticles.slice(0, 10);
+
+  if (!storyArticles.length && !opinionArticles.length) return null;
 
   return (
     <section className="py-8 border-t border-news-border dark:border-news-border-dark">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-5">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-1 h-6 bg-news-red rounded-full" />
-              <h2 className={cn('text-xl md:text-2xl font-bold text-gray-900 dark:text-white', isNepali ? 'font-nepali' : '')}>
-                {isNepali ? 'विचार' : 'Opinion'}
-              </h2>
+          {/* LEFT: Story - 70% - Featured + Grid */}
+          <div className="lg:col-span-8">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <div className="w-1 h-5 bg-news-red rounded-full" />
+                <h2 className={cn(
+                  'text-lg font-bold text-gray-900 dark:text-white',
+                  isNepali ? 'font-nepali' : ''
+                )}>
+                  {storyName}
+                </h2>
+              </div>
               <Link
-                href="/category/opinion"
-                className="flex items-center gap-1 text-sm text-news-red hover:underline font-medium ml-auto"
+                href={`/category/${storyCategory.slug}`}
+                className="flex items-center gap-1 text-xs text-news-red hover:underline font-medium"
               >
                 <span className={isNepali ? 'font-nepali' : ''}>{t('category.viewAll')}</span>
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className="h-3 w-3" />
               </Link>
             </div>
-            <div className="space-y-3">
-              {opinionArticles.slice(0, 5).map((article) => {
-                const title = getTitle(article, language);
-                const authorName = isNepali ? article.author.nameNe : article.author.name;
-                const authorImage = getAuthorAvatar(
-                  article.author.profilePhoto || null,
-                  authorName
-                );
-                
-                return (
+
+            {/* Featured Story */}
+            {displayStory[0] && (
+              <Link
+                href={`/article/${displayStory[0].slug}`}
+                className="block relative aspect-[16/9] rounded-xl overflow-hidden mb-4 group"
+              >
+                <Image
+                  src={getArticleImage(displayStory[0])}
+                  alt={getTitle(displayStory[0], language)}
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  sizes="(max-width: 1024px) 100vw, 700px"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-4 flex flex-col justify-end">
+                  <h3 className={cn(
+                    'font-bold text-white line-clamp-2 group-hover:text-red-300 transition-colors',
+                    isNepali ? 'font-nepali text-xl sm:text-2xl leading-[1.2]' : 'text-xl sm:text-2xl font-heading leading-tight'
+                  )}>
+                    {getTitle(displayStory[0], language)}
+                  </h3>
+                </div>
+              </Link>
+            )}
+
+            {/* Grid of Stories */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              {displayStory.slice(1, 7).map((article) => (
+                <article key={article.id} className="group">
                   <Link
-                    key={article.id}
                     href={`/article/${article.slug}`}
-                    className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                    className="block relative aspect-[4/3] rounded-lg overflow-hidden mb-2"
                   >
-                    <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
-                      <Image
-                        src={authorImage}
-                        alt={authorName || 'Author'}
-                        width={40}
-                        height={40}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
+                    <Image
+                      src={getArticleImage(article)}
+                      alt={getTitle(article, language)}
+                      fill
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      sizes="(max-width: 768px) 50vw, 150px"
+                    />
+                  </Link>
+                  <Link href={`/article/${article.slug}`}>
                     <h3 className={cn(
-                      'font-medium text-gray-900 dark:text-gray-100 line-clamp-2',
-                      isNepali ? 'font-nepali text-sm' : 'text-sm'
+                      'font-bold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-news-red transition-colors',
+                      isNepali ? 'font-nepali text-xs sm:text-sm leading-relaxed' : 'text-xs sm:text-sm font-semibold'
                     )}>
-                      {title}
+                      {getTitle(article, language)}
                     </h3>
                   </Link>
-                );
-              })}
+                </article>
+              ))}
             </div>
           </div>
 
-          <div className="lg:col-span-7">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-1 h-6 bg-news-red rounded-full" />
-              <h2 className={cn('text-xl md:text-2xl font-bold text-gray-900 dark:text-white', isNepali ? 'font-nepali' : '')}>
-                {isNepali ? 'कथा' : 'Story'}
-              </h2>
+          {/* RIGHT: Opinion - 30% - List Only */}
+          <div className="lg:col-span-4">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <div className="w-1 h-5 bg-news-blue rounded-full" />
+                <h2 className={cn(
+                  'text-lg font-bold text-gray-900 dark:text-white',
+                  isNepali ? 'font-nepali' : ''
+                )}>
+                  {opinionName}
+                </h2>
+              </div>
               <Link
-                href="/category/story"
-                className="flex items-center gap-1 text-sm text-news-red hover:underline font-medium ml-auto"
+                href={`/category/${opinionCategory.slug}`}
+                className="flex items-center gap-1 text-xs text-news-red hover:underline font-medium"
               >
                 <span className={isNepali ? 'font-nepali' : ''}>{t('category.viewAll')}</span>
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className="h-3 w-3" />
               </Link>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {storyArticles.slice(0, 4).map((article) => {
-                const title = getTitle(article, language);
-                
+
+            <div className="space-y-5">
+              {displayOpinion.map((article) => {
+                const authorName = getAuthorName(article.author, language);
+                const authorInitial = authorName?.substring(0, 2).toUpperCase() || 'AO';
+
                 return (
-                  <Link
-                    key={article.id}
-                    href={`/article/${article.slug}`}
-                    className="group block rounded-lg overflow-hidden"
-                  >
-                    <div className="relative aspect-[16/10] bg-gray-200">
-                      {article.featuredImage && (
+                  <article key={article.id} className="group flex gap-3 items-start">
+                    <Link href={`/article/${article.slug}`} className="shrink-0 relative w-14 h-14 rounded-full overflow-hidden bg-news-red">
+                      {article.author?.profilePhoto ? (
                         <Image
-                          src={typeof article.featuredImage === 'string' ? article.featuredImage : article.featuredImage?.url || '/images/placeholder.jpg'}
-                          alt={title}
+                          src={getAuthorAvatar(article.author.profilePhoto, authorName)}
+                          alt={authorName || 'Author'}
                           fill
-                          className="object-cover transition-transform duration-300 group-hover:scale-105"
-                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 350px"
+                          className="object-cover"
+                          sizes="56px"
                         />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-white text-sm font-bold">
+                          {authorInitial}
+                        </div>
                       )}
+                    </Link>
+                    <div className="flex-1 min-w-0">
+                      <Link href={`/article/${article.slug}`}>
+                        <h4 className={cn(
+                          'font-medium text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-news-red transition-colors',
+                          isNepali ? 'font-nepali text-base leading-relaxed' : 'text-base'
+                        )}>
+                          {getTitle(article, language)}
+                        </h4>
+                      </Link>
+                      <p className="text-xs text-gray-500 mt-1">{authorName}</p>
                     </div>
-                    <h3 className={cn(
-                      'font-medium text-gray-900 dark:text-gray-100 line-clamp-2 mt-2 group-hover:text-news-red transition-colors',
-                      isNepali ? 'font-nepali text-sm' : 'text-sm'
-                    )}>
-                      {title}
-                    </h3>
-                  </Link>
+                  </article>
                 );
               })}
             </div>

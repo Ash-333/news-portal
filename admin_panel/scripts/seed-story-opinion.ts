@@ -171,7 +171,7 @@ async function main() {
     process.exit(1);
   }
 
-  console.log(`✅ Using admin user: ${admin.email}\n`);
+  const adminId = admin.id;
 
   // Get categories
   const storyCategory = await prisma.category.findUnique({
@@ -201,7 +201,7 @@ async function main() {
           type: MediaType.IMAGE,
           altText,
           size: 350000,
-          uploadedBy: admin.id,
+          uploadedBy: adminId,
         },
       });
     }

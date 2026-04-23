@@ -1,16 +1,18 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { Article, Category } from '@/types';
 import { useLanguage } from '@/context/LanguageContext';
 import { ArticleCard } from '@/components/ArticleCard';
 import { AdPlaceholder } from '@/components/ui/AdPlaceholder';
 import { cn } from '@/lib/utils';
-import { getCategoryName } from '@/lib/utils/lang';
+import { getCategoryName, getTitle } from '@/lib/utils/lang';
+import { getArticleImage } from '@/lib/utils/image';
 import React from 'react';
 
-type LayoutType = 'grid' | 'featured' | 'horizontal' | 'three-column' | 'compact' | 'list' | 'opinion';
+type LayoutType = 'grid' | 'featured' | 'horizontal' | 'three-column' | 'compact' | 'list' | 'opinion' | 'entertainment';
 
 interface CategorySectionProps {
   category: Category;
@@ -147,6 +149,38 @@ export function CategorySection({ category, articles, layout = 'grid' }: Categor
     </div>
   );
 
+  const renderEntertainmentLayout = () => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {articles.slice(0, 6).map((article) => {
+        const title = getTitle(article, isNepali ? 'ne' : 'en');
+        return (
+          <article key={article.id} className="group">
+            <Link
+              href={`/article/${article.slug}`}
+              className="block relative aspect-[4/3] rounded-lg overflow-hidden mb-2"
+            >
+              <Image
+                src={getArticleImage(article)}
+                alt={title}
+                fill
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
+                sizes="(max-width: 768px) 100vw, 400px"
+              />
+            </Link>
+            <Link href={`/article/${article.slug}`}>
+              <h3 className={cn(
+                'font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-news-red transition-colors',
+                isNepali ? 'font-nepali text-base' : 'text-base'
+              )}>
+                {title}
+              </h3>
+            </Link>
+          </article>
+        );
+      })}
+    </div>
+  );
+
   const renderLayout = () => {
     switch (layout) {
       case 'featured':
@@ -161,6 +195,8 @@ export function CategorySection({ category, articles, layout = 'grid' }: Categor
         return renderListLayout();
       case 'opinion':
         return renderOpinionLayout();
+      case 'entertainment':
+        return renderEntertainmentLayout();
       case 'grid':
       default:
         return renderGridLayout();

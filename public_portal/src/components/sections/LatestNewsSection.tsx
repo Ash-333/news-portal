@@ -4,7 +4,7 @@ import { Article, Poll, Category } from "@/types";
 import { useLanguage } from "@/context/LanguageContext";
 import { cn } from "@/lib/utils";
 import { ArticleCard } from "@/components/ArticleCard";
-import { AdPlaceholder } from "@/components/ui/AdPlaceholder";
+import { AdBox } from "@/components/ads/AdBox";
 import { PollCard } from "@/components/polls/PollCard";
 import { getCategoryName } from "@/lib/utils/lang";
 import React from "react";
@@ -41,7 +41,7 @@ export function LatestNewsSection({ articles, poll, category }: LatestNewsSectio
             <ArticleCard article={article} />
             {index === 3 && !poll && (
               <div className="col-span-1 md:col-span-2">
-                <AdPlaceholder format="leaderboard" />
+                <AdBox position="LATEST_NEWS" className="h-[90px] w-full max-w-[728px]" />
               </div>
             )}
           </React.Fragment>

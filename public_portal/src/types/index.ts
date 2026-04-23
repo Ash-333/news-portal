@@ -80,6 +80,8 @@ export interface Article {
   id: string;
   titleNe: string;
   titleEn?: string;
+  subheadingNe?: string;
+  subheadingEn?: string;
   excerptNe: string;
   excerptEn?: string;
   contentNe?: string;
@@ -307,7 +309,18 @@ export type AdPosition =
   | "SIDEBAR_TOP"
   | "SIDEBAR_BOTTOM"
   | "HOME_MIDDLE"
-  | "ARTICLE_DETAIL";
+  | "HOME_TOP"
+  | "TOP_BAR"
+  | "ARTICLE_DETAIL"
+  | "ARTICLE_TITLE"
+  | "ARTICLE_EXCERPT"
+  | "ARTICLE_END"
+  | "FEATURED_1"
+  | "FEATURED_2"
+  | "FEATURED_3"
+  | "LATEST_NEWS"
+  | "CATEGORY_SECTION"
+  | "SECTION_SIDEBAR";
 
 export interface AdWithPosition {
   id: string;

@@ -60,6 +60,44 @@ const deleteAd = async (id: string): Promise<void> => {
   if (!result.success) throw new Error(result.message)
 }
 
+const updateAd = async ({ id, data }: { id: string; data: FormData | Record<string, unknown> }): Promise<Advertisement> => {
+  let adData: Record<string, unknown>
+
+  if (data instanceof FormData) {
+    const file = data.get('file') as File
+    let mediaUrl: string | undefined
+    let mediaType: string | undefined
+
+    if (file && file.size > 0) {
+      const mediaResponse = await fetch('/api/admin/media', { method: 'POST', body: data })
+      const mediaResult = await mediaResponse.json()
+      if (!mediaResult.success) throw new Error(mediaResult.message || 'Failed to upload media')
+      mediaUrl = mediaResult.data.url
+      mediaType = file.type?.includes('gif') ? 'GIF' : 'IMAGE'
+    }
+
+    adData = {
+      titleNe: data.get('titleNe') as string,
+      titleEn: data.get('titleEn') as string,
+      linkUrl: data.get('linkUrl') as string || '',
+      position: data.get('position') as string || 'SIDEBAR',
+      isActive: String(data.get('isActive')) === 'true',
+      ...(mediaUrl && { mediaUrl, mediaType }),
+    }
+  } else {
+    adData = data
+  }
+
+  const response = await fetch(`/api/admin/ads/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(adData),
+  })
+  const result: ApiResponse<Advertisement> = await response.json()
+  if (!result.success) throw new Error(result.message)
+  return result.data
+}
+
 export function useAds(page: number = 1) {
   return useQuery({
     queryKey: ['ads', page],
@@ -91,6 +129,16 @@ export function useDeleteAd() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: deleteAd,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['ads'] })
+    },
+  })
+}
+
+export function useUpdateAd() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: updateAd,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['ads'] })
     },

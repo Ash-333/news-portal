@@ -125,6 +125,8 @@ export async function GET(req: NextRequest) {
               id: true,
               titleNe: true,
               titleEn: true,
+              subheadingNe: true,
+              subheadingEn: true,
               excerptNe: true,
               excerptEn: true,
               slug: true,

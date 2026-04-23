@@ -44,19 +44,31 @@ export function SectionSidebarAd({ position, className }: SectionSidebarAdProps)
     );
   }
 
+  const mediaType = activeAd.mediaType?.toLowerCase();
+
   return (
     <div className={cn("relative group overflow-hidden rounded-lg shadow-sm w-full h-full", className)}>
-      <a 
-        href={activeAd.linkUrl} 
-        target="_blank" 
+      <a
+        href={activeAd.linkUrl}
+        target="_blank"
         rel="noopener noreferrer"
         className="block w-full h-full"
       >
-        <img
-          src={activeAd.mediaUrl}
-          alt={isNepali ? activeAd.titleNe : activeAd.titleEn}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-        />
+        {mediaType === 'video' ? (
+          <video
+            src={activeAd.mediaUrl}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            autoPlay
+            muted
+            loop
+          />
+        ) : (
+          <img
+            src={activeAd.mediaUrl}
+            alt={isNepali ? activeAd.titleNe : activeAd.titleEn}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+        )}
         <div className="absolute top-2 right-2 bg-black/50 text-white text-[9px] px-1.5 py-0.5 rounded backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity">
           Ad
         </div>

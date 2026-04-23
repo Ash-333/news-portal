@@ -5,7 +5,7 @@ import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { Calendar, Facebook, Twitter, Youtube, Instagram } from 'lucide-react';
 import { useLanguage } from '@/context/LanguageContext';
 import { toNepaliDigits, formatDate } from '@/lib/utils';
-import { AdPlaceholder } from '@/components/ui/AdPlaceholder';
+import { AdBox } from '@/components/ads/AdBox';
 import { NepaliDate } from "nepali-date-library";
 import { useQuery } from '@tanstack/react-query';
 import { getSocialLinks, SocialLinks } from '@/lib/api/settings';
@@ -136,10 +136,10 @@ export function TopBar() {
         </div>
       </div>
 
-      {/* Top Banner Ad Placeholder */}
+      {/* Top Banner Ad */}
       <div className="bg-white dark:bg-news-bg-dark py-4 border-b border-news-border dark:border-news-border-dark hidden md:block">
         <div className="container mx-auto px-4 flex justify-center">
-          <AdPlaceholder format="leaderboard" />
+          <AdBox position="TOP_BAR" className="h-[90px] w-full max-w-[728px]" />
         </div>
       </div>
     </div>

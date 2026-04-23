@@ -61,21 +61,23 @@ export function AdSlot({ position, className }: AdSlotProps) {
     return null;
   }
 
+  const mediaType = ad.mediaType?.toLowerCase();
+
   return (
-    <div 
+    <div
       className={cn(
         'cursor-pointer hover:opacity-90 transition-opacity overflow-hidden',
         className
       )}
       onClick={handleAdClick}
     >
-      {ad.mediaType === 'image' ? (
+      {mediaType === 'image' || mediaType === 'gif' ? (
         <img
           src={ad.mediaUrl}
           alt={isNepali ? ad.titleNe : ad.titleEn}
           className="w-full h-auto object-cover"
         />
-      ) : ad.mediaType === 'video' ? (
+      ) : mediaType === 'video' ? (
         <video
           src={ad.mediaUrl}
           className="w-full h-auto"
@@ -84,8 +86,7 @@ export function AdSlot({ position, className }: AdSlotProps) {
           loop
         />
       ) : (
-        // Script-based ad (e.g., Google Adsense)
-        <div 
+        <div
           dangerouslySetInnerHTML={{ __html: ad.mediaUrl }}
           className="w-full"
         />
@@ -105,4 +106,32 @@ export function BannerAd({ className }: { className?: string }) {
 
 export function InArticleAd({ className }: { className?: string }) {
   return <AdSlot position="IN_ARTICLE" className={cn('min-h-[250px] my-4', className)} />;
+}
+
+export function ArticleTitleAd({ className }: { className?: string }) {
+  return <AdSlot position="ARTICLE_TITLE" className={cn('min-h-[250px] my-4', className)} />;
+}
+
+export function ArticleExcerptAd({ className }: { className?: string }) {
+  return <AdSlot position="ARTICLE_EXCERPT" className={cn('min-h-[250px] my-4', className)} />;
+}
+
+export function ArticleEndAd({ className }: { className?: string }) {
+  return <AdSlot position="ARTICLE_END" className={cn('min-h-[250px] my-4', className)} />;
+}
+
+export function Featured1Ad({ className }: { className?: string }) {
+  return <AdSlot position="FEATURED_1" className={cn('min-h-[250px] my-4', className)} />;
+}
+
+export function Featured2Ad({ className }: { className?: string }) {
+  return <AdSlot position="FEATURED_2" className={cn('min-h-[250px] my-4', className)} />;
+}
+
+export function Featured3Ad({ className }: { className?: string }) {
+  return <AdSlot position="FEATURED_3" className={cn('min-h-[250px] my-4', className)} />;
+}
+
+export function HomeTopAd({ className }: { className?: string }) {
+  return <AdSlot position="HOME_TOP" className={cn('min-h-[90px]', className)} />;
 }

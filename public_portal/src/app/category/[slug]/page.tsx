@@ -51,7 +51,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
 
   const [categoriesRes, articlesRes] = await Promise.all([
     getCategories(),
-    getArticles({ category: params.slug }),
+    getArticles({ category: params.slug, page: 1, limit: 20 }),
   ]);
 
   const categories = categoriesRes.success ? categoriesRes.data : [];
@@ -62,6 +62,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
   }
 
   const allArticles = articlesRes.success ? articlesRes.data : [];
+  const pagination = articlesRes.pagination;
   const categoryName = isNepali
     ? (category.nameNe || category.nameEn || category.slug)
     : (category.nameEn || category.nameNe || category.slug);
@@ -89,7 +90,8 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
       <CategoryClient
         category={category}
         subcategories={subcategories}
-        articles={allArticles}
+        initialArticles={allArticles}
+        initialPagination={pagination}
         isNepali={isNepali}
       />
     </>

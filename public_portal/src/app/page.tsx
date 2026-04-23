@@ -1,16 +1,10 @@
 import Link from 'next/link';
 import { Metadata } from 'next';
-import { ArticleCard } from '@/components/ArticleCard';
-import { ArrowRight } from 'lucide-react';
-import { HeroSection } from '@/components/sections/HeroSection';
 import { CategorySection } from '@/components/sections/CategorySection';
 import { LatestNewsSection } from '@/components/sections/LatestNewsSection';
 
-import { SportsSection } from '@/components/sections/SportsSection';
-import { FullWidthArticlesSection } from '@/components/sections/FullWidthArticlesSection';
 import { AdBox } from '@/components/ads/AdBox';
 import { FlashUpdateSidebar } from '@/components/FlashUpdateSidebar';
-import { AdPlaceholder } from '@/components/ui/AdPlaceholder';
 import { JsonLd } from '@/components/JsonLd';
 import { NewsArticleJsonLd, WebSiteJsonLd } from '@/lib/jsonLd';
 import { getFeaturedArticles, getLatestArticles, getArticles } from '@/lib/api/articles';
@@ -19,10 +13,20 @@ import { getPolls } from '@/lib/api/polls';
 import { HoroscopeSection } from '@/components/horoscopes/HoroscopeSection';
 import { VideoSection } from '@/components/sections/VideoSection';
 import { PhotoGallerySection } from '@/components/sections/PhotoGallerySection';
+import { FullWidthArticlesSection } from '@/components/sections/FullWidthArticlesSection';
 import { WorldDiasporaSection } from '@/components/sections/WorldDiasporaSection';
-import { StoryOpinionSection } from '@/components/sections/StoryOpinionSection';
 import { Article, Poll, Category } from '@/types';
 import { getServerLanguage } from '@/lib/utils/language';
+
+// Custom Category Sections
+import { NewsSection } from '@/components/sections/NewsSection';
+import { StoryOpinionSection } from '@/components/sections/StoryOpinionSection';
+import { SportsHomeSection } from '@/components/sections/SportsHomeSection';
+import { ProvinceSection } from '@/components/sections/ProvinceSection';
+import { LifestyleHealthSection } from '@/components/sections/LifestyleHealthSection';
+import { SocietyCultureSection } from '@/components/sections/SocietyCultureSection';
+import { EconomySection } from '@/components/sections/EconomySection';
+import { TechnologySection } from '@/components/sections/TechnologySection';
 
 export const revalidate = 60;
 
@@ -46,15 +50,6 @@ export async function generateMetadata({ searchParams }: { searchParams?: { lang
   };
 }
 
-const PROVINCES = [
-  { key: 'PROVINCE_1', name: 'Province 1', nameNe: 'प्रदेश १', altName: 'कोशी' },
-  { key: 'PROVINCE_2', name: 'Province 2', nameNe: 'प्रदेश २', altName: 'मधेश' },
-  { key: 'PROVINCE_3', name: 'Province 3', nameNe: 'प्रदेश ३', altName: 'बागमती' },
-  { key: 'PROVINCE_4', name: 'Province 4', nameNe: 'प्रदेश ४', altName: 'गण्डकी' },
-  { key: 'PROVINCE_5', name: 'Province 5', nameNe: 'प्रदेश ५', altName: 'लुम्बिनी' },
-  { key: 'PROVINCE_6', name: 'Province 6', nameNe: 'प्रदेश ६', altName: 'कर्णाली' },
-  { key: 'PROVINCE_7', name: 'Province 7', nameNe: 'प्रदेश ७', altName: 'सुदूरपश्चिम' },
-];
 
 export default async function HomePage({ searchParams }: { searchParams?: { lang?: string } }) {
   const urlLang = searchParams?.lang as string | undefined;
@@ -90,16 +85,16 @@ export default async function HomePage({ searchParams }: { searchParams?: { lang
     getFeaturedArticles(),
     getLatestArticles(60),
     getCategories(),
-    getArticles({ category: 'news', limit: 6 }),
+    getArticles({ category: 'news', limit: 9 }),
     getArticles({ category: 'politics', limit: 7 }),
     getArticles({ category: 'economy', limit: 6 }),
-    getArticles({ category: 'story', limit: 5 }),
-    getArticles({ category: 'opinion', limit: 5 }),
+    getArticles({ category: 'story', limit: 4 }),
+    getArticles({ category: 'opinion', limit: 10 }),
     getArticles({ category: 'entertainment', limit: 7 }),
-    getArticles({ category: 'technology', limit: 6 }),
+    getArticles({ category: 'technology', limit: 9 }),
     getArticles({ category: 'sports', limit: 6 }),
-    getArticles({ category: 'world', limit: 6 }),
-    getArticles({ category: 'diaspora', limit: 8 }),
+    getArticles({ category: 'world', limit: 5 }),
+    getArticles({ category: 'diaspora', limit: 9 }),
     getPolls(),
     getArticles({ province: 'PROVINCE_1', limit: 5 }),
     getArticles({ province: 'PROVINCE_2', limit: 5 }),
@@ -110,8 +105,8 @@ export default async function HomePage({ searchParams }: { searchParams?: { lang
     getArticles({ province: 'PROVINCE_7', limit: 5 }),
     getArticles({ category: 'society', limit: 6 }),
     getArticles({ category: 'swasthya', limit: 4 }),
-    getArticles({ category: 'jeevan-shaili', limit: 4 }),
-    getArticles({ category: 'dharma-sanskriti', limit: 4 }),
+    getArticles({ category: 'jeevan-shaili', limit: 10 }),
+    getArticles({ category: 'dharma-sanskriti', limit: 7 }),
   ]);
 
   const featuredArticles =
@@ -136,7 +131,6 @@ export default async function HomePage({ searchParams }: { searchParams?: { lang
   let fullWidthArticles = featuredArticles.length > 0
     ? featuredArticles
     : sortedByNewest.slice(0, 5);
-  const latestArticles = sortedByNewest.slice(5, 14);
   const trendingArticles = [...articles].sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0)).slice(0, 8);
 
   const getArticlesFromResult = (result: PromiseSettledResult<any>) =>
@@ -217,7 +211,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { lang
           </div>
         </div>
 
-        <section className="border-t border-news-border dark:border-news-border-dark py-6">
+        {/* <section className="border-t border-news-border dark:border-news-border-dark py-6">
           <div className="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-6">
             <div className="lg:col-span-8 space-y-8">
               <LatestNewsSection articles={newsArticles} poll={activePoll} category={newsCategory} />
@@ -239,22 +233,25 @@ export default async function HomePage({ searchParams }: { searchParams?: { lang
               </div>
             </aside>
           </div>
-        </section>
+        </section> */}
 
         <div className="space-y-8">
+          {/* News Section */}
           {newsCategory && newsArticles.length > 0 && (
-            <CategorySection
-              category={newsCategory}
+            <NewsSection
               articles={newsArticles}
-              layout="featured"
+              category={newsCategory}
+              poll={activePoll}
+              mostReadArticles={trendingArticles}
             />
           )}
 
           <div className="py-4 container mx-auto px-4 flex justify-center">
-            <AdPlaceholder format="leaderboard" />
+            <AdBox position="HOME_MIDDLE" className="h-[90px] w-full max-w-[728px]" />
           </div>
 
-          {politicsCategory ? (
+          {/* Politics Section - Keep existing CategorySection */}
+          {politicsCategory && politicsArticles.length > 0 ? (
             <CategorySection
               category={politicsCategory}
               articles={politicsArticles}
@@ -263,190 +260,107 @@ export default async function HomePage({ searchParams }: { searchParams?: { lang
           ) : null}
 
           <div className="py-4 container mx-auto px-4 flex justify-center">
-            <AdPlaceholder format="leaderboard" />
+            <AdBox position="HOME_MIDDLE" className="h-[90px] w-full max-w-[728px]" />
           </div>
 
-          <StoryOpinionSection
-            opinionArticles={opinionArticles}
-            storyArticles={storyArticles}
-          />
+          {/* Story & Opinion Combined Section */}
+          {storyCategory && opinionCategory && (storyArticles.length > 0 || opinionArticles.length > 0) && (
+            <StoryOpinionSection
+              storyArticles={storyArticles}
+              storyCategory={storyCategory}
+              opinionArticles={opinionArticles}
+              opinionCategory={opinionCategory}
+            />
+          )}
 
           <div className="py-4 container mx-auto px-4 flex justify-center">
-            <AdPlaceholder format="leaderboard" />
+            <AdBox position="HOME_MIDDLE" className="h-[90px] w-full max-w-[728px]" />
           </div>
 
-          {entertainmentCategory ? (
+          {/* Entertainment Section */}
+          {entertainmentCategory && entertainmentArticles.length > 0 ? (
             <CategorySection
               category={entertainmentCategory}
               articles={entertainmentArticles}
-              layout="three-column"
+              layout="entertainment"
             />
           ) : null}
 
           <div className="py-4 container mx-auto px-4 flex justify-center">
-            <AdPlaceholder format="leaderboard" />
+            <AdBox position="HOME_MIDDLE" className="h-[90px] w-full max-w-[728px]" />
           </div>
 
-          <SportsSection articles={sportsArticles} subcategories={sportsSubcategories} />
+          {/* Sports Section */}
+          {sportsCategory && sportsArticles.length > 0 && (
+            <SportsHomeSection articles={sportsArticles} category={sportsCategory} />
+          )}
 
-          {worldCategory && diasporaCategory ? (
+          <div className="py-4 container mx-auto px-4 flex justify-center">
+            <AdBox position="HOME_MIDDLE" className="h-[90px] w-full max-w-[728px]" />
+          </div>
+
+          {/* World & Diaspora Section */}
+          {worldCategory && diasporaCategory && (
             <WorldDiasporaSection
               worldCategory={worldCategory}
               worldArticles={worldArticles}
               diasporaCategory={diasporaCategory}
               diasporaArticles={diasporaArticles}
             />
-          ) : worldCategory ? (
-            <CategorySection
-              category={worldCategory}
-              articles={worldArticles}
-              layout="grid"
-            />
-          ) : null}
+          )}
 
           <div className="py-4 container mx-auto px-4 flex justify-center">
-            <AdPlaceholder format="leaderboard" />
+            <AdBox position="HOME_MIDDLE" className="h-[90px] w-full max-w-[728px]" />
           </div>
 
-{economyCategory && economyArticles.length > 0 ? (
-            <CategorySection
-              category={economyCategory}
-              articles={economyArticles}
-              layout="featured"
-            />
-          ) : null}
-
-          {societyCategory && societyArticles.length > 0 ? (
-            <CategorySection
-              category={societyCategory}
-              articles={societyArticles}
-              layout="grid"
-            />
-          ) : null}
-
-          {technologyCategory && technologyArticles.length > 0 ? (
-            <CategorySection
-              category={technologyCategory}
-              articles={technologyArticles}
-              layout="list"
-            />
-          ) : null}
-
-          {healthCategory && healthArticles.length > 0 ? (
-            <CategorySection
-              category={healthCategory}
-              articles={healthArticles}
-              layout="three-column"
-            />
-          ) : null}
-
-          {lifestyleCategory && lifestyleArticles.length > 0 ? (
-            <CategorySection
-              category={lifestyleCategory}
-              articles={lifestyleArticles}
-              layout="horizontal"
-            />
-          ) : null}
-
-          {cultureCategory && cultureArticles.length > 0 ? (
-            <CategorySection
-              category={cultureCategory}
-              articles={cultureArticles}
-              layout="featured"
-            />
-          ) : null}
-
-          {hasProvinceNews && (
-            <div className="py-8 border-t border-news-border dark:border-news-border-dark">
-              <div className="container mx-auto px-4">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center gap-3">
-                    <div className="w-1 h-8 bg-news-red rounded-full" />
-                    <h2 className="text-2xl font-bold">{isNepali ? 'प्रदेशहरु' : 'Provincial News'}</h2>
-                  </div>
-                  <Link
-                    href="/provinces"
-                    className="flex items-center gap-1 text-sm text-news-red hover:underline"
-                  >
-                    <span>{isNepali ? 'सबै हेर्नुहोस्' : 'View All'}</span>
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {province1Articles.length > 0 && (
-                    <div className="space-y-4">
-                      <h3 className="text-lg font-semibold text-news-primary">{isNepali ? 'प्रदेश १ - कोशी' : 'Province 1 - Koshi'}</h3>
-                      <div className="space-y-4">
-                        {province1Articles.slice(0, 3).map((article: Article) => (
-                          <ArticleCard key={article.id} article={article} variant="province" showCategory={false} showExcerpt={false} />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  {province2Articles.length > 0 && (
-                    <div className="space-y-4">
-                      <h3 className="text-lg font-semibold text-news-primary">{isNepali ? 'प्रदेश २ - मधेश' : 'Province 2 - Madhesh'}</h3>
-                      <div className="space-y-4">
-                        {province2Articles.slice(0, 3).map((article: Article) => (
-                          <ArticleCard key={article.id} article={article} variant="province" showCategory={false} showExcerpt={false} />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  {province3Articles.length > 0 && (
-                    <div className="space-y-4">
-                      <h3 className="text-lg font-semibold text-news-primary">{isNepali ? 'प्रदेश ३ - बागमती' : 'Province 3 - Bagmati'}</h3>
-                      <div className="space-y-4">
-                        {province3Articles.slice(0, 3).map((article: Article) => (
-                          <ArticleCard key={article.id} article={article} variant="province" showCategory={false} showExcerpt={false} />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  {province4Articles.length > 0 && (
-                    <div className="space-y-4">
-                      <h3 className="text-lg font-semibold text-news-primary">{isNepali ? 'प्रदेश ४ - गण्डकी' : 'Province 4 - Gandaki'}</h3>
-                      <div className="space-y-4">
-                        {province4Articles.slice(0, 3).map((article: Article) => (
-                          <ArticleCard key={article.id} article={article} variant="province" showCategory={false} showExcerpt={false} />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  {province5Articles.length > 0 && (
-                    <div className="space-y-4">
-                      <h3 className="text-lg font-semibold text-news-primary">{isNepali ? 'प्रदेश ५ - लुम्बिनी' : 'Province 5 - Lumbini'}</h3>
-                      <div className="space-y-4">
-                        {province5Articles.slice(0, 3).map((article: Article) => (
-                          <ArticleCard key={article.id} article={article} variant="province" showCategory={false} showExcerpt={false} />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  {province6Articles.length > 0 && (
-                    <div className="space-y-4">
-                      <h3 className="text-lg font-semibold text-news-primary">{isNepali ? 'प्रदेश ६ - कर्णाली' : 'Province 6 - Karnali'}</h3>
-                      <div className="space-y-4">
-                        {province6Articles.slice(0, 3).map((article: Article) => (
-                          <ArticleCard key={article.id} article={article} variant="province" showCategory={false} showExcerpt={false} />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  {province7Articles.length > 0 && (
-                    <div className="space-y-4">
-                      <h3 className="text-lg font-semibold text-news-primary">{isNepali ? 'प्रदेश ७ - सुदूरपश्चिम' : 'Province 7 - Sudurpashchim'}</h3>
-                      <div className="space-y-4">
-                        {province7Articles.slice(0, 3).map((article: Article) => (
-                          <ArticleCard key={article.id} article={article} variant="province" showCategory={false} showExcerpt={false} />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
+          {/* Economy Section */}
+          {economyCategory && economyArticles.length > 0 && (
+            <EconomySection articles={economyArticles} category={economyCategory} />
           )}
+
+          {/* Society & Culture Combined Section */}
+          {societyCategory && cultureCategory && (societyArticles.length > 0 || cultureArticles.length > 0) && (
+            <SocietyCultureSection
+              societyCategory={societyCategory}
+              societyArticles={societyArticles}
+              cultureCategory={cultureCategory}
+              cultureArticles={cultureArticles}
+            />
+          )}
+
+          {/* Technology Section */}
+          {technologyCategory && technologyArticles.length > 0 && (
+            <TechnologySection articles={technologyArticles} category={technologyCategory} />
+          )}
+
+          {/* Lifestyle & Health Combined Section */}
+          {lifestyleCategory && healthCategory && (lifestyleArticles.length > 0 || healthArticles.length > 0) && (
+            <LifestyleHealthSection
+              lifestyleCategory={lifestyleCategory}
+              lifestyleArticles={lifestyleArticles}
+              healthCategory={healthCategory}
+              healthArticles={healthArticles}
+            />
+          )}
+
+          {/* Province Section */}
+          {hasProvinceNews && (
+            <ProvinceSection
+              provinces={[
+                { data: province1Articles, info: { slug: 'PROVINCE_1', nameNe: 'प्रदेश १', nameEn: 'Province 1' } },
+                { data: province2Articles, info: { slug: 'PROVINCE_2', nameNe: 'प्रदेश २', nameEn: 'Province 2' } },
+                { data: province3Articles, info: { slug: 'PROVINCE_3', nameNe: 'प्रदेश ३', nameEn: 'Province 3' } },
+                { data: province4Articles, info: { slug: 'PROVINCE_4', nameNe: 'प्रदेश ४', nameEn: 'Province 4' } },
+                { data: province5Articles, info: { slug: 'PROVINCE_5', nameNe: 'प्रदेश ५', nameEn: 'Province 5' } },
+                { data: province6Articles, info: { slug: 'PROVINCE_6', nameNe: 'प्रदेश ६', nameEn: 'Province 6' } },
+                { data: province7Articles, info: { slug: 'PROVINCE_7', nameNe: 'प्रदेश ७', nameEn: 'Province 7' } },
+              ]}
+            />
+          )}
+
+          <div className="py-4 container mx-auto px-4 flex justify-center">
+            <AdBox position="HOME_MIDDLE" className="h-[90px] w-full max-w-[728px]" />
+          </div>
         </div>
 
         <HoroscopeSection />

@@ -17,7 +17,7 @@ import { ArticleNavigation } from '@/components/article/ArticleNavigation';
 import { ArticleViewTracker } from '@/components/article/ArticleViewTracker';
 import { fetchArticleBySlug, fetchPublishedArticles } from '@/lib/api';
 import { getServerLanguage } from '@/lib/utils/language';
-import { InArticleAd } from '@/components/ads/AdSlot';
+import { InArticleAd, ArticleTitleAd, ArticleExcerptAd, ArticleEndAd } from '@/components/ads/AdSlot';
 
 interface ArticlePageProps {
   params: { slug: string };
@@ -195,10 +195,14 @@ export default async function ArticlePage({ params, searchParams }: ArticlePageP
                 {isNepali ? article.titleNe : (article.titleEn || article.titleNe || article.title)}
               </h1>
 
+              <ArticleTitleAd className="my-4" />
+
               {/* Excerpt */}
               <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">
                 {isNepali ? article.excerptNe : (article.excerptEn || article.excerptNe || article.excerpt)}
               </p>
+
+              <ArticleExcerptAd className="my-4" />
 
               {/* Meta Row */}
               <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-6 pb-6 border-b border-news-border dark:border-news-border-dark">
@@ -240,13 +244,15 @@ export default async function ArticlePage({ params, searchParams }: ArticlePageP
               {/* Article Content */}
               <ArticleContent content={content} lang={lang} />
 
-              <InArticleAd />
+              <InArticleAd className="my-4" />
 
               <ArticleTags tags={article.tags} />
 
               <AuthorBox author={article.author} />
 
               <ShareBar url={url} title={isNepali ? article.titleNe : article.titleEn} />
+
+              <ArticleEndAd className="my-4" />
 
               <ArticleNavigation prevArticle={prevArticle} nextArticle={nextArticle} />
 

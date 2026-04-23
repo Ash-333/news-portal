@@ -1,17 +1,26 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArticleCard } from '@/components/ArticleCard';
 import { getArticleImage } from '@/lib/utils/image';
 import { getTitle, getExcerpt } from '@/lib/utils/lang';
-import { Category } from '@/types';
+import { getArticles } from '@/lib/api/articles';
+import { Category, Article } from '@/types';
+
+interface PaginationMeta {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
 
 interface CategoryClientProps {
   category: Category;
   subcategories: Category[];
-  articles: any[];
+  initialArticles: Article[];
+  initialPagination?: PaginationMeta;
   isNepali: boolean;
 }
 
@@ -29,8 +38,14 @@ function getAllSubcategoryIds(subcategories: Category[]): string[] {
   return ids;
 }
 
-export function CategoryClient({ category, subcategories, articles, isNepali }: CategoryClientProps) {
+export function CategoryClient({ category, subcategories, initialArticles, initialPagination, isNepali }: CategoryClientProps) {
   const [selectedSubcategory, setSelectedSubcategory] = useState<string>('all');
+  const [articles, setArticles] = useState<Article[]>(initialArticles);
+  const [pagination, setPagination] = useState<PaginationMeta | undefined>(initialPagination);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(initialPagination ? initialPagination.page < initialPagination.totalPages : false);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+  const currentPageRef = useRef(initialPagination?.page ?? 1);
 
   const filteredArticles = useMemo(() => {
     const allSubcategoryIds = getAllSubcategoryIds(subcategories);
@@ -48,6 +63,55 @@ export function CategoryClient({ category, subcategories, articles, isNepali }: 
     
     return articles.filter((article) => selectedSubIds.includes(article.category.id));
   }, [articles, subcategories, selectedSubcategory, category.id]);
+
+  const fetchMore = useCallback(async () => {
+    if (loading || !hasMore) return;
+    
+    setLoading(true);
+    const nextPage = currentPageRef.current + 1;
+    
+    try {
+      const res = await getArticles({ category: category.slug, page: nextPage, limit: 20 });
+      if (res.success && res.data.length > 0) {
+        setArticles((prev) => [...prev, ...res.data]);
+        currentPageRef.current = nextPage;
+        if (res.pagination) {
+          setPagination(res.pagination);
+          setHasMore(nextPage < res.pagination.totalPages);
+        }
+      } else {
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.error('Failed to load more articles:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [category.slug, loading, hasMore]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !loading) {
+          fetchMore();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (loadMoreRef.current) {
+      observer.observe(loadMoreRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [fetchMore, hasMore, loading]);
+
+  useEffect(() => {
+    setArticles(initialArticles);
+    setPagination(initialPagination);
+    currentPageRef.current = initialPagination?.page ?? 1;
+    setHasMore(initialPagination ? initialPagination.page < initialPagination.totalPages : false);
+  }, [initialArticles, initialPagination]);
 
   const featuredArticle = filteredArticles[0];
   const gridArticles = filteredArticles.slice(1);
@@ -141,6 +205,18 @@ export function CategoryClient({ category, subcategories, articles, isNepali }: 
                   variant="horizontal"
                 />
               ))}
+            </div>
+
+            <div ref={loadMoreRef} className="flex justify-center py-8">
+              {loading && (
+                <div className="flex items-center gap-2 text-gray-500">
+                  <div className="w-6 h-6 border-2 border-news-red border-t-transparent rounded-full animate-spin" />
+                  <span>Loading more articles...</span>
+                </div>
+              )}
+              {!hasMore && articles.length > 0 && (
+                <p className="text-gray-500">You've reached the end</p>
+              )}
             </div>
           </>
         )}

@@ -4,6 +4,10 @@ export function getTitle(article: Article, lang: string): string {
   return lang === 'ne' ? article.titleNe ?? '' : article.titleEn ?? '';
 }
 
+export function getSubheading(article: Article, lang: string): string | undefined {
+  return lang === 'ne' ? article.subheadingNe ?? undefined : article.subheadingEn ?? undefined;
+}
+
 export function getExcerpt(article: Article, lang: string): string {
   return lang === 'ne' ? article.excerptNe ?? '' : article.excerptEn ?? '';
 }
