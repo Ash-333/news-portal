@@ -13,12 +13,12 @@ export function FlashNewsSheet() {
   const { isNepali } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  
+
   const { data: articlesResponse } = useQuery({
     queryKey: ['articles', 'flash-updates'],
-    queryFn: () => fetchPublishedArticles({ isFlashUpdate: true, limit: 20 }),
+    queryFn: () => fetchPublishedArticles({ isFlashUpdate: true, limit: 10 }),
   });
-  
+
   const flashUpdates = articlesResponse || [];
 
   useEffect(() => {
@@ -55,52 +55,57 @@ export function FlashNewsSheet() {
             <h2 className={cn('text-lg font-bold', isNepali ? 'font-nepali' : '')}>
               {isNepali ? 'ताजा खबर' : 'Flash News'}
             </h2>
-            <button onClick={() => setIsOpen(false)} className="p-2 rounded-full hover:bg-gray-100">
+            {/* <button onClick={() => setIsOpen(false)} className="p-2 rounded-full hover:bg-gray-100">
               <X className="h-5 w-5" />
-            </button>
+            </button> */}
           </div>
-          <div className="overflow-y-auto h-[calc(100%-65px)] pb-20 dark:bg-news-bg-dark">
-            {flashUpdates.length === 0 ? (
-              <p className="p-4 text-center text-gray-500">
-                {isNepali ? 'कुनै ताजा खबर छैन' : 'No flash news available'}
-              </p>
-            ) : (
-              <ul className="divide-y divide-news-border">
-                {flashUpdates.map((article) => (
-                  <li key={article.id}>
-                    <Link
-                      href={`/articles/${article.slug}`}
-                      onClick={() => setIsOpen(false)}
-                      className="block p-4 hover:bg-gray-50 dark:hover:bg-news-card-dark"
-                    >
-                      <div className="flex items-start gap-3">
-                        <Zap className="w-5 h-5 text-news-red shrink-0 mt-0.5" />
-                        <div className="flex-1 min-w-0">
-                          <h3 className={cn(
-                            'font-medium text-gray-900 dark:text-white line-clamp-2',
-                            isNepali ? 'font-nepali' : ''
-                          )}>
-                            {isNepali ? article.titleNe : article.titleEn}
-                          </h3>
-                          <div className="flex items-center gap-2 mt-1 text-xs text-gray-500">
-                            <Clock className="w-3 h-3" />
-                            <time>
-                              {new Date(article.publishedAt).toLocaleString(isNepali ? 'ne-NP' : 'en-US', {
-                                month: 'short',
-                                day: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit',
-                              })}
-                            </time>
-                          </div>
-                        </div>
-                      </div>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+           <div className="overflow-y-auto h-[calc(100%-115px)] pb-20 dark:bg-news-bg-dark">
+             {flashUpdates.length === 0 ? (
+               <p className="p-4 text-center text-gray-500">
+                 {isNepali ? 'कुनै ताजा खबर छैन' : 'No flash news available'}
+               </p>
+             ) : (
+               <ul className="divide-y divide-news-border">
+                 {flashUpdates.slice(0, 10).map((article) => (
+                   <li key={article.id}>
+                     <Link
+                       href={`/articles/${article.slug}`}
+                       onClick={() => setIsOpen(false)}
+                       className="block p-4 hover:bg-gray-50 dark:hover:bg-news-card-dark"
+                     >
+                       <div className="flex items-start gap-3">
+                         <Zap className="w-5 h-5 text-news-red shrink-0 mt-0.5" />
+                         <div className="flex-1 min-w-0">
+                           <h3 className={cn(
+                             'font-medium text-gray-900 dark:text-white line-clamp-2',
+                             isNepali ? 'font-nepali' : ''
+                           )}>
+                             {isNepali ? article.titleNe : article.titleEn}
+                           </h3>
+                           <div className="flex items-center gap-2 mt-1 text-xs text-gray-500">
+                             <Clock className="w-3 h-3" />
+                             <time>
+                               {new Date(article.publishedAt).toLocaleString(isNepali ? 'ne-NP' : 'en-US', {
+                                 month: 'short',
+                                 day: 'numeric',
+                                 hour: '2-digit',
+                                 minute: '2-digit',
+                               })}
+                             </time>
+                           </div>
+                         </div>
+                       </div>
+                     </Link>
+                   </li>
+                 ))}
+               </ul>
+             )}
+             <div className="p-4 border-t border-news-border bg-gray-50 dark:bg-news-card-dark">
+               <button className="w-full py-2.5 bg-news-red text-white font-semibold rounded-lg hover:bg-news-red-dark transition-colors">
+                 २४ घन्टाका ताजा खबर
+               </button>
+             </div>
+           </div>
         </SheetContent>
       </Sheet>
     </>

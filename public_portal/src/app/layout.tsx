@@ -128,14 +128,14 @@ export default function RootLayout({
                     <Footer />
                     <MobileBottomBar />
                     <FloatingWatchButton />
-                    {/* <FlashNewsSheet /> */}
+                    <FlashNewsSheet />
                   </div>
                 </AuthProvider>
               </QueryProvider>
             </LanguageProvider>
           </TooltipProvider>
         </ThemeProvider>
-        {/* <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ''} /> */}
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ''} />
       </body>
     </html>
   );

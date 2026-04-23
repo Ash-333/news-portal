@@ -32,7 +32,7 @@ export function SocietyCultureSection({
   const societyFeatured = societyArticles[0];
   const societyGrid = societyArticles.slice(1, 4);
   const cultureFeatured = cultureArticles[0];
-  const cultureGrid = cultureArticles.slice(1, 4);
+  const cultureGrid = cultureArticles.slice(1, 7);
 
   return (
     <section className="py-8 border-t border-news-border dark:border-news-border-dark">

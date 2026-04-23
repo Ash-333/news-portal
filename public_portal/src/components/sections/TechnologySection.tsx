@@ -21,7 +21,7 @@ export function TechnologySection({ articles, category }: TechnologySectionProps
 
   const categoryName = isNepali ? category.nameNe : category.nameEn;
   const featuredArticle = articles[0];
-  const listArticles = articles.slice(1, 7);
+  const listArticles = articles.slice(1, 9);
 
   return (
     <section className="py-8 border-t border-news-border dark:border-news-border-dark">

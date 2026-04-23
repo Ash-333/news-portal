@@ -92,7 +92,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { lang
     getArticles({ category: 'opinion', limit: 10 }),
     getArticles({ category: 'entertainment', limit: 7 }),
     getArticles({ category: 'technology', limit: 9 }),
-    getArticles({ category: 'sports', limit: 6 }),
+    getArticles({ category: 'sports', limit: 5 }),
     getArticles({ category: 'world', limit: 5 }),
     getArticles({ category: 'diaspora', limit: 9 }),
     getPolls(),

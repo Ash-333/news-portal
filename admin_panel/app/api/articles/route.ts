@@ -41,6 +41,9 @@ async function getAllCategoryIds(categoryId: string): Promise<string[]> {
 // GET /api/articles - List published articles (public)
 export async function GET(req: NextRequest) {
   try {
+    // Clear cached articles list to ensure fresh data (temporary for debugging)
+    await deleteCachedPattern("articles:list*");
+    
     const { searchParams } = new URL(req.url);
     const pagination = validateQueryParams(searchParams, paginationSchema);
 
@@ -109,7 +112,11 @@ export async function GET(req: NextRequest) {
         } else if (categoryId) {
           where.categoryId = categoryId;
         }
-        if (isFlashUpdate === "true") where.isFlashUpdate = true;
+        console.log('[API] isFlashUpdate param:', isFlashUpdate);
+        if (isFlashUpdate?.toLowerCase() === "true") {
+          where.isFlashUpdate = true;
+          console.log('[API] Applied isFlashUpdate filter, where:', JSON.stringify(where));
+        }
         if (isFeatured === "true") where.isFeatured = true;
 
         if (tagId) {

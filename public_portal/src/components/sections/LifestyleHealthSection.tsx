@@ -29,7 +29,7 @@ export function LifestyleHealthSection({
   const lifestyleName = isNepali ? lifestyleCategory.nameNe : lifestyleCategory.nameEn;
   const healthName = isNepali ? healthCategory.nameNe : healthCategory.nameEn;
 
-  const lifestyleList = lifestyleArticles.slice(0, 4);
+  const lifestyleList = lifestyleArticles.slice(0, 10);
   const healthFeatured = healthArticles[0];
   const healthList = healthArticles.slice(1, 7);
 
