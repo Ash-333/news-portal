@@ -28,7 +28,7 @@ export function StoryOpinionSection({
   const opinionName = isNepali ? opinionCategory.nameNe : opinionCategory.nameEn;
 
   const displayStory = storyArticles.slice(0, 7);
-  const displayOpinion = opinionArticles.slice(0, 10);
+  const displayOpinion = opinionArticles.slice(0, 7);
 
   if (!storyArticles.length && !opinionArticles.length) return null;
 
@@ -139,14 +139,14 @@ export function StoryOpinionSection({
 
                 return (
                   <article key={article.id} className="group flex gap-3 items-start">
-                    <Link href={`/article/${article.slug}`} className="shrink-0 relative w-14 h-14 rounded-full overflow-hidden bg-news-red">
+                    <Link href={`/article/${article.slug}`} className="shrink-0 relative w-24 h-24 rounded-full overflow-hidden bg-news-red">
                       {article.author?.profilePhoto ? (
                         <Image
                           src={getAuthorAvatar(article.author.profilePhoto, authorName)}
                           alt={authorName || 'Author'}
                           fill
                           className="object-cover"
-                          sizes="56px"
+                          sizes="96px"
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-white text-sm font-bold">

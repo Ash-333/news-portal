@@ -33,7 +33,7 @@ export function FullWidthArticlesSection({ articles }: FullWidthArticlesSectionP
               {subheading && (
                 <Link href={`/article/${article.slug}`}>
                   <span className={cn(
-                    'inline-block px-4 py-1.5 mb-3 bg-news-blue dark:bg-blue-600 text-white text-sm font-bold rounded-sm',
+                    'inline-block px-8 py-3 mb-3 bg-news-red dark:bg-blue-600 text-white text-md font-bold rounded-lg',
                     isNepali ? 'font-nepali' : ''
                   )}>
                     {subheading}

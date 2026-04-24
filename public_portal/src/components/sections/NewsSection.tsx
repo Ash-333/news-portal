@@ -24,7 +24,7 @@ export function NewsSection({ articles, category, poll, mostReadArticles = [] }:
   if (!articles.length) return null;
 
   const featuredArticle = articles[0];
-  const gridArticles = articles.slice(1, 7);
+  const gridArticles = articles.slice(1, 9);
   const categoryName = isNepali ? category.nameNe : category.nameEn;
   const featuredTitle = getTitle(featuredArticle, language);
   const featuredExcerpt = getExcerpt(featuredArticle, language);
