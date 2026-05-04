@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArticleCard } from '@/components/ArticleCard';
 import { getArticleImage } from '@/lib/utils/image';
-import { getTitle, getExcerpt } from '@/lib/utils/lang';
+
 import { getArticles } from '@/lib/api/articles';
 import { Category, Article } from '@/types';
 
@@ -21,7 +21,6 @@ interface CategoryClientProps {
   subcategories: Category[];
   initialArticles: Article[];
   initialPagination?: PaginationMeta;
-  isNepali: boolean;
 }
 
 function getAllSubcategoryIds(subcategories: Category[]): string[] {
@@ -38,7 +37,7 @@ function getAllSubcategoryIds(subcategories: Category[]): string[] {
   return ids;
 }
 
-export function CategoryClient({ category, subcategories, initialArticles, initialPagination, isNepali }: CategoryClientProps) {
+export function CategoryClient({ initialArticles, initialPagination, category, subcategories }: CategoryClientProps) {
   const [selectedSubcategory, setSelectedSubcategory] = useState<string>('all');
   const [articles, setArticles] = useState<Article[]>(initialArticles);
   const [pagination, setPagination] = useState<PaginationMeta | undefined>(initialPagination);
@@ -116,9 +115,7 @@ export function CategoryClient({ category, subcategories, initialArticles, initi
   const featuredArticle = filteredArticles[0];
   const gridArticles = filteredArticles.slice(1);
 
-  const categoryName = isNepali
-    ? (category.nameNe || category.nameEn || category.slug)
-    : (category.nameEn || category.nameNe || category.slug);
+  const categoryName = category.name || category.slug;
 
   return (
     <div className="py-8">
@@ -158,7 +155,7 @@ export function CategoryClient({ category, subcategories, initialArticles, initi
                       : 'text-gray-600 dark:text-gray-400 hover:text-news-red hover:bg-gray-50 dark:hover:bg-gray-800'
                   }`}
                 >
-                  {isNepali ? (subcategory.nameNe || subcategory.nameEn) : (subcategory.nameEn || subcategory.nameNe)}
+                  {subcategory.name}
                 </button>
               ))}
             </div>
@@ -177,7 +174,7 @@ export function CategoryClient({ category, subcategories, initialArticles, initi
                   <Link href={`/article/${featuredArticle.slug}`} className="block relative aspect-[21/9] rounded-xl overflow-hidden">
                     <Image
                       src={getArticleImage(featuredArticle)}
-                      alt={getTitle(featuredArticle, isNepali ? 'ne' : 'en')}
+                      alt={featuredArticle.title || ''}
                       fill
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
                       sizes="(max-width: 1024px) 100vw, 1200px"
@@ -185,12 +182,12 @@ export function CategoryClient({ category, subcategories, initialArticles, initi
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                     <div className="absolute bottom-0 left-0 right-0 p-6">
-                      <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3 group-hover:underline font-heading">
-                        {getTitle(featuredArticle, isNepali ? 'ne' : 'en')}
-                      </h2>
-                      <p className="text-white/80 line-clamp-2 max-w-2xl">
-                        {getExcerpt(featuredArticle, isNepali ? 'ne' : 'en')}
-                      </p>
+                     <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3 group-hover:underline font-heading">
+                         {featuredArticle.title || ''}
+                       </h2>
+                       <p className="text-white/80 line-clamp-2 max-w-2xl">
+                         {featuredArticle.excerpt || ''}
+                       </p>
                     </div>
                   </Link>
                 </article>

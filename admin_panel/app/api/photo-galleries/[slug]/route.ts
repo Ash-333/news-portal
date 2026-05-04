@@ -14,8 +14,7 @@ function formatPhotoGallery(gallery: any) {
     photos: (gallery.photos || []).map((p: any) => ({
       id: p.id,
       order: p.order,
-      captionNe: p.captionNe,
-      captionEn: p.captionEn,
+      caption: p.caption,
       media: {
         id: p.media.id,
         filename: p.media.filename,
@@ -53,8 +52,7 @@ export async function GET(
               select: {
                 id: true,
                 name: true,
-                nameNe: true,
-                profilePhoto: true,
+                image: true,
               },
             },
             photos: {

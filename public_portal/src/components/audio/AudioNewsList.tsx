@@ -1,7 +1,7 @@
 'use client';
 
 import { useAudioNewsList } from '@/hooks/useAudioNews';
-import { useLanguage } from '@/context/LanguageContext';
+
 import { AudioNewsPlayer, AudioNewsPlayerSkeleton } from './AudioNewsPlayer';
 import { cn } from '@/lib/utils';
 import { Headphones } from 'lucide-react';
@@ -11,9 +11,9 @@ interface AudioNewsListProps {
   className?: string;
 }
 
-export function AudioNewsList({ limit = 10, className }: AudioNewsListProps) {
-  const { isNepali } = useLanguage();
-  const { data: audioNews, isLoading, error } = useAudioNewsList({ limit });
+export function AudioNewsList({ className }: AudioNewsListProps) {
+  
+  const { data: audioNews, isLoading, error } = useAudioNewsList();
 
   if (isLoading) {
     return (
@@ -30,7 +30,7 @@ export function AudioNewsList({ limit = 10, className }: AudioNewsListProps) {
       <div className={cn('text-center py-8', className)}>
         <Headphones className="w-12 h-12 mx-auto text-gray-300 dark:text-gray-600 mb-2" />
         <p className="text-gray-500 text-sm">
-          {isNepali ? 'अडियो समाचार लोड गर्न असमर्थ' : 'Unable to load audio news'}
+          {'अडियो समाचार लोड गर्न असमर्थ'}
         </p>
       </div>
     );
@@ -41,7 +41,7 @@ export function AudioNewsList({ limit = 10, className }: AudioNewsListProps) {
       <div className={cn('text-center py-8', className)}>
         <Headphones className="w-12 h-12 mx-auto text-gray-300 dark:text-gray-600 mb-2" />
         <p className="text-gray-500 text-sm">
-          {isNepali ? 'कुनै अडियो समाचार उपलब्ध छैन' : 'No audio news available'}
+          {'कुनै अडियो समाचार उपलब्ध छैन'}
         </p>
       </div>
     );
@@ -53,8 +53,7 @@ export function AudioNewsList({ limit = 10, className }: AudioNewsListProps) {
         <AudioNewsPlayer
           key={item.id}
           audioUrl={item.audioUrl}
-          title={isNepali ? item.titleNe : item.titleEn}
-          titleNe={item.titleNe}
+          title={item.title || ''}
           thumbnailUrl={item.thumbnailUrl || undefined}
         />
       ))}
@@ -74,7 +73,6 @@ export function AudioNewsSection({
   className,
   showHeader = true,
 }: AudioNewsSectionProps) {
-  const { isNepali } = useLanguage();
 
   return (
     <div className={className}>
@@ -82,7 +80,7 @@ export function AudioNewsSection({
         <div className="flex items-center gap-2 mb-4">
           <Headphones className="w-5 h-5 text-news-red" />
           <h3 className="font-semibold text-lg text-gray-900 dark:text-white">
-            {isNepali ? 'अडियो समाचार' : 'Audio News'}
+            {'अडियो समाचार'}
           </h3>
         </div>
       )}

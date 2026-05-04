@@ -28,7 +28,7 @@ const fetchVideos = async (params: VideosParams = {}): Promise<VideosResponse> =
   return { data: result.data, pagination: result.pagination! }
 }
 
-const createVideo = async (data: { titleNe: string; titleEn: string; youtubeUrl: string }): Promise<Video> => {
+const createVideo = async (data: { title: string; youtubeUrl: string }): Promise<Video> => {
   const response = await fetch('/api/admin/videos', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

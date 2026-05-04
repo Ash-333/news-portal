@@ -20,8 +20,8 @@ export async function GET(req: NextRequest) {
     const where: Record<string, unknown> = {}
     if (search) {
       where.OR = [
-        { nameNe: { contains: search, mode: 'insensitive' } },
-        { nameEn: { contains: search, mode: 'insensitive' } },
+        { name: { contains: search, mode: 'insensitive' } },
+        { name: { contains: search, mode: 'insensitive' } },
       ]
     }
 
@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
           select: { articles: true },
         },
       },
-      orderBy: { nameEn: 'asc' },
+      orderBy: { name: 'asc' },
     })
 
     return NextResponse.json({

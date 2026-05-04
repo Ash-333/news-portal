@@ -6,7 +6,6 @@ import { ItemListJsonLd, BreadcrumbListJsonLd } from '@/lib/jsonLd';
 import { ArticleCard } from '@/components/ArticleCard';
 import { PopularArticles } from '@/components/article/PopularArticles';
 import { deriveTagsFromArticles, fetchPublishedArticles } from '@/lib/api';
-import { getServerLanguage } from '@/lib/utils/language';
 
 interface TagPageProps {
   params: { slug: string };
@@ -52,16 +51,12 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
   }
 
   // URL param takes precedence for shareability, otherwise use cookie-based server language
-  const urlLang = searchParams?.lang;
-  const serverLang = await getServerLanguage();
-  const userLang = urlLang || serverLang;
-  const isNepali = userLang === 'ne' || !userLang;
 
   const articles = allArticles.filter((article) => article.tags.some((articleTag) => articleTag.slug === params.slug));
   const popularArticles = [...allArticles].sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0)).slice(0, 5);
   const url = `${SITE_URL}/tag/${tag.slug}`;
 
-  const tagName = isNepali ? (tag.nameNe || tag.name) : (tag.name || tag.nameNe);
+  const tagName = tag.name || '';
 
   return (
     <>
@@ -69,7 +64,7 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
       <JsonLd
         data={ItemListJsonLd(
           articles.map((a) => ({
-            name: isNepali ? a.titleNe : (a.titleEn || a.titleNe || ''),
+            name: a.title || '',
             url: `${SITE_URL}/article/${a.slug}`,
           }))
         )}
@@ -77,7 +72,7 @@ export default async function TagPage({ params, searchParams }: TagPageProps) {
       <JsonLd
         data={BreadcrumbListJsonLd([
           { name: 'Home', url: `${SITE_URL}/` },
-          { name: isNepali ? (tag.nameNe || tag.name || '') : (tag.nameEn ?? tag.nameNe ?? tag.name ?? ''), url },
+          { name: tag.name || '', url },
         ])}
       />
 

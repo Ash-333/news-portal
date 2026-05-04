@@ -6,7 +6,6 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, Calendar, User, Eye, Tag } from 'lucide-react'
 import Link from 'next/link'
-import { useState } from 'react'
 import { ApiResponse } from '@/types'
 
 async function fetchArticleBySlug(slug: string, isPreview: boolean) {
@@ -50,8 +49,6 @@ export default function ArticlePage() {
     queryFn: () => fetchArticleBySlug(slug, isPreview),
     enabled: !!slug,
   })
-  
-  const [activeContent, setActiveContent] = useState<'en' | 'ne'>('en')
 
   if (isLoading) {
     return (
@@ -90,9 +87,9 @@ export default function ArticlePage() {
     )
   }
 
-  const title = activeContent === 'en' ? article.titleEn : article.titleNe
-  const content = activeContent === 'en' ? article.contentEn : article.contentNe
-  const excerpt = activeContent === 'en' ? article.excerptEn : article.excerptNe
+  const title = article.title
+  const content = article.content
+  const excerpt = article.excerpt
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -104,24 +101,6 @@ export default function ArticlePage() {
         </Link>
       </Button>
 
-      {/* Language Toggle */}
-      <div className="flex gap-2 mb-6">
-        <Button
-          variant={activeContent === 'en' ? 'default' : 'outline'}
-          size="sm"
-          onClick={() => setActiveContent('en')}
-        >
-          English
-        </Button>
-        <Button
-          variant={activeContent === 'ne' ? 'default' : 'outline'}
-          size="sm"
-          onClick={() => setActiveContent('ne')}
-        >
-          नेपाली
-        </Button>
-      </div>
-
       {/* Article Header */}
       <article>
         <header className="mb-8">
@@ -131,7 +110,7 @@ export default function ArticlePage() {
               href={`/category/${article.category.slug}`}
               className="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium mb-4 hover:bg-primary/20 transition-colors"
             >
-              {activeContent === 'en' ? article.category.nameEn : article.category.nameNe}
+              {article.category.name}
             </Link>
           )}
 
@@ -178,14 +157,14 @@ export default function ArticlePage() {
           {/* Tags */}
           {article.tags && article.tags.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-4">
-              {article.tags.map((tag: { id: string; nameNe: string; nameEn: string; slug: string }) => (
+              {article.tags.map((tag: { id: string; name: string; slug: string }) => (
                 <Link
                   key={tag.id}
                   href={`/tag/${tag.slug}`}
                   className="flex items-center gap-1 text-sm bg-secondary text-secondary-foreground px-2 py-1 rounded hover:bg-secondary/80 transition-colors"
                 >
                   <Tag className="w-3 h-3" />
-                  {activeContent === 'en' ? tag.nameEn : tag.nameNe}
+                  {tag.name}
                 </Link>
               ))}
             </div>
@@ -215,16 +194,16 @@ export default function ArticlePage() {
           className="prose prose-lg dark:prose-invert max-w-none"
           dangerouslySetInnerHTML={{ __html: content }}
         />
-      </article>
 
-      {/* Article Footer */}
-      <footer className="mt-12 pt-8 border-t">
-        <div className="flex items-center justify-between">
-          <div className="text-sm text-muted-foreground">
-            {article.comments} comments
+        {/* Article Footer */}
+        <footer className="mt-12 pt-8 border-t">
+          <div className="flex items-center justify-between">
+            <div className="text-sm text-muted-foreground">
+              {article.comments} comments
+            </div>
           </div>
-        </div>
-      </footer>
+        </footer>
+      </article>
     </div>
   )
 }

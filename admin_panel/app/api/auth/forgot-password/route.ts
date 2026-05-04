@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
     // Send password reset email
     if (isEmailConfigured()) {
       const { subject, html } = getEmailContent('password-reset', {
-        name: user.name,
+        name: user.name ?? 'User',
         token: resetToken,
       })
       

@@ -14,7 +14,6 @@ import { usePermissions } from '@/hooks/use-permissions'
 import { permissions } from '@/lib/permissions'
 import { toast } from 'sonner'
 
-// Category Tree Item Component
 interface CategoryTreeItemProps {
   category: any
   onEdit: (category: any) => void
@@ -34,8 +33,7 @@ function CategoryTreeItem({ category, onEdit, onDelete, canManage, level }: Cate
                 <Folder className="w-5 h-5 text-blue-600 dark:text-blue-400" />
               </div>
               <div className={level === 1 ? 'ml-4' : level === 2 ? 'ml-8' : level === 3 ? 'ml-12' : level >= 4 ? 'ml-16' : ''}>
-                <p className="font-medium">{category.nameEn}</p>
-                <p className="text-sm text-slate-500 font-nepali">{category.nameNe}</p>
+                <p className="font-medium">{category.name}</p>
                 <p className="text-xs text-slate-400">{category._count?.articles || 0} articles</p>
                 {level > 0 && (
                   <p className="text-xs text-slate-400">Subcategory</p>
@@ -78,7 +76,7 @@ export default function CategoriesPage() {
   const [isCreating, setIsCreating] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [deleteId, setDeleteId] = useState<string | null>(null)
-  const [formData, setFormData] = useState({ nameNe: '', nameEn: '', slug: '', parentId: '' })
+  const [formData, setFormData] = useState({ name: '', slug: '', parentId: '' })
   const { hasPermission } = usePermissions()
   const canManageCategories = hasPermission(permissions.categoriesManage)
 
@@ -109,7 +107,7 @@ export default function CategoriesPage() {
       }
       setIsCreating(false)
       setEditingId(null)
-      setFormData({ nameNe: '', nameEn: '', slug: '', parentId: '' })
+      setFormData({ name: '', slug: '', parentId: '' })
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to save category'
       toast.error(errorMessage)
@@ -128,11 +126,10 @@ export default function CategoriesPage() {
     }
   }
 
-  const startEdit = (category: { id: string; nameNe: string; nameEn: string; slug: string; parentId?: string | null }) => {
+  const startEdit = (category: { id: string; name: string; slug: string; parentId?: string | null }) => {
     setEditingId(category.id)
     setFormData({
-      nameNe: category.nameNe,
-      nameEn: category.nameEn,
+      name: category.name,
       slug: category.slug,
       parentId: category.parentId || '',
     })
@@ -165,7 +162,7 @@ export default function CategoriesPage() {
       { value: '', label: 'None (Root Category)' },
       ...availableCategories.map(cat => ({
         value: cat.id,
-        label: cat.nameEn + (cat.children && cat.children.length > 0 ? ` (${cat.children.length} subcategories)` : ''),
+        label: cat.name + (cat.children && cat.children.length > 0 ? ` (${cat.children.length} subcategories)` : ''),
       }))
     ]
   }
@@ -207,22 +204,12 @@ export default function CategoriesPage() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <Label htmlFor="nameEn">Name (English)</Label>
+                  <Label htmlFor="name">Name</Label>
                   <Input
-                    id="nameEn"
-                    value={formData.nameEn}
-                    onChange={(e) => setFormData({ ...formData, nameEn: e.target.value })}
-                    placeholder="Category name in English"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="nameNe">Name (Nepali)</Label>
-                  <Input
-                    id="nameNe"
-                    value={formData.nameNe}
-                    onChange={(e) => setFormData({ ...formData, nameNe: e.target.value })}
-                    placeholder="Category name in Nepali"
-                    className="font-nepali"
+                    id="name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="Category name"
                   />
                 </div>
               </div>
@@ -251,7 +238,7 @@ export default function CategoriesPage() {
                 <Button type="button" variant="outline" onClick={() => {
                   setIsCreating(false)
                   setEditingId(null)
-                  setFormData({ nameNe: '', nameEn: '', slug: '', parentId: '' })
+                  setFormData({ name: '', slug: '', parentId: '' })
                 }}>
                   Cancel
                 </Button>

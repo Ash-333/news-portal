@@ -3,11 +3,10 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Article, Category } from '@/types';
-import { useLanguage } from '@/context/LanguageContext';
+
 import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getArticleImage } from '@/lib/utils/image';
-import { getTitle, getExcerpt, getCategoryName } from '@/lib/utils/lang';
 
 interface WorldDiasporaSectionProps {
   worldCategory: Category;
@@ -22,12 +21,11 @@ export function WorldDiasporaSection({
   diasporaCategory,
   diasporaArticles,
 }: WorldDiasporaSectionProps) {
-  const { isNepali, t } = useLanguage();
 
   if (worldArticles.length === 0 && diasporaArticles.length === 0) return null;
 
-  const worldCategoryName = getCategoryName(worldCategory, isNepali ? 'ne' : 'en');
-  const diasporaCategoryName = getCategoryName(diasporaCategory, isNepali ? 'ne' : 'en');
+  const worldCategoryName = worldCategory.name;
+  const diasporaCategoryName = diasporaCategory.name;
 
   const worldFeatured = worldArticles[0];
   const worldGrid = worldArticles.slice(1, 6);
@@ -44,18 +42,17 @@ export function WorldDiasporaSection({
                 <div className="w-1 h-5 bg-news-red rounded-full" />
                 <h2 className={cn(
                   'text-lg font-bold text-gray-900 dark:text-white',
-                  isNepali ? 'font-nepali' : ''
+                  'font-nepali'
                 )}>
                   {worldCategoryName}
                 </h2>
               </div>
-              <Link
-                href={`/category/${worldCategory.slug}`}
-                className="flex items-center gap-1 text-xs text-news-red hover:underline font-medium"
-              >
-                <span className={isNepali ? 'font-nepali' : ''}>{t('category.viewAll')}</span>
-                <ArrowRight className="h-3 w-3" />
-              </Link>
+               <Link
+                 href={`/category/${worldCategory.slug}`}
+                 className="flex items-center gap-1 text-xs text-news-red hover:underline font-medium"
+               >
+                 <ArrowRight className="h-3 w-3" />
+               </Link>
             </div>
 
             {/* Featured Article */}
@@ -66,7 +63,7 @@ export function WorldDiasporaSection({
               >
                 <Image
                   src={getArticleImage(worldFeatured)}
-                  alt={getTitle(worldFeatured, isNepali ? 'ne' : 'en')}
+                  alt={worldFeatured.title || 'Featured Article'}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                   sizes="(max-width: 1024px) 100vw, 700px"
@@ -75,9 +72,9 @@ export function WorldDiasporaSection({
                 <div className="absolute bottom-0 left-0 right-0 p-4 md:p-5 flex flex-col justify-end">
                   <h3 className={cn(
                     'font-bold text-white line-clamp-2 group-hover:text-red-300 transition-colors',
-                    isNepali ? 'font-nepali text-xl sm:text-2xl md:text-3xl leading-[1.2]' : 'text-xl sm:text-2xl md:text-3xl font-heading leading-tight'
+                    'font-nepali text-xl sm:text-2xl md:text-3xl leading-[1.2]'
                   )}>
-                    {getTitle(worldFeatured, isNepali ? 'ne' : 'en')}
+                    {worldFeatured.title}
                   </h3>
                 </div>
               </Link>
@@ -86,8 +83,8 @@ export function WorldDiasporaSection({
             {/* Grid (Two Columns: Image Left, Title + Excerpt Right) */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
               {worldGrid.map((article) => {
-                const title = getTitle(article, isNepali ? 'ne' : 'en');
-                const excerpt = getExcerpt(article, isNepali ? 'ne' : 'en');
+                const title = article.title;
+                const excerpt = article.excerpt;
                 return (
                   <article key={article.id} className="group flex gap-4 items-start">
                     <Link
@@ -96,7 +93,7 @@ export function WorldDiasporaSection({
                     >
                       <Image
                         src={getArticleImage(article)}
-                        alt={title}
+                        alt={title || 'Article'}
                         fill
                         className="object-cover transition-transform duration-300 group-hover:scale-105"
                         sizes="(max-width: 768px) 96px, 128px"
@@ -106,7 +103,7 @@ export function WorldDiasporaSection({
                       <Link href={`/article/${article.slug}`}>
                         <h4 className={cn(
                           'font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-news-red transition-colors',
-                          isNepali ? 'font-nepali text-base md:text-base leading-relaxed' : 'text-sm md:text-base'
+                          'font-nepali text-base md:text-base leading-relaxed'
                         )}>
                           {title}
                         </h4>
@@ -114,7 +111,7 @@ export function WorldDiasporaSection({
                       {excerpt && (
                         <p className={cn(
                           'text-xs text-gray-600 dark:text-gray-400 mt-1 line-clamp-2 hidden sm:block',
-                          isNepali ? 'font-nepali' : ''
+                          'font-nepali'
                         )}>
                           {excerpt}
                         </p>
@@ -133,18 +130,17 @@ export function WorldDiasporaSection({
                 <div className="w-1 h-5 bg-news-blue rounded-full" />
                 <h2 className={cn(
                   'text-lg font-bold text-gray-900 dark:text-white',
-                  isNepali ? 'font-nepali' : ''
+                  'font-nepali'
                 )}>
                   {diasporaCategoryName}
                 </h2>
               </div>
-              <Link
-                href={`/category/${diasporaCategory.slug}`}
-                className="flex items-center gap-1 text-xs text-news-red hover:underline font-medium"
-              >
-                <span className={isNepali ? 'font-nepali' : ''}>{t('category.viewAll')}</span>
-                <ArrowRight className="h-3 w-3" />
-              </Link>
+               <Link
+                 href={`/category/${diasporaCategory.slug}`}
+                 className="flex items-center gap-1 text-xs text-news-red hover:underline font-medium"
+               >
+                 <ArrowRight className="h-3 w-3" />
+               </Link>
             </div>
 
             <div className="space-y-4">
@@ -154,7 +150,7 @@ export function WorldDiasporaSection({
                     <div className="relative w-20 h-16 rounded-lg overflow-hidden">
                       <Image
                         src={getArticleImage(article)}
-                        alt={getTitle(article, isNepali ? 'ne' : 'en')}
+                        alt={article.title || 'Article'}
                         fill
                         className="object-cover transition-transform duration-300 group-hover:scale-105"
                         sizes="80px"
@@ -164,9 +160,9 @@ export function WorldDiasporaSection({
                   <Link href={`/article/${article.slug}`} className="flex-1 min-w-0">
                     <h4 className={cn(
                       'font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-news-red transition-colors',
-                      isNepali ? 'font-nepali text-base leading-relaxed' : 'text-base'
+                      'font-nepali text-base leading-relaxed'
                     )}>
-                      {getTitle(article, isNepali ? 'ne' : 'en')}
+                      {article.title || ''}
                     </h4>
                   </Link>
                 </article>

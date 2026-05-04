@@ -9,10 +9,8 @@ import { PhotoGallery } from '@/types'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useLanguage } from '@/context/LanguageContext'
 
 export function PhotoGallerySection() {
-  const { isNepali } = useLanguage()
   const { data: galleries = [], isLoading } = useQuery({
     queryKey: ['photo-galleries', 'homepage'],
     queryFn: () => getPhotoGalleriesForHomepage(6),
@@ -53,12 +51,12 @@ export function PhotoGallerySection() {
           <div className="flex items-center gap-3">
             <div className="w-1 h-8 bg-news-red rounded-full" />
             <h2 className="text-2xl font-bold">
-              {isNepali ? 'फोटो ग्यालरीहरू' : 'Photo Galleries'}
+              {'फोटो ग्यालरीहरू'}
             </h2>
           </div>
           <Link href="/photos">
             <Button variant="outline" size="sm">
-              {isNepali ? 'सबै हेर्नुहोस्' : 'View All'}
+              {'सबै हेर्नुहोस्'}
               <ChevronRight className="w-4 h-4 ml-2" />
             </Button>
           </Link>
@@ -66,15 +64,15 @@ export function PhotoGallerySection() {
 
         {/* Gallery Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {galleries.map((gallery: PhotoGallery) => (
+          {galleries.map((gallery) => (
             <Link key={gallery.id} href={`/photos/${gallery.slug}/`}>
               <Card className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow">
                 <div className="relative aspect-video bg-slate-100 dark:bg-slate-800">
                   {gallery.coverImage ? (
-                    <Image
-                      src={gallery.coverImage.url}
-                      alt={isNepali ? gallery.titleNe : gallery.titleEn}
-                      fill
+                      <Image
+                       src={gallery.coverImage.url}
+                       alt={gallery.title || ''}
+                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   ) : (
@@ -88,10 +86,10 @@ export function PhotoGallerySection() {
                   </div>
                 </div>
                 <CardContent className="p-3">
-                  <h3 className="font-medium text-sm line-clamp-2 group-hover:text-news-red transition-colors">
-                    {isNepali ? gallery.titleNe : gallery.titleEn}
-                  </h3>
-                </CardContent>
+                   <h3 className="font-medium text-sm line-clamp-2 group-hover:text-news-red transition-colors">
+                     {gallery.title || ''}
+                   </h3>
+                 </CardContent>
               </Card>
             </Link>
           ))}

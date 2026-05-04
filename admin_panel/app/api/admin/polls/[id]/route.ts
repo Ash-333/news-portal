@@ -11,8 +11,7 @@ import {
 import { z } from 'zod'
 
 const updatePollSchema = z.object({
-  questionNe: z.string().min(1).optional(),
-  questionEn: z.string().min(1).optional(),
+  question: z.string().min(1).optional(),
   description: z.string().optional(),
   isActive: z.boolean().optional(),
   isMultiple: z.boolean().optional(),
@@ -20,8 +19,7 @@ const updatePollSchema = z.object({
   expiresAt: z.string().datetime().optional().nullable(),
   options: z.array(z.object({
     id: z.string().optional(),
-    textNe: z.string().min(1),
-    textEn: z.string().min(1),
+    text: z.string().min(1),
   })).optional(),
 })
 
@@ -48,8 +46,7 @@ export async function GET(
       where: { id, deletedAt: null },
       select: {
         id: true,
-        questionNe: true,
-        questionEn: true,
+        question: true,
         description: true,
         isActive: true,
         isMultiple: true,
@@ -60,8 +57,7 @@ export async function GET(
         options: {
           select: {
             id: true,
-            textNe: true,
-            textEn: true,
+            text: true,
             order: true,
             _count: {
               select: { votes: true },
@@ -88,8 +84,7 @@ export async function GET(
     const totalVotes = poll._count.votes
     const formattedOptions = poll.options.map(opt => ({
       id: opt.id,
-      textNe: opt.textNe,
-      textEn: opt.textEn,
+      text: opt.text,
       order: opt.order,
       voteCount: opt._count.votes,
       percentage: totalVotes > 0 ? Math.round((opt._count.votes / totalVotes) * 100) : 0,
@@ -161,15 +156,14 @@ export async function PATCH(
           // Update existing option
           await prisma.pollOption.update({
             where: { id: opt.id },
-            data: { textNe: opt.textNe, textEn: opt.textEn, order: i },
+            data: { text: opt.text, order: i },
           })
         } else {
           // Create new option
           await prisma.pollOption.create({
             data: {
               pollId: id,
-              textNe: opt.textNe,
-              textEn: opt.textEn,
+              text: opt.text,
               order: i,
             },
           })
@@ -186,8 +180,7 @@ export async function PATCH(
       },
       select: {
         id: true,
-        questionNe: true,
-        questionEn: true,
+        question: true,
         isActive: true,
         updatedAt: true,
       },

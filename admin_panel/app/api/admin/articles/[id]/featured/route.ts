@@ -30,8 +30,7 @@ export async function PATCH(
       data: { isFeatured },
       select: {
         id: true,
-        titleNe: true,
-        titleEn: true,
+        title: true,
         isFeatured: true,
       },
     })

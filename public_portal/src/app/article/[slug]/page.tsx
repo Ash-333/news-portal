@@ -16,7 +16,7 @@ import { CommentSection } from '@/components/article/CommentSection';
 import { ArticleNavigation } from '@/components/article/ArticleNavigation';
 import { ArticleViewTracker } from '@/components/article/ArticleViewTracker';
 import { fetchArticleBySlug, fetchPublishedArticles } from '@/lib/api';
-import { getServerLanguage } from '@/lib/utils/language';
+
 import { InArticleAd, ArticleTitleAd, ArticleExcerptAd, ArticleEndAd } from '@/components/ads/AdSlot';
 
 interface ArticlePageProps {
@@ -29,35 +29,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://yoursite.com';
 export const dynamic = 'force-dynamic';
 export const revalidate = 300;
 
-function resolveArticleLanguage(article: Awaited<ReturnType<typeof fetchArticleBySlug>>, userLang: 'ne' | 'en') {
-  if (!article) {
-    return true;
-  }
-
-  const hasContentEn = !!article.contentEn;
-  const hasContentNe = !!article.contentNe;
-
-  // If user explicitly requests a language and that content exists, use it
-  if (userLang === 'ne' && hasContentNe) {
-    return true;
-  }
-  if (userLang === 'en' && hasContentEn) {
-    return false;
-  }
-
-  // Fallback: if requested language doesn't have content, try the other language
-  if (userLang === 'ne' && !hasContentNe && hasContentEn) {
-    return false;
-  }
-  if (userLang === 'en' && !hasContentEn && hasContentNe) {
-    return true;
-  }
-
-  // Default to Nepali if nothing available
-  return true;
-}
-
-export async function generateMetadata({ params, searchParams }: ArticlePageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
   const article = await fetchArticleBySlug(params.slug, { revalidate: 300 });
 
   if (!article) {
@@ -65,28 +37,17 @@ export async function generateMetadata({ params, searchParams }: ArticlePageProp
   }
 
   const url = `${SITE_URL}/article/${article.slug}`;
-  const requestedLang = searchParams?.lang;
-  const serverLang = getServerLanguage();
-  const userLang = requestedLang === 'en' || requestedLang === 'ne' ? requestedLang : serverLang;
-  const isNepali = resolveArticleLanguage(article, userLang);
 
   return {
-    title: isNepali ? article.titleNe : (article.titleEn || article.titleNe || article.title),
-    description: isNepali ? article.excerptNe : (article.excerptEn || article.excerptNe || article.excerpt),
-    keywords: article.tags.map((tag) => tag.nameEn || tag.nameNe),
-    authors: [{ name: isNepali ? (article.author.nameNe || article.author.name) : article.author.name }],
-    alternates: {
-      canonical: url,
-      languages: {
-        'ne-NP': `/article/${article.slug}?lang=ne`,
-        'en-US': `/article/${article.slug}?lang=en`,
-      },
-    },
+    title: article.title || '',
+    description: article.excerpt || '',
+    keywords: article.tags.map((tag) => tag.name || ''),
+    authors: [{ name: article.author.name || '' }],
     openGraph: {
       type: 'article',
       url,
-      title: isNepali ? article.titleNe : article.titleEn,
-      description: isNepali ? article.excerptNe : article.excerptEn,
+      title: article.title || '',
+      description: article.excerpt || '',
       images: (() => {
         const img = article.featuredImage;
         if (typeof img === 'string') return [img];
@@ -95,14 +56,14 @@ export async function generateMetadata({ params, searchParams }: ArticlePageProp
       })(),
       publishedTime: article.publishedAt,
       modifiedTime: article.modifiedAt,
-      authors: [isNepali ? (article.author.nameNe || article.author.name) : article.author.name],
-      section: article.category.nameEn || article.category.nameNe,
-      tags: article.tags.map((tag) => tag.nameEn || tag.nameNe),
+      authors: [article.author.name || ''],
+      section: article.category.name || '',
+      tags: article.tags.map((tag) => tag.name || ''),
     },
     twitter: {
       card: 'summary_large_image',
-      title: isNepali ? article.titleNe : article.titleEn,
-      description: isNepali ? article.excerptNe : article.excerptEn,
+      title: article.title || '',
+      description: article.excerpt || '',
       images: (() => {
         const img = article.featuredImage;
         if (typeof img === 'string') return [img];
@@ -113,7 +74,7 @@ export async function generateMetadata({ params, searchParams }: ArticlePageProp
   };
 }
 
-export default async function ArticlePage({ params, searchParams }: ArticlePageProps) {
+export default async function ArticlePage({ params }: ArticlePageProps) {
   const [article, articles] = await Promise.all([
     fetchArticleBySlug(params.slug, { revalidate: 300 }),
     fetchPublishedArticles({ revalidate: 300 }),
@@ -123,13 +84,7 @@ export default async function ArticlePage({ params, searchParams }: ArticlePageP
     notFound();
   }
 
-  const requestedLang = searchParams?.lang;
-  const serverLang = getServerLanguage();
-  const userLang = requestedLang === 'en' || requestedLang === 'ne' ? requestedLang : serverLang;
-  const isNepali = resolveArticleLanguage(article, userLang);
-
-  const content = isNepali ? (article.contentNe || article.contentEn || '') : (article.contentEn || article.contentNe || '');
-  const lang = isNepali ? 'ne' : 'en';
+  const content = article.content || '';
 
   const relatedArticles = articles
     .filter(
@@ -157,10 +112,10 @@ export default async function ArticlePage({ params, searchParams }: ArticlePageP
         data={BreadcrumbListJsonLd([
           { name: 'Home', url: `${SITE_URL}/` },
           {
-            name: isNepali ? article.category.nameNe : (article.category.nameEn ?? article.category.nameNe),
+            name: article.category.name || '',
             url: `${SITE_URL}/category/${article.category.slug}`
           },
-          { name: (isNepali ? article.titleNe : (article.titleEn || article.titleNe || article.title)) || '', url },
+          { name: article.title || '', url },
         ])}
       />
 
@@ -175,31 +130,31 @@ export default async function ArticlePage({ params, searchParams }: ArticlePageP
                 <Link href="/" className="hover:text-news-red">Home</Link>
                 <span>/</span>
                 <Link href={`/category/${article.category.slug}`} className="hover:text-news-red">
-                  {isNepali ? article.category.nameNe : article.category.nameEn}
+                  {article.category.name}
                 </Link>
                 <span>/</span>
                 <span className="text-gray-400 truncate">
-                  {isNepali ? article.titleNe : (article.titleEn || article.titleNe || article.title)}
+                  {article.title}
                 </span>
               </nav>
 
               {/* Category Label */}
               <Link href={`/category/${article.category.slug}`}>
                 <span className="category-label mb-4 inline-block">
-                  {isNepali ? article.category.nameNe : article.category.nameEn}
+                  {article.category.name}
                 </span>
               </Link>
 
               {/* Title */}
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4 font-heading">
-                {isNepali ? article.titleNe : (article.titleEn || article.titleNe || article.title)}
+                {article.title}
               </h1>
 
               <ArticleTitleAd className="my-4" />
 
               {/* Excerpt */}
               <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">
-                {isNepali ? article.excerptNe : (article.excerptEn || article.excerptNe || article.excerpt)}
+                {article.excerpt}
               </p>
 
               <ArticleExcerptAd className="my-4" />
@@ -209,7 +164,7 @@ export default async function ArticlePage({ params, searchParams }: ArticlePageP
                 <div className="flex items-center gap-2">
                   <User className="h-4 w-4" />
                   <Link href={`/author/${article.author.slug}`} className="hover:text-news-red">
-                    {isNepali ? (article.author.nameNe || article.author.name) : article.author.name}
+                    {article.author.name}
                   </Link>
                 </div>
                 <div className="flex items-center gap-2">
@@ -226,14 +181,13 @@ export default async function ArticlePage({ params, searchParams }: ArticlePageP
                 </div>
               </div>
 
-              <ShareBar url={url} title={isNepali ? article.titleNe : article.titleEn} />
+              <ShareBar url={url} title={article.title || ''} />
 
-              {/* Featured Image */}
               {/* Featured Image */}
               <div className="relative aspect-video rounded-xl overflow-hidden mb-8">
                 <Image
                   src={getArticleImage(article as any)}
-                  alt={isNepali ? article.titleNe : (article.titleEn || article.titleNe || article.title || '')}
+                  alt={article.title || ''}
                   fill
                   className="object-cover"
                   sizes="(max-width: 1024px) 100vw, 800px"
@@ -242,20 +196,20 @@ export default async function ArticlePage({ params, searchParams }: ArticlePageP
               </div>
 
               {/* Article Content */}
-              <ArticleContent content={content} lang={lang} />
-
+              <ArticleContent content={content} />
+              
               <InArticleAd className="my-4" />
 
               <ArticleTags tags={article.tags} />
-
+              
               <AuthorBox author={article.author} />
-
-              <ShareBar url={url} title={isNepali ? article.titleNe : article.titleEn} />
-
+              
+              <ShareBar url={url} title={article.title || ''} />
+              
               <ArticleEndAd className="my-4" />
-
+              
               <ArticleNavigation prevArticle={prevArticle} nextArticle={nextArticle} />
-
+              
               <CommentSection articleId={article.id} articleSlug={article.slug} />
             </div>
 

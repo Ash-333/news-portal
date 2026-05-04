@@ -3,11 +3,10 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Article, Category } from '@/types';
-import { useLanguage } from '@/context/LanguageContext';
+
 import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getArticleImage } from '@/lib/utils/image';
-import { getTitle } from '@/lib/utils/lang';
 
 interface TechnologySectionProps {
   articles: Article[];
@@ -15,11 +14,10 @@ interface TechnologySectionProps {
 }
 
 export function TechnologySection({ articles, category }: TechnologySectionProps) {
-  const { isNepali, language, t } = useLanguage();
 
   if (!articles.length) return null;
 
-  const categoryName = isNepali ? category.nameNe : category.nameEn;
+  const categoryName = category.name;
   const featuredArticle = articles[0];
   const listArticles = articles.slice(1, 9);
 
@@ -32,7 +30,7 @@ export function TechnologySection({ articles, category }: TechnologySectionProps
             <div className="w-1 h-6 bg-news-red rounded-full" />
             <h2 className={cn(
               'text-xl md:text-2xl font-bold text-gray-900 dark:text-white',
-              isNepali ? 'font-nepali' : ''
+              'font-nepali'
             )}>
               {categoryName}
             </h2>
@@ -41,7 +39,6 @@ export function TechnologySection({ articles, category }: TechnologySectionProps
             href={`/category/${category.slug}`}
             className="flex items-center gap-1 text-sm text-news-red hover:underline font-medium"
           >
-            <span className={isNepali ? 'font-nepali' : ''}>{t('category.viewAll')}</span>
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
@@ -55,7 +52,7 @@ export function TechnologySection({ articles, category }: TechnologySectionProps
             >
               <Image
                 src={getArticleImage(featuredArticle)}
-                alt={getTitle(featuredArticle, language)}
+                alt={featuredArticle.title || 'Featured Article'}
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
                 sizes="(max-width: 1024px) 100vw, 600px"
@@ -64,9 +61,9 @@ export function TechnologySection({ articles, category }: TechnologySectionProps
               <div className="absolute bottom-0 left-0 right-0 p-4 flex flex-col justify-end">
                 <h3 className={cn(
                   'font-bold text-white line-clamp-2 group-hover:text-red-300 transition-colors',
-                  isNepali ? 'font-nepali text-xl sm:text-2xl leading-[1.2]' : 'text-xl sm:text-2xl font-heading leading-tight'
+                  'font-nepali text-xl sm:text-2xl leading-[1.2]'
                 )}>
-                  {getTitle(featuredArticle, language)}
+                  {featuredArticle.title}
                 </h3>
               </div>
             </Link>
@@ -81,7 +78,7 @@ export function TechnologySection({ articles, category }: TechnologySectionProps
                     <div className="relative w-24 h-20 rounded-lg overflow-hidden">
                       <Image
                         src={getArticleImage(article)}
-                        alt={getTitle(article, language)}
+                        alt={article.title || 'Article'}
                         fill
                         className="object-cover transition-transform duration-300 group-hover:scale-105"
                         sizes="96px"
@@ -92,9 +89,9 @@ export function TechnologySection({ articles, category }: TechnologySectionProps
                     <Link href={`/article/${article.slug}`}>
                       <h4 className={cn(
                         'font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-news-red transition-colors',
-                        isNepali ? 'font-nepali text-sm leading-relaxed' : 'text-sm'
+                        'font-nepali text-sm leading-relaxed'
                       )}>
-                        {getTitle(article, language)}
+                        {article.title || ''}
                       </h4>
                     </Link>
                   </div>

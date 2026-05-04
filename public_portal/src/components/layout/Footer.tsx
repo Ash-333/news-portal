@@ -3,14 +3,14 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Facebook, Twitter, Youtube, Instagram, Mail, Phone, MapPin } from 'lucide-react';
-import { useLanguage } from '@/context/LanguageContext';
+
 import { cn } from '@/lib/utils';
 import { useCategoriesQuery } from '@/hooks/useNewsQueries';
 import { getSocialLinks } from '@/lib/api/settings';
 import { useQuery } from '@tanstack/react-query';
 
 export function Footer() {
-  const { isNepali, t } = useLanguage();
+
   const { data: categories = [] } = useCategoriesQuery();
   const { data: socialLinksResponse } = useQuery({
     queryKey: ['social-links'],
@@ -20,12 +20,12 @@ export function Footer() {
   const socialLinks = socialLinksResponse?.data;
 
   const quickLinks = [
-    { label: 'About Us', labelNe: 'हाम्रोबारे', href: '/about' },
-    { label: 'Our Team', labelNe: 'हाम्रो टिम', href: '/our-team' },
-    { label: 'Photo Galleries', labelNe: 'फोटो ग्यालरी', href: '/photos' },
-    { label: 'Contact', labelNe: 'सम्पर्क', href: '/contact' },
-    { label: 'Privacy Policy', labelNe: 'गोपनीयता नीति', href: '/privacy' },
-    { label: 'Terms of Use', labelNe: 'प्रयोगका सर्तहरू', href: '/terms' },
+    { label: 'हाम्रो बारेमा', href: '/about' },
+    { label: 'हाम्रो टोली', href: '/our-team' },
+    { label: 'फोटो ग्यालरी', href: '/photos' },
+    { label: 'सम्पर्क', href: '/contact' },
+    { label: 'गोपनीयता नीति', href: '/privacy' },
+    { label: 'प्रयोगका शर्तहरू', href: '/terms' },
   ];
 
   const facebookUrl = socialLinks?.facebookUrl || 'https://facebook.com';
@@ -40,24 +40,24 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* About Column */}
           <div>
-            <h3 className={cn('text-white text-lg font-bold mb-4', isNepali ? 'font-nepali' : '')}>
-              {t('footer.about')}
-            </h3>
-            <div className="flex items-center gap-3 mb-4">
-              <Image
-                src="/images/htcmedia.png"
-                alt="HTC Media"
-                width={40}
-                height={40}
-                className="rounded-lg"
-              />
-              <span className={cn('text-white font-bold text-lg', isNepali ? 'font-nepali' : '')}>
-                {t('site.name')}
-              </span>
-            </div>
-            <p className={cn('text-sm text-gray-400 mb-4', isNepali ? 'font-nepali leading-relaxed' : '')}>
-              {t('site.description')}
-            </p>
+            <h3 className='text-white text-lg font-bold mb-4'>
+              HTC Media
+             </h3>
+             <div className="flex items-center gap-3 mb-4">
+               <Image
+                 src="/images/htcmedia.png"
+                 alt="HTC Media"
+                 width={40}
+                 height={40}
+                 className="rounded-lg"
+               />
+               <span className='text-white font-bold text-lg'>
+                 HTC Media
+               </span>
+             </div>
+             <p className='text-sm text-gray-400 mb-4'>
+               नेपाल र विश्वभरका समाचार र अपडेटको तपाईंको भरपर्दो स्रोत।
+             </p>
             {/* Social Links */}
             <div className="flex items-center gap-3">
               {socialLinks?.facebookUrl && (
@@ -66,7 +66,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-9 h-9 bg-gray-800 rounded-full flex items-center justify-center hover:bg-news-red transition-colors"
-                  aria-label="Facebook"
+                  aria-label="फेसबुक"
                 >
                   <Facebook className="h-4 w-4" />
                 </a>
@@ -77,7 +77,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-9 h-9 bg-gray-800 rounded-full flex items-center justify-center hover:bg-news-red transition-colors"
-                  aria-label="Twitter"
+                   aria-label="ट्विटर"
                 >
                   <Twitter className="h-4 w-4" />
                 </a>
@@ -88,7 +88,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-9 h-9 bg-gray-800 rounded-full flex items-center justify-center hover:bg-news-red transition-colors"
-                  aria-label="YouTube"
+                   aria-label="युट्युब"
                 >
                   <Youtube className="h-4 w-4" />
                 </a>
@@ -99,7 +99,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-9 h-9 bg-gray-800 rounded-full flex items-center justify-center hover:bg-news-red transition-colors"
-                  aria-label="Instagram"
+                   aria-label="इन्स्टाग्राम"
                 >
                   <Instagram className="h-4 w-4" />
                 </a>
@@ -109,20 +109,17 @@ export function Footer() {
 
           {/* Categories Column */}
           <div>
-            <h3 className={cn('text-white text-lg font-bold mb-4', isNepali ? 'font-nepali' : '')}>
-              {t('footer.categories')}
-            </h3>
+            <h3 className='text-white text-lg font-bold mb-4'>
+               श्रेणीहरू
+             </h3>
             <ul className="space-y-2">
               {categories.slice(0, 8).map((category) => (
                 <li key={category.id}>
                   <Link
                     href={`/category/${category.slug}`}
-                    className={cn(
-                      'text-sm text-gray-400 hover:text-white transition-colors',
-                      isNepali ? 'font-nepali' : ''
-                    )}
+                    className='text-sm text-gray-400 hover:text-white transition-colors'
                   >
-                    {isNepali ? category.nameNe : category.name}
+                    {category.name}
                   </Link>
                 </li>
               ))}
@@ -131,20 +128,17 @@ export function Footer() {
 
           {/* Quick Links Column */}
           <div>
-            <h3 className={cn('text-white text-lg font-bold mb-4', isNepali ? 'font-nepali' : '')}>
-              {t('footer.quickLinks')}
-            </h3>
+            <h3 className='text-white text-lg font-bold mb-4'>
+               द्रुत लिङ्कहरू
+             </h3>
             <ul className="space-y-2">
               {quickLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className={cn(
-                      'text-sm text-gray-400 hover:text-white transition-colors',
-                      isNepali ? 'font-nepali' : ''
-                    )}
+                    className='text-sm text-gray-400 hover:text-white transition-colors'
                   >
-                    {isNepali ? link.labelNe : link.label}
+                    {link.label}
                   </Link>
                 </li>
               ))}
@@ -153,14 +147,14 @@ export function Footer() {
 
           {/* Contact & Newsletter Column */}
           <div>
-            <h3 className={cn('text-white text-lg font-bold mb-4', isNepali ? 'font-nepali' : '')}>
-              {t('footer.contact')}
-            </h3>
+            <h3 className='text-white text-lg font-bold mb-4'>
+               सम्पर्क
+             </h3>
             <ul className="space-y-3 mb-6">
               <li className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-news-red shrink-0 mt-0.5" />
-                <span className={cn('text-sm text-gray-400', isNepali ? 'font-nepali' : '')}>
-                  Kathmandu, Nepal
+                <span className='text-sm text-gray-400'>
+                   काठमाडौं, नेपाल
                 </span>
               </li>
               <li className="flex items-center gap-3">
@@ -175,22 +169,17 @@ export function Footer() {
 
             {/* Newsletter */}
             <div>
-              <h4 className={cn('text-white text-sm font-bold mb-2', isNepali ? 'font-nepali' : '')}>
-                {t('footer.newsletter')}
-              </h4>
+              <h4 className='text-white text-sm font-bold mb-2'>
+                 न्युजलेटर
+               </h4>
               <div className="flex gap-2">
                 <input
                   type="email"
-                  placeholder={t('footer.emailPlaceholder') as string}
-                  className={cn(
-                    'flex-1 px-3 py-2 bg-gray-800 rounded-lg text-sm',
-                    'text-white placeholder:text-gray-500',
-                    'focus:outline-none focus:ring-2 focus:ring-news-red',
-                    isNepali ? 'font-nepali' : ''
-                  )}
+                   placeholder="तपाईंको इमेल"
+                  className='flex-1 px-3 py-2 bg-gray-800 rounded-lg text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-news-red'
                 />
                 <button className="px-4 py-2 bg-news-red text-white text-sm font-medium rounded-lg hover:bg-news-red-dark transition-colors">
-                  {t('footer.subscribe')}
+                   सदस्यता लिनुहोस्
                 </button>
               </div>
             </div>
@@ -202,22 +191,16 @@ export function Footer() {
       <div className="border-t border-gray-800">
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className={cn('text-sm text-gray-500', isNepali ? 'font-nepali' : '')}>
-              © {new Date().getFullYear()} {t('site.name')}. {t('footer.rights')}
-            </p>
-            <div className="flex items-center gap-4">
-              <Link
-                href="/privacy"
-                className={cn('text-sm text-gray-500 hover:text-white transition-colors', isNepali ? 'font-nepali' : '')}
-              >
-                {t('footer.privacy')}
-              </Link>
-              <Link
-                href="/terms"
-                className={cn('text-sm text-gray-500 hover:text-white transition-colors', isNepali ? 'font-nepali' : '')}
-              >
-                {t('footer.terms')}
-              </Link>
+               <p className="text-sm text-gray-400">
+               © {new Date().getFullYear()} HTC Media. सर्वाधिकार सुरक्षित।
+             </p>
+             <div className="flex items-center gap-4">
+               <Link href="/privacy" className='text-sm text-gray-400 hover:text-white transition-colors'>
+                 गोपनीयता
+               </Link>
+               <Link href="/terms" className='text-sm text-gray-400 hover:text-white transition-colors'>
+                 सर्तहरू
+               </Link>
             </div>
           </div>
         </div>

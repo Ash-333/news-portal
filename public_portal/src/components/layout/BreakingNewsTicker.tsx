@@ -3,13 +3,12 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { AlertCircle } from 'lucide-react';
-import { useLanguage } from '@/context/LanguageContext';
+
 import { cn } from '@/lib/utils';
 import { useBreakingArticles, useLatestArticles } from '@/hooks/useArticles';
-import { getTitle } from '@/lib/utils/lang';
 
 export function BreakingNewsTicker() {
-  const { isNepali, language, t } = useLanguage();
+
   const [isPaused, setIsPaused] = useState(false);
   
   const { data: flashUpdateArticles = [] } = useBreakingArticles();
@@ -19,7 +18,7 @@ export function BreakingNewsTicker() {
   
   const breakingNews = articles.slice(0, 6).map((article) => ({
     id: article.id,
-    title: getTitle(article, language),
+    title: article.title,
     slug: article.slug,
     categorySlug: article.category.slug,
   }));
@@ -34,9 +33,9 @@ export function BreakingNewsTicker() {
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full shrink-0">
             <AlertCircle className="h-4 w-4 animate-pulse" />
-            <span className={cn('text-sm font-bold uppercase', isNepali ? 'font-nepali' : '')}>
-              {t('breakingNews')}
-            </span>
+<span className={cn('text-sm font-bold uppercase', '')}>
+               ब्रेकिंग समाचार
+             </span>
           </div>
 
           <div
@@ -60,7 +59,7 @@ export function BreakingNewsTicker() {
                   className="text-sm hover:underline flex items-center gap-2"
                 >
                   <span className="w-1.5 h-1.5 bg-white rounded-full shrink-0" />
-                  <span className={isNepali ? 'font-nepali' : ''}>{news.title}</span>
+                  <span>{news.title}</span>
                 </Link>
               ))}
             </div>

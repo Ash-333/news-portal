@@ -13,8 +13,7 @@ import { deleteCachedPattern } from "@/lib/redis";
 import { z } from "zod";
 
 const pollSchema = z.object({
-  questionNe: z.string().min(1, "Nepali question is required"),
-  questionEn: z.string().min(1, "English question is required"),
+  question: z.string().min(1, "Question is required"),
   description: z.string().optional(),
   isActive: z.boolean().default(true),
   isMultiple: z.boolean().default(false),
@@ -32,8 +31,7 @@ const pollSchema = z.object({
   options: z
     .array(
       z.object({
-        textNe: z.string().min(1, "Nepali option text is required"),
-        textEn: z.string().min(1, "English option text is required"),
+        text: z.string().min(1, "Option text is required"),
       }),
     )
     .min(2, "At least 2 options are required"),
@@ -72,10 +70,10 @@ export async function GET(req: NextRequest) {
       if (filters.data.search) {
         where.OR = [
           {
-            questionNe: { contains: filters.data.search, mode: "insensitive" },
+            question: { contains: filters.data.search, mode: "insensitive" },
           },
           {
-            questionEn: { contains: filters.data.search, mode: "insensitive" },
+            question: { contains: filters.data.search, mode: "insensitive" },
           },
         ];
       }
@@ -159,16 +157,14 @@ export async function POST(req: NextRequest) {
         expiresAt: expiresAt ? new Date(expiresAt as string) : null,
         options: {
           create: options.map((opt, index) => ({
-            textNe: opt.textNe,
-            textEn: opt.textEn,
-            order: index,
+          text: opt.text,
+             order: index,
           })),
         },
       },
       select: {
         id: true,
-        questionNe: true,
-        questionEn: true,
+        question: true,
         isActive: true,
         createdAt: true,
       },

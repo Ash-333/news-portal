@@ -3,15 +3,13 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Article } from '@/types';
-import { useLanguage } from '@/context/LanguageContext';
+
 import { cn } from '@/lib/utils';
 import { getArticleImage } from '@/lib/utils/image';
-import { getTitle } from '@/lib/utils/lang';
 
 interface ProvinceData {
   slug: string;
-  nameNe: string;
-  nameEn: string;
+  name: string;
 }
 
 interface ProvinceSectionProps {
@@ -19,7 +17,6 @@ interface ProvinceSectionProps {
 }
 
 export function ProvinceSection({ provinces }: ProvinceSectionProps) {
-  const { isNepali, language } = useLanguage();
 
   const validProvinces = provinces.filter(p => p.data.length > 0);
   if (validProvinces.length === 0) return null;
@@ -32,16 +29,16 @@ export function ProvinceSection({ provinces }: ProvinceSectionProps) {
             <div className="w-1 h-6 bg-news-red rounded-full" />
             <h2 className={cn(
               'text-xl md:text-2xl font-bold text-gray-900 dark:text-white',
-              isNepali ? 'font-nepali' : ''
+              ''
             )}>
-              {isNepali ? 'प्रदेशहरु' : 'Provincial News'}
+               {'प्रदेशहरू'}
             </h2>
           </div>
-          <Link
-            href="/provinces"
-            className="flex items-center gap-1 text-sm text-news-red hover:underline font-medium"
-          >
-            <span className={isNepali ? 'font-nepali' : ''}>{isNepali ? 'सबै हेर्नुहोस्' : 'View All'}</span>
+            <Link
+              href="/provinces"
+              className="flex items-center gap-1 text-sm text-news-red hover:underline font-medium"
+            >
+              <span>{'सबै हेर्नुहोस्'}</span>
           </Link>
         </div>
 
@@ -53,46 +50,46 @@ export function ProvinceSection({ provinces }: ProvinceSectionProps) {
             return (
               <div key={info.slug} className="space-y-3">
                 {/* Featured Article */}
-                {featuredArticle && (
-                  <article className="group">
-                    <Link
-                      href={`/article/${featuredArticle.slug}`}
-                      className="block relative aspect-[16/10] rounded-lg overflow-hidden mb-2"
-                    >
-                      <Image
-                        src={getArticleImage(featuredArticle)}
-                        alt={getTitle(featuredArticle, language)}
-                        fill
+                 {featuredArticle && (
+                   <article className="group">
+                     <Link
+                       href={`/article/${featuredArticle.slug}`}
+                       className="block relative aspect-[16/10] rounded-lg overflow-hidden mb-2"
+                     >
+                       <Image
+                         src={getArticleImage(featuredArticle)}
+                         alt={featuredArticle.title || ''}
+                         fill
                         className="object-cover transition-transform duration-300 group-hover:scale-105"
                         sizes="(max-width: 768px) 100vw, 400px"
                       />
                     </Link>
-                    <Link href={`/article/${featuredArticle.slug}`}>
-                      <h3 className={cn(
-                        'font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-news-red transition-colors',
-                        isNepali ? 'font-nepali text-sm md:text-base leading-relaxed' : 'text-sm md:text-base'
-                      )}>
-                        {getTitle(featuredArticle, language)}
-                      </h3>
-                    </Link>
+                     <Link href={`/article/${featuredArticle.slug}`}>
+                       <h3 className={cn(
+                         'font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-news-red transition-colors',
+                          'text-sm md:text-base leading-relaxed'
+                       )}>
+                         {featuredArticle.title || ''}
+                       </h3>
+                     </Link>
                   </article>
                 )}
 
-                {/* List Articles */}
-                <div className="space-y-2">
-                  {listArticles.map((article) => (
-                    <article key={article.id} className="group">
-                      <Link href={`/article/${article.slug}`}>
-                        <h4 className={cn(
-                          'text-sm text-gray-700 dark:text-gray-300 line-clamp-2 group-hover:text-news-red transition-colors',
-                          isNepali ? 'font-nepali text-xs' : 'text-xs'
-                        )}>
-                          {getTitle(article, language)}
-                        </h4>
-                      </Link>
-                    </article>
-                  ))}
-                </div>
+                 {/* List Articles */}
+                 <div className="space-y-2">
+                   {listArticles.map((article) => (
+                     <article key={article.id} className="group">
+                       <Link href={`/article/${article.slug}`}>
+                         <h4 className={cn(
+                           'text-sm text-gray-700 dark:text-gray-300 line-clamp-2 group-hover:text-news-red transition-colors',
+                            'text-xs'
+                         )}>
+                           {article.title || ''}
+                         </h4>
+                       </Link>
+                     </article>
+                   ))}
+                 </div>
               </div>
             );
           })}

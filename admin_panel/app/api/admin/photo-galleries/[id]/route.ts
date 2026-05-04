@@ -43,7 +43,7 @@ export async function GET(
           select: {
             id: true,
             name: true,
-            profilePhoto: true,
+            image: true,
           },
         },
         coverImage: {
@@ -133,7 +133,7 @@ export async function PATCH(
       return validation;
     }
 
-    const { titleNe, titleEn, excerptNe, excerptEn, isPublished, coverImageId, photos } = validation;
+    const { title, excerpt, isPublished, coverImageId, photos } = validation;
 
     // Check if gallery exists and user has permission
     const existingGallery = await prisma.photoGallery.findUnique({
@@ -177,25 +177,21 @@ export async function PATCH(
       const gallery = await tx.photoGallery.update({
         where: { id },
         data: {
-          titleNe,
-          titleEn,
-          excerptNe: excerptNe || null,
-          excerptEn: excerptEn || null,
+          title,
+          excerpt: excerpt || null,
           isPublished: Boolean(isPublished),
           coverImageId: coverImageId || null,
           photos: {
             create: photos.map((photo, index) => ({
               mediaId: photo.mediaId,
-              captionNe: photo.captionNe || null,
-              captionEn: photo.captionEn || null,
+              caption: photo.caption || null,
               order: photo.order ?? index,
             })),
           },
         },
         select: {
           id: true,
-          titleNe: true,
-          titleEn: true,
+          title: true,
           slug: true,
           isPublished: true,
           createdAt: true,

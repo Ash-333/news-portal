@@ -3,11 +3,10 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Article, Category } from '@/types';
-import { useLanguage } from '@/context/LanguageContext';
+
 import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getArticleImage } from '@/lib/utils/image';
-import { getTitle } from '@/lib/utils/lang';
 
 interface SportsHomeSectionProps {
   articles: Article[];
@@ -15,11 +14,10 @@ interface SportsHomeSectionProps {
 }
 
 export function SportsHomeSection({ articles, category }: SportsHomeSectionProps) {
-  const { isNepali, language, t } = useLanguage();
 
   if (!articles.length) return null;
 
-  const categoryName = isNepali ? category.nameNe : category.nameEn;
+  const categoryName = category.name;
   const featuredArticle = articles[0];
   const listArticles = articles.slice(1, 5);
 
@@ -32,7 +30,7 @@ export function SportsHomeSection({ articles, category }: SportsHomeSectionProps
             <div className="w-1 h-6 bg-news-red rounded-full" />
             <h2 className={cn(
               'text-xl md:text-2xl font-bold text-gray-900 dark:text-white',
-              isNepali ? 'font-nepali' : ''
+              'font-nepali'
             )}>
               {categoryName}
             </h2>
@@ -41,7 +39,7 @@ export function SportsHomeSection({ articles, category }: SportsHomeSectionProps
             href={`/category/${category.slug}`}
             className="flex items-center gap-1 text-sm text-news-red hover:underline font-medium"
           >
-            <span className={isNepali ? 'font-nepali' : ''}>{t('category.viewAll')}</span>
+            <span className={'font-nepali'}></span>
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
@@ -56,7 +54,7 @@ export function SportsHomeSection({ articles, category }: SportsHomeSectionProps
             >
               <Image
                 src={getArticleImage(featuredArticle)}
-                alt={getTitle(featuredArticle, language)}
+                alt={featuredArticle.title || 'Featured Article'}
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
                 sizes="(max-width: 1024px) 100vw, 600px"
@@ -65,9 +63,9 @@ export function SportsHomeSection({ articles, category }: SportsHomeSectionProps
               <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 flex flex-col justify-end">
                 <h2 className={cn(
                   'font-bold text-white mb-2 group-hover:text-red-300 transition-colors line-clamp-2',
-                  isNepali ? 'font-nepali text-xl sm:text-2xl leading-[1.3]' : 'text-xl sm:text-2xl font-heading leading-tight'
+                  'font-nepali text-xl sm:text-2xl leading-[1.3]'
                 )}>
-                  {getTitle(featuredArticle, language)}
+                  {featuredArticle.title || ''}
                 </h2>
               </div>
             </Link>
@@ -84,7 +82,7 @@ export function SportsHomeSection({ articles, category }: SportsHomeSectionProps
                   >
                     <Image
                       src={getArticleImage(article)}
-                      alt={getTitle(article, language)}
+                      alt={article.title || 'Article'}
                       fill
                       className="object-cover transition-transform duration-300 group-hover:scale-105"
                       sizes="(max-width: 768px) 50vw, 300px"
@@ -93,9 +91,9 @@ export function SportsHomeSection({ articles, category }: SportsHomeSectionProps
                   <Link href={`/article/${article.slug}`}>
                     <h3 className={cn(
                       'font-medium text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-news-red transition-colors',
-                      isNepali ? 'font-nepali text-sm' : 'text-sm'
+                      'font-nepali text-sm'
                     )}>
-                      {getTitle(article, language)}
+                      {article.title}
                     </h3>
                   </Link>
                 </article>

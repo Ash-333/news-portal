@@ -29,10 +29,8 @@ export default function HoroscopesPage() {
   const [formData, setFormData] = useState({
     zodiacSign: '',
     icon: 'Sparkles',
-    titleNe: '',
-    titleEn: '',
-    contentNe: '',
-    contentEn: '',
+    title: '',
+    content: '',
     isPublished: false
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -43,7 +41,7 @@ export default function HoroscopesPage() {
   const togglePublish = useTogglePublishHoroscope()
 
   const handleCreate = async () => {
-    if (!formData.zodiacSign || !formData.titleEn || !formData.titleNe || !formData.contentEn || !formData.contentNe) {
+    if (!formData.zodiacSign || !formData.title || !formData.content) {
       toast.error('Please fill all required fields')
       return
     }
@@ -58,7 +56,7 @@ export default function HoroscopesPage() {
       if (result.success) {
         toast.success('Horoscope created successfully')
         setShowForm(false)
-        setFormData({ zodiacSign: '', icon: 'Sparkles', titleNe: '', titleEn: '', contentNe: '', contentEn: '', isPublished: false })
+        setFormData({ zodiacSign: '', icon: 'Sparkles', title: '', content: '', isPublished: false })
       } else {
         const errorMessage = result.message || 'Failed to create horoscope'
         toast.error(errorMessage)
@@ -71,7 +69,7 @@ export default function HoroscopesPage() {
   }
 
   const handleUpdate = async () => {
-    if (!editingId || !formData.zodiacSign || !formData.titleEn || !formData.titleNe || !formData.contentEn || !formData.contentNe) {
+    if (!editingId || !formData.zodiacSign || !formData.title || !formData.content) {
       toast.error('Please fill all required fields')
       return
     }
@@ -87,7 +85,7 @@ export default function HoroscopesPage() {
         toast.success('Horoscope updated successfully')
         setShowForm(false)
         setEditingId(null)
-        setFormData({ zodiacSign: '', icon: 'Sparkles', titleNe: '', titleEn: '', contentNe: '', contentEn: '', isPublished: false })
+        setFormData({ zodiacSign: '', icon: 'Sparkles', title: '', content: '', isPublished: false })
       } else {
         const errorMessage = result.message || 'Failed to update horoscope'
         toast.error(errorMessage)
@@ -103,10 +101,8 @@ export default function HoroscopesPage() {
     setFormData({
       zodiacSign: horoscope.zodiacSign,
       icon: horoscope.icon || getZodiacIcon(horoscope.zodiacSign),
-      titleNe: horoscope.titleNe,
-      titleEn: horoscope.titleEn,
-      contentNe: horoscope.contentNe,
-      contentEn: horoscope.contentEn,
+      title: horoscope.title,
+      content: horoscope.content,
       isPublished: horoscope.isPublished
     })
     setEditingId(horoscope.id)
@@ -116,7 +112,7 @@ export default function HoroscopesPage() {
   const handleCancel = () => {
     setShowForm(false)
     setEditingId(null)
-    setFormData({ zodiacSign: '', icon: 'Sparkles', titleNe: '', titleEn: '', contentNe: '', contentEn: '', isPublished: false })
+    setFormData({ zodiacSign: '', icon: 'Sparkles', title: '', content: '', isPublished: false })
   }
 
   const horoscopes = data?.data ?? []
@@ -164,46 +160,25 @@ export default function HoroscopesPage() {
                 <span className="text-sm text-slate-500">{formData.icon}</span>
               </div>
             </div>
-            <div className="grid gap-4 md:grid-cols-2">
               <div>
-                <label className="text-sm font-medium">Title (English) *</label>
+                <label className="text-sm font-medium">Title *</label>
                 <Input
-                  value={formData.titleEn}
-                  onChange={(e) => setFormData(p => ({ ...p, titleEn: e.target.value }))}
-                  placeholder="Enter title in English"
+                  value={formData.title}
+                  onChange={(e) => setFormData(p => ({ ...p, title: e.target.value }))}
+                  placeholder="Enter title"
                   className="mt-1"
                 />
               </div>
               <div>
-                <label className="text-sm font-medium">Title (Nepali) *</label>
-                <Input
-                  value={formData.titleNe}
-                  onChange={(e) => setFormData(p => ({ ...p, titleNe: e.target.value }))}
-                  placeholder="Enter title in Nepali"
+                <label className="text-sm font-medium">Content *</label>
+                <Textarea
+                  value={formData.content}
+                  onChange={(e) => setFormData(p => ({ ...p, content: e.target.value }))}
+                  placeholder="Enter horoscope content"
                   className="mt-1"
+                  rows={4}
                 />
               </div>
-            </div>
-            <div>
-              <label className="text-sm font-medium">Content (English) *</label>
-              <Textarea
-                value={formData.contentEn}
-                onChange={(e) => setFormData(p => ({ ...p, contentEn: e.target.value }))}
-                placeholder="Enter horoscope content in English"
-                className="mt-1"
-                rows={4}
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium">Content (Nepali) *</label>
-              <Textarea
-                value={formData.contentNe}
-                onChange={(e) => setFormData(p => ({ ...p, contentNe: e.target.value }))}
-                placeholder="Enter horoscope content in Nepali"
-                className="mt-1"
-                rows={4}
-              />
-            </div>
             <div className="flex items-center gap-2">
               <input
                 type="checkbox"
@@ -278,9 +253,9 @@ export default function HoroscopesPage() {
                         {horoscope.isPublished ? 'Published' : 'Draft'}
                       </span>
                     </div>
-                    <h3 className="font-semibold">{horoscope.titleEn}</h3>
-                    <p className="text-sm text-slate-500 mb-2">{horoscope.titleNe}</p>
-                    <p className="text-sm text-slate-600 line-clamp-2">{horoscope.contentEn}</p>
+                     <h3 className="font-semibold">{horoscope.title}</h3>
+                     <p className="text-sm text-slate-500 mb-2">by {horoscope.author?.name}</p>
+                     <p className="text-sm text-slate-600 line-clamp-2">{horoscope.content}</p>
                     <p className="text-xs text-slate-400 mt-1">
                       {new Date(horoscope.date).toLocaleDateString()} | by {horoscope.author?.name}
                     </p>

@@ -1,12 +1,12 @@
 "use client";
 
 import { Article, Poll, Category } from "@/types";
-import { useLanguage } from "@/context/LanguageContext";
+
 import { cn } from "@/lib/utils";
 import { ArticleCard } from "@/components/ArticleCard";
 import { AdBox } from "@/components/ads/AdBox";
 import { PollCard } from "@/components/polls/PollCard";
-import { getCategoryName } from "@/lib/utils/lang";
+
 import React from "react";
 
 interface LatestNewsSectionProps {
@@ -16,11 +16,10 @@ interface LatestNewsSectionProps {
 }
 
 export function LatestNewsSection({ articles, poll, category }: LatestNewsSectionProps) {
-  const { isNepali, t } = useLanguage();
 
   if (!articles.length) return null;
 
-  const sectionTitle = category ? getCategoryName(category, isNepali ? 'ne' : 'en') : t("category.latest");
+  const sectionTitle = category ? category.name : 'Latest News';
 
   return (
     <section>
@@ -29,7 +28,7 @@ export function LatestNewsSection({ articles, poll, category }: LatestNewsSectio
         <h2
           className={cn(
             "text-xl font-bold text-gray-900 dark:text-white",
-            isNepali ? "font-nepali" : ""
+            "font-nepali"
           )}
         >
           {sectionTitle}

@@ -31,7 +31,6 @@ export async function PUT(req: NextRequest) {
         email: true,
         bio: true,
         profilePhoto: true,
-        language: true,
         updatedAt: true,
       },
     });

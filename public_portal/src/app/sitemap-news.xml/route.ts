@@ -24,8 +24,8 @@ ${articles
         <news:language>ne</news:language>
       </news:publication>
       <news:publication_date>${new Date(article.publishedAt).toISOString()}</news:publication_date>
-      <news:title>${escapeXml(article.titleEn || article.titleNe)}</news:title>
-      <news:keywords>${article.tags.map((t) => t.nameEn || t.nameNe).join(', ')}</news:keywords>
+       <news:title>${escapeXml(article.title || '')}</news:title>
+       <news:keywords>${article.tags.map((t) => t.name || '').join(', ')}</news:keywords>
     </news:news>
   </url>`
   )

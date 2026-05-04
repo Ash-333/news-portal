@@ -17,11 +17,8 @@ import { toast } from 'sonner'
 
 const teamMemberSchema = z.object({
   name: z.string().min(1, 'Name is required'),
-  nameNe: z.string().optional(),
   department: z.string().min(1, 'Department is required'),
-  departmentNe: z.string().optional(),
   designation: z.string().min(1, 'Designation is required'),
-  designationNe: z.string().optional(),
   email: z.string().optional(),
   phone: z.string().optional(),
   newsEmail: z.string().optional(),
@@ -139,46 +136,28 @@ export default function NewTeamMemberPage() {
             <CardTitle>Member Information</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="name">Name (English)</Label>
-                <Input id="name" {...register('name')} placeholder="John Doe" />
-                {errors.name && (
-                  <p className="text-sm text-red-600 mt-1">{errors.name.message}</p>
-                )}
-              </div>
-              <div>
-                <Label htmlFor="nameNe">Name (Nepali)</Label>
-                <Input id="nameNe" {...register('nameNe')} placeholder="जन डो" />
-              </div>
+            <div>
+              <Label htmlFor="name">Name</Label>
+              <Input id="name" {...register('name')} placeholder="John Doe" />
+              {errors.name && (
+                <p className="text-sm text-red-600 mt-1">{errors.name.message}</p>
+              )}
             </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="department">Department (English)</Label>
-                <Input id="department" {...register('department')} placeholder="News" />
-                {errors.department && (
-                  <p className="text-sm text-red-600 mt-1">{errors.department.message}</p>
-                )}
-              </div>
-              <div>
-                <Label htmlFor="departmentNe">Department (Nepali)</Label>
-                <Input id="departmentNe" {...register('departmentNe')} placeholder="समाचार" />
-              </div>
+            
+            <div>
+              <Label htmlFor="department">Department</Label>
+              <Input id="department" {...register('department')} placeholder="News" />
+              {errors.department && (
+                <p className="text-sm text-red-600 mt-1">{errors.department.message}</p>
+              )}
             </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="designation">Designation (English)</Label>
-                <Input id="designation" {...register('designation')} placeholder="Editor" />
-                {errors.designation && (
-                  <p className="text-sm text-red-600 mt-1">{errors.designation.message}</p>
-                )}
-              </div>
-              <div>
-                <Label htmlFor="designationNe">Designation (Nepali)</Label>
-                <Input id="designationNe" {...register('designationNe')} placeholder="सम्पादक" />
-              </div>
+            
+            <div>
+              <Label htmlFor="designation">Designation</Label>
+              <Input id="designation" {...register('designation')} placeholder="Editor" />
+              {errors.designation && (
+                <p className="text-sm text-red-600 mt-1">{errors.designation.message}</p>
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">

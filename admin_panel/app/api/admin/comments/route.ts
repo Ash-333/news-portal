@@ -65,7 +65,7 @@ export async function GET(req: NextRequest) {
             select: { id: true, name: true, profilePhoto: true },
           },
           article: {
-            select: { id: true, titleNe: true, titleEn: true, slug: true },
+            select: { id: true, title: true, slug: true },
           },
         },
         orderBy: sortBy ? { [sortBy]: order } : { createdAt: "desc" },

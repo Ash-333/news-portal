@@ -58,9 +58,9 @@ export default function PhotoGalleriesPage() {
       header: 'Title',
       render: (gallery) => (
         <div>
-          <p className="font-medium">{gallery.titleEn}</p>
-          {gallery.titleNe && (
-            <p className="text-xs text-slate-500 truncate">{gallery.titleNe}</p>
+          <p className="font-medium">{gallery.title}</p>
+          {gallery.title && (
+            <p className="text-xs text-slate-500 truncate">{gallery.title}</p>
           )}
         </div>
       ),

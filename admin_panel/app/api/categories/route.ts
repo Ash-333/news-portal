@@ -18,7 +18,7 @@ export async function GET() {
           include: {
             children: {
               where: { deletedAt: null },
-              orderBy: { nameEn: 'asc' },
+              orderBy: { name: 'asc' },
             },
             _count: {
               select: {
@@ -32,7 +32,7 @@ export async function GET() {
               },
             },
           },
-          orderBy: { nameEn: 'asc' },
+          orderBy: { name: 'asc' },
         })
         return categories
       },

@@ -48,8 +48,7 @@ export async function GET(req: NextRequest) {
       },
       select: {
         id: true,
-        titleEn: true,
-        titleNe: true,
+        title: true,
         scheduledAt: true,
         status: true,
       },
@@ -103,8 +102,7 @@ export async function GET(req: NextRequest) {
       published: publishResult.count,
       articles: scheduledArticles.map((a) => ({
         id: a.id,
-        titleEn: a.titleEn,
-        titleNe: a.titleNe,
+        title: a.title,
       })),
     })
   } catch (error) {

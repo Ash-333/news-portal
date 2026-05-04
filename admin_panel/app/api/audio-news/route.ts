@@ -25,10 +25,9 @@ export async function GET(request: Request) {
 
         if (search) {
           where.OR = [
-            { titleNe: { contains: search, mode: 'insensitive' } },
-            { titleEn: { contains: search, mode: 'insensitive' } },
-            { descriptionNe: { contains: search, mode: 'insensitive' } },
-            { descriptionEn: { contains: search, mode: 'insensitive' } },
+            { title: { contains: search, mode: 'insensitive' } },
+            { description: { contains: search, mode: 'insensitive' } },
+            { description: { contains: search, mode: 'insensitive' } },
           ]
         }
 
@@ -40,7 +39,7 @@ export async function GET(request: Request) {
             take: limit,
             include: {
               author: { select: { name: true } },
-              category: { select: { nameEn: true, nameNe: true } }
+              category: { select: { name: true } }
             }
           }),
           prisma.audioNews.count({ where })

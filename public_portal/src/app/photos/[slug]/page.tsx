@@ -4,27 +4,20 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 import { getPhotoGalleryBySlug } from '@/lib/api/photo-galleries'
-import { getServerLanguage } from '@/lib/utils/language'
 
 export const dynamic = 'force-dynamic'
 
-export async function generateMetadata({ params, searchParams }: PhotoGalleryPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: PhotoGalleryPageProps): Promise<Metadata> {
   const response = await getPhotoGalleryBySlug(params.slug)
-  const urlLang = searchParams?.lang
-  const isNepali = urlLang ? urlLang !== 'en' : getServerLanguage() === 'ne'
-  const title = response.success && response.data
-    ? (isNepali ? response.data.titleNe : response.data.titleEn)
-    : 'Photo Gallery'
-
+  const title = response.success && response.data ? response.data.title : 'Photo Gallery'
   return { title }
 }
 
 interface PhotoGalleryPageProps {
   params: { slug: string }
-  searchParams: { lang?: string }
 }
 
-export default async function PhotoGalleryDetailPage({ params, searchParams }: PhotoGalleryPageProps) {
+export default async function PhotoGalleryDetailPage({ params }: PhotoGalleryPageProps) {
   const response = await getPhotoGalleryBySlug(params.slug)
 
   if (!response.success || !response.data) {
@@ -33,10 +26,8 @@ export default async function PhotoGalleryDetailPage({ params, searchParams }: P
 
   const gallery = response.data
   const photos = gallery.photos || []
-  const urlLang = searchParams?.lang
-  const isNepali = urlLang ? urlLang !== 'en' : getServerLanguage() === 'ne'
-  const title = isNepali ? gallery.titleNe : gallery.titleEn
-  const excerpt = isNepali ? gallery.excerptNe : gallery.excerptEn
+  const title = gallery.title
+  const excerpt = gallery.excerpt
 
   return (
     <div className="min-h-screen bg-background">
@@ -52,10 +43,10 @@ export default async function PhotoGalleryDetailPage({ params, searchParams }: P
         <h1 className="text-3xl font-bold mb-2">{title}</h1>
 
         <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-8">
-          {gallery.author && <span>By {isNepali ? (gallery.author.nameNe || gallery.author.name) : gallery.author.name}</span>}
-          {gallery.createdAt && (
+          {gallery.author && <span>By {gallery.author.name}</span>}
+          {gallery.publishedAt && (
             <span>
-              {new Date(gallery.createdAt).toLocaleDateString(isNepali ? 'ne-NP' : 'en-US', {
+              {new Date(gallery.publishedAt).toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',
@@ -73,29 +64,24 @@ export default async function PhotoGalleryDetailPage({ params, searchParams }: P
         {photos.length > 0 && (
           <div className="space-y-8">
             {photos.map((photo) => {
-              const caption = isNepali ? photo.captionNe : photo.captionEn
+              const caption = photo.caption || ''
               return (
                 <div key={photo.id} className="relative w-full aspect-[16/9] bg-slate-100 dark:bg-slate-800">
                   <Image
                     src={photo.media.url}
                     alt={photo.media.altText || caption || ''}
                     fill
-                    sizes="100vw"
                     className="object-cover"
                   />
                   {caption && (
-                    <div className="absolute bottom-0 left-0 right-0 bg-black/50 p-3">
-                      <p className="text-white text-sm">{caption}</p>
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                      <p className="text-white">{caption}</p>
                     </div>
                   )}
                 </div>
               )
             })}
           </div>
-        )}
-
-        {photos.length === 0 && (
-          <p className="text-muted-foreground">No photos in this gallery yet.</p>
         )}
       </div>
     </div>

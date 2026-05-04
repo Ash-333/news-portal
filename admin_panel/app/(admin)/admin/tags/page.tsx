@@ -1,23 +1,23 @@
 'use client'
 
 import { useState } from 'react'
-import { Plus, Edit, Trash2, Tag } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useRouter } from 'next/navigation'
+import { Plus, Edit, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { PageHeader } from '@/components/ui/page-header'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { useTags, useCreateTag, useUpdateTag, useDeleteTag } from '@/hooks/use-tags'
 import { toast } from 'sonner'
-import type { Tag as TagType } from '@/types'
 
 export default function TagsPage() {
   const [isCreating, setIsCreating] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [search, setSearch] = useState('')
-  const [formData, setFormData] = useState({ nameNe: '', nameEn: '', slug: '' })
+  const [formData, setFormData] = useState({ name: '', slug: '' })
 
   const { data: tags, isLoading } = useTags(search)
   const createTag = useCreateTag()
@@ -36,7 +36,7 @@ export default function TagsPage() {
       }
       setIsCreating(false)
       setEditingId(null)
-      setFormData({ nameNe: '', nameEn: '', slug: '' })
+      setFormData({ name: '', slug: '' })
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to save tag'
       toast.error(errorMessage)
@@ -55,11 +55,10 @@ export default function TagsPage() {
     }
   }
 
-  const startEdit = (tag: TagType) => {
+  const startEdit = (tag: { id: string; name: string; slug: string }) => {
     setEditingId(tag.id)
     setFormData({
-      nameNe: tag.nameNe,
-      nameEn: tag.nameEn,
+      name: tag.name,
       slug: tag.slug,
     })
     setIsCreating(true)
@@ -68,7 +67,7 @@ export default function TagsPage() {
   const cancelEdit = () => {
     setIsCreating(false)
     setEditingId(null)
-    setFormData({ nameNe: '', nameEn: '', slug: '' })
+    setFormData({ name: '', slug: '' })
   }
 
   return (
@@ -99,29 +98,16 @@ export default function TagsPage() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="nameEn">English Name</Label>
+                  <Label htmlFor="name">Name</Label>
                   <Input
-                    id="nameEn"
-                    value={formData.nameEn}
+                    id="name"
+                    value={formData.name}
                     onChange={(e) =>
-                      setFormData({ ...formData, nameEn: e.target.value })
+                      setFormData({ ...formData, name: e.target.value })
                     }
-                    placeholder="Enter English name"
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="nameNe">Nepali Name</Label>
-                  <Input
-                    id="nameNe"
-                    value={formData.nameNe}
-                    onChange={(e) =>
-                      setFormData({ ...formData, nameNe: e.target.value })
-                    }
-                    placeholder="Enter Nepali name"
+                    placeholder="Enter tag name"
                     required
                   />
                 </div>
@@ -159,8 +145,7 @@ export default function TagsPage() {
           <table className="w-full">
             <thead className="border-b bg-muted/50">
               <tr>
-                <th className="px-4 py-3 text-left">English Name</th>
-                <th className="px-4 py-3 text-left">Nepali Name</th>
+                <th className="px-4 py-3 text-left">Name</th>
                 <th className="px-4 py-3 text-left">Slug</th>
                 <th className="px-4 py-3 text-left">Articles</th>
                 <th className="px-4 py-3 text-right">Actions</th>
@@ -169,21 +154,20 @@ export default function TagsPage() {
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={5} className="px-4 py-8 text-center">
+                  <td colSpan={4} className="px-4 py-8 text-center">
                     Loading...
                   </td>
                 </tr>
               ) : tags?.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-4 py-8 text-center">
+                  <td colSpan={4} className="px-4 py-8 text-center">
                     No tags found
                   </td>
                 </tr>
               ) : (
                 tags?.map((tag) => (
                   <tr key={tag.id} className="border-b">
-                    <td className="px-4 py-3">{tag.nameEn}</td>
-                    <td className="px-4 py-3">{tag.nameNe}</td>
+                    <td className="px-4 py-3">{tag.name}</td>
                     <td className="px-4 py-3">{tag.slug}</td>
                     <td className="px-4 py-3">{(tag as any)._count?.articles || 0}</td>
                     <td className="px-4 py-3 text-right">
@@ -200,7 +184,7 @@ export default function TagsPage() {
                           size="icon"
                           onClick={() => setDeleteId(tag.id)}
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <Trash2 className="h-4 w-4 text-red-600" />
                         </Button>
                       </div>
                     </td>

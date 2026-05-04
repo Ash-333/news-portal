@@ -16,8 +16,7 @@ import { PageHeader } from '@/components/ui/page-header'
 import { toast } from 'sonner'
 
 const pollSchema = z.object({
-  questionEn: z.string().min(1, 'English question is required'),
-  questionNe: z.string().min(1, 'Nepali question is required'),
+  question: z.string().min(1, 'Question is required'),
   description: z.string().optional(),
   isActive: z.boolean().default(true),
   isMultiple: z.boolean().default(false),
@@ -25,8 +24,7 @@ const pollSchema = z.object({
   expiresAt: z.string().optional(),
   // Options are validated manually since they're in separate state
   options: z.array(z.object({
-    textEn: z.string(),
-    textNe: z.string(),
+    text: z.string(),
   })).optional(),
 })
 
@@ -34,16 +32,15 @@ type PollFormData = z.infer<typeof pollSchema>
 
 interface Option {
   id: string
-  textEn: string
-  textNe: string
+  text: string
 }
 
 export default function NewPollPage() {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [options, setOptions] = useState<Option[]>([
-    { id: '1', textEn: '', textNe: '' },
-    { id: '2', textEn: '', textNe: '' },
+    { id: '1', text: '' },
+    { id: '2', text: '' },
   ])
 
   const {
@@ -65,7 +62,7 @@ export default function NewPollPage() {
   const isMultiple = watch('isMultiple')
 
   const addOption = () => {
-    setOptions([...options, { id: Date.now().toString(), textEn: '', textNe: '' }])
+    setOptions([...options, { id: Date.now().toString(), text: '' }])
   }
 
   const removeOption = (id: string) => {
@@ -76,9 +73,9 @@ export default function NewPollPage() {
     setOptions(options.filter(opt => opt.id !== id))
   }
 
-  const updateOption = (id: string, field: 'textEn' | 'textNe', value: string) => {
+  const updateOption = (id: string, value: string) => {
     setOptions(options.map(opt => 
-      opt.id === id ? { ...opt, [field]: value } : opt
+      opt.id === id ? { ...opt, text: value } : opt
     ))
   }
 
@@ -90,9 +87,9 @@ export default function NewPollPage() {
     }
     
     // Check if all options have text
-    const hasEmptyOption = options.some(opt => !opt.textEn.trim() || !opt.textNe.trim())
+    const hasEmptyOption = options.some(opt => !opt.text.trim())
     if (hasEmptyOption) {
-      toast.error('All options must have text in both languages')
+      toast.error('All options must have text')
       return
     }
 
@@ -113,8 +110,7 @@ export default function NewPollPage() {
           startsAt: formatDateTime(data.startsAt || ''),
           expiresAt: formatDateTime(data.expiresAt || ''),
           options: options.map(opt => ({
-            textEn: opt.textEn,
-            textNe: opt.textNe,
+            text: opt.text,
           })),
         }),
       })
@@ -157,29 +153,15 @@ export default function NewPollPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor="questionEn">Question (English) *</Label>
+                  <Label htmlFor="question">Question *</Label>
                   <Input
-                    id="questionEn"
-                    {...register('questionEn')}
-                    placeholder="Enter question in English"
+                    id="question"
+                    {...register('question')}
+                    placeholder="Enter question"
                     className="mt-1"
                   />
-                  {errors.questionEn && (
-                    <p className="text-sm text-red-600 mt-1">{errors.questionEn.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <Label htmlFor="questionNe">Question (Nepali) *</Label>
-                  <Input
-                    id="questionNe"
-                    {...register('questionNe')}
-                    placeholder="Enter question in Nepali"
-                    className="mt-1"
-                    dir="ltr"
-                  />
-                  {errors.questionNe && (
-                    <p className="text-sm text-red-600 mt-1">{errors.questionNe.message}</p>
+                  {errors.question && (
+                    <p className="text-sm text-red-600 mt-1">{errors.question.message}</p>
                   )}
                 </div>
 
@@ -203,17 +185,11 @@ export default function NewPollPage() {
               <CardContent className="space-y-4">
                 {options.map((option, index) => (
                   <div key={option.id} className="flex gap-4 items-start">
-                    <div className="flex-1 space-y-2">
+                    <div className="flex-1">
                       <Input
-                        value={option.textEn}
-                        onChange={(e) => updateOption(option.id, 'textEn', e.target.value)}
-                        placeholder={`Option ${index + 1} (English)`}
-                      />
-                      <Input
-                        value={option.textNe}
-                        onChange={(e) => updateOption(option.id, 'textNe', e.target.value)}
-                        placeholder={`Option ${index + 1} (Nepali)`}
-                        dir="ltr"
+                        value={option.text}
+                        onChange={(e) => updateOption(option.id, e.target.value)}
+                        placeholder={`Option ${index + 1}`}
                       />
                     </div>
                     <Button

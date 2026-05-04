@@ -73,8 +73,7 @@ export async function GET(req: NextRequest) {
 
     if (search) {
       where.OR = [
-        { titleNe: { contains: search, mode: "insensitive" } },
-        { titleEn: { contains: search, mode: "insensitive" } },
+        { title: { contains: search, mode: "insensitive" } },
       ];
     }
 
@@ -84,8 +83,7 @@ export async function GET(req: NextRequest) {
         where,
         select: {
           id: true,
-          titleNe: true,
-          titleEn: true,
+          title: true,
           slug: true,
           status: true,
           isFlashUpdate: true,
@@ -101,38 +99,37 @@ export async function GET(req: NextRequest) {
               url: true,
             },
           },
-          author: {
-            select: {
-              id: true,
-              name: true,
-              profilePhoto: true,
-            },
-          },
-          category: {
-            select: {
-              id: true,
-              nameNe: true,
-              nameEn: true,
-              slug: true,
-            },
-          },
-          tags: {
-            select: {
-              tag: {
-                select: {
-                  id: true,
-                  nameNe: true,
-                  nameEn: true,
-                },
+           author: {
+              select: {
+                id: true,
+                name: true,
+                image: true,
               },
             },
-          },
-          _count: {
-            select: {
-              comments: true,
-            },
-          },
-        },
+           category: {
+             select: {
+               id: true,
+               name: true,
+               slug: true,
+             },
+           },
+           tags: {
+             select: {
+               tag: {
+                 select: {
+                   id: true,
+                   name: true,
+                   slug: true,
+                 },
+               },
+             },
+           },
+           _count: {
+             select: {
+               comments: true,
+             },
+           },
+         },
         orderBy: sortBy ? { [sortBy]: order } : { createdAt: "desc" },
         skip: (page - 1) * limit,
         take: limit,
@@ -142,17 +139,24 @@ export async function GET(req: NextRequest) {
 
     const origin = process.env.APP_URL || req.nextUrl.origin;
 
-    // Flatten tags and convert featured image URL to absolute URL
-    const formattedArticles = articles.map((article) => ({
-      ...article,
-      tags: article.tags.map((t) => t.tag),
-      featuredImage: article.featuredImage
-        ? {
-            ...article.featuredImage,
-            url: article.featuredImage.url,
-          }
-        : null,
-    }));
+     // Flatten tags and convert featured image URL to absolute URL
+     const formattedArticles = articles.map((article) => ({
+       ...article,
+       tags: article.tags.map((t) => t.tag),
+       featuredImage: article.featuredImage
+         ? {
+             ...article.featuredImage,
+             url: article.featuredImage.url,
+           }
+         : null,
+       author: article.author
+         ? {
+             id: article.author.id,
+             name: article.author.name,
+             profilePhoto: article.author.image,
+           }
+         : null,
+     }));
 
     return NextResponse.json({
       success: true,
@@ -196,7 +200,7 @@ export async function POST(req: NextRequest) {
       return validation;
     }
 
-    const { tagIds, scheduledAt, publishedAt, featuredImageId, ...rest } = validation;
+     const { tagIds, scheduledAt, publishedAt, featuredImageId, authorId, ...rest } = validation;
 
     const articleData: Record<string, unknown> = {
       ...rest,
@@ -239,52 +243,49 @@ export async function POST(req: NextRequest) {
       articleData.featuredImageId = featuredImageId;
     }
 
-    // Generate slug from English title
-    const baseSlug = (articleData.titleEn as string)
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-|-$/g, "");
+     // Generate slug from title
+     const baseSlug = (articleData.title as string)
+       .toLowerCase()
+       .replace(/[^a-z0-9]+/g, "-")
+       .replace(/^-|-$/g, "");
 
-    // Check for duplicate slug and append number if needed
-    let slug = baseSlug;
-    let counter = 1;
-    while (await prisma.article.findUnique({ where: { slug } })) {
-      slug = `${baseSlug}-${counter}`;
-      counter++;
-    }
+     // Check for duplicate slug and append number if needed
+     let slug = baseSlug;
+     let counter = 1;
+     while (await prisma.article.findUnique({ where: { slug } })) {
+       slug = `${baseSlug}-${counter}`;
+       counter++;
+     }
 
-    // Create article
-    const article = await prisma.article.create({
-      data: {
-        titleNe: articleData.titleNe as string,
-        titleEn: articleData.titleEn as string,
-        contentNe: articleData.contentNe as string,
-        contentEn: articleData.contentEn as string,
-        excerptNe: articleData.excerptNe as string | undefined,
-        excerptEn: articleData.excerptEn as string | undefined,
-        categoryId: articleData.categoryId as string,
-        metaTitle: articleData.metaTitle as string | undefined,
-        metaDescription: articleData.metaDescription as string | undefined,
-        ogImage: articleData.ogImage as string | undefined,
-        isFlashUpdate: articleData.isFlashUpdate as boolean | undefined,
-        isFeatured: articleData.isFeatured as boolean | undefined,
-        slug,
-        authorId: authenticatedReq.user!.id,
-        status: (articleData.status as ArticleStatus) || ArticleStatus.DRAFT,
-        scheduledAt: articleData.scheduledAt as Date | undefined,
-        tags: {
-          create: tagIds?.map((tagId) => ({ tagId })) || [],
-        },
-      },
-      select: {
-        id: true,
-        titleNe: true,
-        titleEn: true,
-        slug: true,
-        status: true,
-        createdAt: true,
-      },
-    });
+     // Create article
+     const article = await prisma.article.create({
+       data: {
+         title: articleData.title as string,
+         content: articleData.content as string,
+         excerpt: articleData.excerpt as string | undefined,
+         categoryId: articleData.categoryId as string,
+         metaTitle: articleData.metaTitle as string | undefined,
+         metaDescription: articleData.metaDescription as string | undefined,
+         ogImage: articleData.ogImage as string | undefined,
+          isFlashUpdate: articleData.isFlashUpdate as boolean | undefined,
+          isFeatured: articleData.isFeatured as boolean | undefined,
+          isTitleOnly: articleData.isTitleOnly as boolean | undefined,
+         slug,
+         authorId: authorId || authenticatedReq.user!.id,
+         status: (articleData.status as ArticleStatus) || ArticleStatus.DRAFT,
+         scheduledAt: articleData.scheduledAt as Date | undefined,
+         tags: {
+           create: tagIds?.map((tagId) => ({ tagId })) || [],
+         },
+       },
+       select: {
+         id: true,
+         title: true,
+         slug: true,
+         status: true,
+         createdAt: true,
+       },
+     });
 
     // Invalidate public articles cache
     await deleteCachedPattern("articles:");

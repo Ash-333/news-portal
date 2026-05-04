@@ -51,8 +51,7 @@ export async function PATCH(
       data: { status: ArticleStatus.REVIEW },
       select: {
         id: true,
-        titleNe: true,
-        titleEn: true,
+        title: true,
         status: true,
       },
     })

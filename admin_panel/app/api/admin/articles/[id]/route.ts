@@ -36,14 +36,13 @@ export async function GET(
           select: {
             id: true,
             name: true,
-            profilePhoto: true,
+            image: true,
           },
         },
         category: {
           select: {
             id: true,
-            nameNe: true,
-            nameEn: true,
+            name: true,
             slug: true,
           },
         },
@@ -52,8 +51,7 @@ export async function GET(
             tag: {
               select: {
                 id: true,
-                nameNe: true,
-                nameEn: true,
+                name: true,
                 slug: true,
               },
             },
@@ -119,10 +117,10 @@ export async function PATCH(
     const { id } = await params;
 
     // Get existing article
-    const existingArticle = await prisma.article.findUnique({
-      where: { id, deletedAt: null },
-      select: { authorId: true, status: true, titleNe: true, titleEn: true },
-    });
+     const existingArticle = await prisma.article.findUnique({
+       where: { id, deletedAt: null },
+       select: { authorId: true, status: true, title: true },
+     });
 
     if (!existingArticle) {
       return NextResponse.json(
@@ -184,8 +182,7 @@ export async function PATCH(
         data: updateData,
         select: {
           id: true,
-          titleNe: true,
-          titleEn: true,
+          title: true,
           status: true,
           publishedAt: true,
         },
@@ -241,8 +238,7 @@ export async function PATCH(
         data: { scheduledAt: new Date(validation.data.scheduledAt) },
         select: {
           id: true,
-          titleNe: true,
-          titleEn: true,
+          title: true,
           scheduledAt: true,
         },
       });
@@ -274,9 +270,10 @@ export async function PATCH(
       scheduledAt?: string;
       publishedAt?: string;
       featuredImageId?: string;
+      authorId?: string;
       [key: string]: unknown;
     };
-    const { tagIds, scheduledAt, publishedAt, featuredImageId, ...rest } = validatedData;
+    const { tagIds, scheduledAt, publishedAt, featuredImageId, authorId, ...rest } = validatedData;
 
     const articleData: Record<string, unknown> = {
       ...rest,
@@ -319,36 +316,35 @@ export async function PATCH(
     }
 
     // Regenerate slug if title changed
-    const titleNeChanged = rest.titleNe && rest.titleNe !== existingArticle.titleNe;
-    const titleEnChanged = rest.titleEn && rest.titleEn !== existingArticle.titleEn;
-    if (titleNeChanged || titleEnChanged) {
-      const newTitle = (rest.titleEn as string) || existingArticle.titleEn;
+    const titleChanged = rest.title && rest.title !== existingArticle.title;
+    if (titleChanged) {
+      const newTitle = (rest.title as string) || existingArticle.title;
       articleData.slug = newTitle
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-|-$/g, '');
     }
 
-    // Update article
-    const article = await prisma.article.update({
-      where: { id },
-      data: {
-        ...(articleData as typeof articleData),
-        tags: tagIds && tagIds.length > 0
-          ? {
-              deleteMany: {},
-              create: tagIds.map((tagId: string) => ({ tagId })),
-            }
-          : undefined,
-      } as any,
-      select: {
-        id: true,
-        titleNe: true,
-        titleEn: true,
-        slug: true,
-        status: true,
-        updatedAt: true,
-      },
+     // Update article
+     const article = await prisma.article.update({
+       where: { id },
+       data: {
+         ...(articleData as typeof articleData),
+         authorId: authorId || undefined,
+         tags: tagIds && tagIds.length > 0
+           ? {
+               deleteMany: {},
+               create: tagIds.map((tagId: string) => ({ tagId })),
+             }
+           : undefined,
+       } as any,
+       select: {
+         id: true,
+         title: true,
+         slug: true,
+         status: true,
+         updatedAt: true,
+       },
     });
 
     // Create audit log

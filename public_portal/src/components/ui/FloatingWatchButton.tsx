@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Play } from 'lucide-react';
-import { useLanguage } from '@/context/LanguageContext';
+
 import { cn } from '@/lib/utils';
 
 const STORAGE_KEY = 'floating_button_position';
@@ -23,7 +23,7 @@ function getDefaultPosition(viewportWidth: number, viewportHeight: number): Posi
 }
 
 export function FloatingWatchButton() {
-    const { isNepali } = useLanguage();
+
     const [position, setPosition] = useState<Position>({ x: VIEWPORT_PADDING, y: VIEWPORT_PADDING });
     const [isDragging, setIsDragging] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
@@ -172,11 +172,11 @@ export function FloatingWatchButton() {
                 left: position.x,
                 top: position.y,
             }}
-            aria-label={isNepali ? 'यूट्यूबमा हेर्नुहोस्' : 'Watch on YouTube'}
+            aria-label={'यूट्यूबमा हेर्नुहोस्'}
         >
             <Play className="w-5 h-5 fill-current" />
             <span className="hidden sm:inline">
-                {isNepali ? 'हेर्नुहोस्' : 'Watch Now'}
+                {'हेर्नुहोस्'}
             </span>
         </a>
     );

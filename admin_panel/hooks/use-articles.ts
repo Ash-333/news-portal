@@ -56,12 +56,9 @@ const fetchArticle = async (id: string): Promise<ArticleWithRelations> => {
 // Public article type (for /articles/[slug])
 interface PublicArticle {
   id: string
-  titleNe: string
-  titleEn: string
-  contentNe: string
-  contentEn: string
-  excerptNe?: string
-  excerptEn?: string
+  title: string
+  content: string
+  excerpt?: string
   slug: string
   isFlashUpdate: boolean
   isFeatured: boolean
@@ -82,14 +79,12 @@ interface PublicArticle {
   }
   category: {
     id: string
-    nameNe: string
-    nameEn: string
+    name: string
     slug: string
   }
   tags: {
     id: string
-    nameNe: string
-    nameEn: string
+    name: string
     slug: string
   }[]
   comments: number

@@ -4,10 +4,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Clock } from 'lucide-react';
 import { Article } from '@/types';
-import { useLanguage } from '@/context/LanguageContext';
+
 import { getRelativeTime, toNepaliDigits, cn } from '@/lib/utils';
 import { getArticleImage } from '@/lib/utils/image';
-import { getTitle, getExcerpt, getCategoryName, getAuthorName } from '@/lib/utils/lang';
 
 interface ArticleCardProps {
   article: Article;
@@ -26,11 +25,10 @@ export function ArticleCard({
   showMeta = true,
   className,
 }: ArticleCardProps) {
-  const { isNepali, language } = useLanguage();
 
-  const title = getTitle(article, language);
-  const excerpt = getExcerpt(article, language);
-  const categoryName = getCategoryName(article.category, language);
+  const title = article.title || '';
+  const excerpt = article.excerpt || '';
+  const categoryName = article.category.name || '';
 
   if (variant === 'horizontal') {
     return (
@@ -58,7 +56,7 @@ export function ArticleCard({
           <Link href={`/article/${article.slug}`}>
             <h3 className={cn(
               'font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-news-red transition-colors',
-              isNepali ? 'font-nepali text-base' : 'text-sm'
+              'text-base'
             )}>
               {title}
             </h3>
@@ -67,7 +65,7 @@ export function ArticleCard({
             <div className="flex items-center gap-3 mt-2 text-xs text-gray-500">
               <span className="flex items-center gap-1">
                 <Clock className="h-3 w-3" />
-                {getRelativeTime(article.publishedAt, language)}
+                {getRelativeTime(article.publishedAt)}
               </span>
             </div>
           )}
@@ -78,18 +76,18 @@ export function ArticleCard({
 
   if (variant === 'compact') {
     return (
-      <article className={cn('group', className)}>
+      <article className={cn('group')}>
         <Link href={`/article/${article.slug}`}>
           <h3 className={cn(
             'font-medium text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-news-red transition-colors',
-            isNepali ? 'font-nepali text-sm leading-relaxed' : 'text-sm'
+            'text-sm leading-relaxed'
           )}>
             {title}
           </h3>
         </Link>
         {showMeta && (
           <span className="text-xs text-gray-500 mt-1 block">
-            {getRelativeTime(article.publishedAt, language)}
+            {getRelativeTime(article.publishedAt)}
           </span>
         )}
       </article>
@@ -98,7 +96,7 @@ export function ArticleCard({
 
   if (variant === 'province') {
     return (
-      <article className={cn('group', className)}>
+      <article className={cn('group')}>
         <Link href={`/article/${article.slug}`} className="block relative aspect-[16/10] rounded-lg overflow-hidden mb-2">
           <Image
             src={getArticleImage(article)}
@@ -111,14 +109,14 @@ export function ArticleCard({
         <Link href={`/article/${article.slug}`}>
           <h3 className={cn(
             'font-medium text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-news-red transition-colors',
-            isNepali ? 'font-nepali text-sm' : 'text-sm'
+            'text-sm'
           )}>
             {title}
           </h3>
         </Link>
         {showMeta && (
           <span className="text-xs text-gray-500 mt-1 block">
-            {getRelativeTime(article.publishedAt, language)}
+            {getRelativeTime(article.publishedAt)}
           </span>
         )}
       </article>
@@ -127,7 +125,7 @@ export function ArticleCard({
 
   if (variant === 'featured') {
     return (
-      <article className={cn('group', className)}>
+      <article className={cn('group')}>
         <Link href={`/article/${article.slug}`} className="block relative aspect-[4/3] md:aspect-[16/9] rounded-xl overflow-hidden mb-4 shadow-sm group-hover:shadow-md transition-shadow">
           <Image
             src={getArticleImage(article)}
@@ -151,17 +149,17 @@ export function ArticleCard({
             
             <h2 className={cn(
               'font-bold text-white mb-3 group-hover:text-red-300 transition-colors line-clamp-3',
-              isNepali ? 'font-nepali text-2xl sm:text-3xl lg:text-[2.25rem] leading-[1.3]' : 'text-2xl sm:text-3xl lg:text-4xl font-heading leading-tight'
+              'text-2xl sm:text-3xl lg:text-[2.25rem] leading-[1.3]'
             )}>
               {title}
             </h2>
             
             {showMeta && (
               <div className="flex items-center gap-4 text-xs sm:text-sm text-white/80 font-medium">
-                <span className={cn(isNepali ? 'font-nepali' : '')}>{getAuthorName(article.author, language)}</span>
+                <span className="">{article.author.name}</span>
                 <span className="flex items-center gap-1.5">
                   <Clock className="h-4 w-4" />
-                  {getRelativeTime(article.publishedAt, language)}
+                  {getRelativeTime(article.publishedAt)}
                 </span>
               </div>
             )}
@@ -173,7 +171,7 @@ export function ArticleCard({
 
   // Default variant
   return (
-    <article className={cn('group', className)}>
+    <article className={cn('group')}>
       <Link href={`/article/${article.slug}`} className="block relative aspect-[16/10] rounded-lg overflow-hidden mb-3">
         <Image
           src={getArticleImage(article)}
@@ -196,7 +194,7 @@ export function ArticleCard({
       <Link href={`/article/${article.slug}`}>
         <h3 className={cn(
           'font-bold text-gray-900 dark:text-gray-100 line-clamp-3 group-hover:text-news-red transition-colors',
-          isNepali ? 'font-nepali text-base leading-relaxed' : 'text-base lg:text-lg leading-snug'
+          'text-base leading-relaxed'
         )}>
           {title}
         </h3>
@@ -204,7 +202,7 @@ export function ArticleCard({
       {showExcerpt && excerpt && (
         <p className={cn(
           'text-sm text-gray-600 dark:text-gray-400 mt-2 line-clamp-2',
-          isNepali ? 'font-nepali' : ''
+          ''
         )}>
           {excerpt}
         </p>
@@ -213,7 +211,7 @@ export function ArticleCard({
         <div className="flex items-center gap-3 mt-3 text-xs text-gray-500">
           <span className="flex items-center gap-1">
             <Clock className="h-3 w-3" />
-            {getRelativeTime(article.publishedAt, language)}
+            {getRelativeTime(article.publishedAt)}
           </span>
         </div>
       )}

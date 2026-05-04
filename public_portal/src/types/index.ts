@@ -21,26 +21,23 @@ export interface FeaturedImage {
 
 export interface ArticleAuthor {
   id: string;
-  name: string;
-  profilePhoto?: string | null;
+  name?: string;
+  image?: string | null;
   bio?: string | null;
   // Additional fields from API
   slug?: string;
-  nameNe?: string;
-  bioNe?: string;
   email?: string;
   // Backward compatibility
   avatar?: string;
+  profilePhoto?: string | null;
 }
 
 export interface Author {
   id: string;
   slug: string;
-  name: string;
-  nameNe: string;
+  name?: string;
   email: string;
-  bio: string;
-  bioNe: string;
+  bio?: string;
   avatar: string;
   articleCount: number;
   socialLinks?: {
@@ -53,42 +50,31 @@ export interface Author {
 export interface Province {
   id: string;
   name: string;
-  nameNe: string;
   capital: string;
-  capitalNe: string;
 }
 
 export interface ArticleCategory {
   id: string;
-  nameNe: string;
-  nameEn?: string;
-  slug: string;
-  // Backward compatibility
   name?: string;
+  slug: string;
 }
 
 export interface Tag {
   id: string;
-  nameNe: string;
-  nameEn?: string;
-  slug: string;
-  // Backward compatibility
   name?: string;
+  slug: string;
 }
 
 export interface Article {
   id: string;
-  titleNe: string;
-  titleEn?: string;
-  subheadingNe?: string;
-  subheadingEn?: string;
-  excerptNe: string;
-  excerptEn?: string;
-  contentNe?: string;
-  contentEn?: string;
+  title?: string;
+  subheading?: string;
+  excerpt?: string;
+  content?: string;
   slug: string;
   isFlashUpdate?: boolean;
   isFeatured?: boolean;
+  isTitleOnly?: boolean;
   isOpinion?: boolean;
   province?: string;
   publishedAt: string;
@@ -102,9 +88,6 @@ export interface Article {
   tags: Tag[];
   _count?: { comments: number };
   // Backward compatibility fields (defaults)
-  title?: string;
-  content?: string;
-  excerpt?: string;
   views?: number;
   readTime?: number;
   modifiedAt?: string;
@@ -112,9 +95,7 @@ export interface Article {
 
 export interface Category {
   id: string;
-  name: string;
-  nameNe: string;
-  nameEn?: string;
+  name?: string;
   slug: string;
   parentId?: string | null;
   createdAt?: string;
@@ -127,7 +108,6 @@ export interface Category {
 
 export interface NavItem {
   label: string;
-  labelNe: string;
   href: string;
   hasDropdown?: boolean;
   children?: NavItem[];
@@ -143,7 +123,8 @@ export interface Comment {
   user?: {
     id: string;
     name: string;
-    profilePhoto: string | null;
+    image: string | null;
+    profilePhoto?: string | null;
   };
   replies?: Comment[];
   // Backward compatibility
@@ -158,21 +139,18 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  profilePhoto: string | null;
+  image: string | null;
+  profilePhoto?: string | null;
   bio: string | null;
   role: string;
-  language: "NEPALI" | "ENGLISH";
   createdAt: string;
 }
 
 export interface FlashUpdate {
   id: string;
-  titleNe: string;
-  titleEn: string;
-  contentNe: string;
-  contentEn: string;
-  excerptNe: string | null;
-  excerptEn: string | null;
+  title?: string;
+  content?: string;
+  excerpt?: string | null;
   slug: string;
   featuredImageId: string | null;
   featuredImage: {
@@ -191,14 +169,13 @@ export interface FlashUpdate {
   updatedAt: string;
   author: {
     name: string;
-    profilePhoto: string | null;
+    image: string | null;
   };
 }
 
 export interface VideoUpdate {
   id: string;
-  titleNe: string;
-  titleEn: string;
+  title?: string;
   youtubeUrl: string;
   thumbnailUrl: string;
   iframeUrl: string;
@@ -210,14 +187,13 @@ export interface VideoUpdate {
   updatedAt: string;
   author: {
     name: string;
-    profilePhoto: string | null;
+    image: string | null;
   };
 }
 
 export interface Ad {
   id: string;
-  titleNe: string;
-  titleEn: string;
+  title?: string;
   mediaUrl: string;
   mediaType: string;
   linkUrl: string;
@@ -239,8 +215,8 @@ export interface Ad {
 export interface Match {
   id: string;
   tournament: string;
-  team1: { name: string; nameNe?: string; score?: number; logo: string };
-  team2: { name: string; nameNe?: string; score?: number; logo: string };
+  team1: { name: string; score?: number; logo: string };
+  team2: { name: string; score?: number; logo: string };
   status: "live" | "upcoming" | "finished";
   startTime: string;
   venue?: string;
@@ -266,9 +242,6 @@ export interface WeatherData {
   location: string;
 }
 
-// UI language type used in the frontend
-export type Language = "ne" | "en";
-
 // Simple JSON-LD type used by existing helpers
 export interface JsonLdData {
   "@context": string;
@@ -279,16 +252,14 @@ export interface JsonLdData {
 // Poll types
 export interface PollOption {
   id: string;
-  textEn: string;
-  textNe: string;
+  text?: string;
   voteCount: number;
   percentage?: number;
 }
 
 export interface Poll {
   id: string;
-  questionNe: string;
-  questionEn: string;
+  question?: string;
   description?: string;
   isMultiple: boolean;
   startsAt?: string;
@@ -324,8 +295,7 @@ export type AdPosition =
 
 export interface AdWithPosition {
   id: string;
-  titleNe: string;
-  titleEn: string;
+  title?: string;
   mediaUrl: string;
   mediaType: "image" | "video" | "script";
   linkUrl: string;
@@ -348,10 +318,8 @@ export interface Horoscope {
   id: string;
   zodiacSign: string;
   icon: string;
-  titleNe: string;
-  titleEn: string;
-  contentNe: string;
-  contentEn: string;
+  title?: string;
+  content?: string;
   date: string;
   isPublished: boolean;
   author?: {
@@ -362,16 +330,13 @@ export interface Horoscope {
 // Audio News types
 export interface AudioNewsCategory {
   id: string;
-  nameNe: string;
-  nameEn: string;
+  name?: string;
 }
 
 export interface AudioNews {
   id: string;
-  titleNe: string;
-  titleEn: string;
-  descriptionNe: string | null;
-  descriptionEn: string | null;
+  title?: string;
+  description?: string | null;
   audioUrl: string;
   thumbnailUrl: string | null;
   categoryId: string | null;
@@ -385,15 +350,11 @@ export interface AudioNews {
 // Team Member Types
 export interface TeamMember {
   id: string;
-  name: string;
-  nameNe: string;
-  department: string;
-  departmentNe: string;
-  designation: string;
-  designationNe: string;
+  name?: string;
+  department?: string;
+  designation?: string;
   image: string;
   bio?: string;
-  bioNe?: string;
   email?: string;
   phone?: string;
   newsEmail?: string;
@@ -416,17 +377,14 @@ export interface PhotoGalleryMedia {
 export interface PhotoGalleryPhoto {
   id: string;
   order: number;
-  captionNe?: string;
-  captionEn?: string;
+  caption?: string;
   media: PhotoGalleryMedia;
 }
 
 export interface PhotoGallery {
   id: string;
-  titleNe: string;
-  titleEn: string;
-  excerptNe?: string;
-  excerptEn?: string;
+  title?: string;
+  excerpt?: string;
   slug: string;
   isPublished: boolean;
   publishedAt?: string;
@@ -439,8 +397,7 @@ export interface PhotoGallery {
   author: {
     id: string;
     name: string;
-    nameNe?: string;
-    profilePhoto?: string;
+    image?: string;
   };
   photos: PhotoGalleryPhoto[];
 }

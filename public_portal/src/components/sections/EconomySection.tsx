@@ -3,11 +3,10 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Article, Category } from '@/types';
-import { useLanguage } from '@/context/LanguageContext';
+
 import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getArticleImage } from '@/lib/utils/image';
-import { getTitle, getExcerpt } from '@/lib/utils/lang';
 
 interface EconomySectionProps {
   articles: Article[];
@@ -15,11 +14,10 @@ interface EconomySectionProps {
 }
 
 export function EconomySection({ articles, category }: EconomySectionProps) {
-  const { isNepali, language, t } = useLanguage();
 
   if (!articles.length) return null;
 
-  const categoryName = isNepali ? category.nameNe : category.nameEn;
+  const categoryName = category.name;
   const featuredArticle = articles[0];
   const listArticles = articles.slice(1, 7);
 
@@ -32,7 +30,7 @@ export function EconomySection({ articles, category }: EconomySectionProps) {
             <div className="w-1 h-6 bg-news-red rounded-full" />
             <h2 className={cn(
               'text-xl md:text-2xl font-bold text-gray-900 dark:text-white',
-              isNepali ? 'font-nepali' : ''
+              'font-nepali'
             )}>
               {categoryName}
             </h2>
@@ -41,7 +39,6 @@ export function EconomySection({ articles, category }: EconomySectionProps) {
             href={`/category/${category.slug}`}
             className="flex items-center gap-1 text-sm text-news-red hover:underline font-medium"
           >
-            <span className={isNepali ? 'font-nepali' : ''}>{t('category.viewAll')}</span>
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
@@ -55,7 +52,7 @@ export function EconomySection({ articles, category }: EconomySectionProps) {
             >
               <Image
                 src={getArticleImage(featuredArticle)}
-                alt={getTitle(featuredArticle, language)}
+                alt={featuredArticle.title || ''}
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
                 sizes="(max-width: 1024px) 100vw, 700px"
@@ -64,9 +61,9 @@ export function EconomySection({ articles, category }: EconomySectionProps) {
             <Link href={`/article/${featuredArticle.slug}`}>
               <h3 className={cn(
                 'font-bold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-news-red transition-colors',
-                isNepali ? 'font-nepali text-2xl sm:text-3xl leading-[1.2]' : 'text-2xl sm:text-3xl font-heading leading-tight'
+                'font-nepali text-2xl sm:text-3xl leading-[1.2]'
               )}>
-                {getTitle(featuredArticle, language)}
+                {featuredArticle.title || ''}
               </h3>
             </Link>
           </div>
@@ -79,9 +76,9 @@ export function EconomySection({ articles, category }: EconomySectionProps) {
                   <Link href={`/article/${article.slug}`} className="shrink-0">
                     <div className="relative w-28 h-20 rounded-lg overflow-hidden">
                       <Image
-                        src={getArticleImage(article)}
-                        alt={getTitle(article, language)}
-                        fill
+                         src={getArticleImage(article)}
+                         alt={article.title || ''}
+                         fill
                         className="object-cover transition-transform duration-300 group-hover:scale-105"
                         sizes="(max-width: 768px) 112px, 120px"
                       />
@@ -90,11 +87,11 @@ export function EconomySection({ articles, category }: EconomySectionProps) {
                   <div className="flex-1 min-w-0">
                     <Link href={`/article/${article.slug}`}>
                       <h4 className={cn(
-                        'font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-news-red transition-colors',
-                        isNepali ? 'font-nepali text-sm md:text-base leading-relaxed' : 'text-sm md:text-base'
-                      )}>
-                        {getTitle(article, language)}
-                      </h4>
+                         'font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-news-red transition-colors',
+                         'font-nepali text-sm md:text-base leading-relaxed'
+                       )}>
+                         {article.title || ''}
+                       </h4>
                     </Link>
                   </div>
                 </article>

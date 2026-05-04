@@ -59,10 +59,8 @@ export async function GET(req: NextRequest) {
     if (zodiacSign) where.zodiacSign = zodiacSign;
     if (search) {
       where.OR = [
-        { titleNe: { contains: search, mode: "insensitive" } },
-        { titleEn: { contains: search, mode: "insensitive" } },
-        { contentNe: { contains: search, mode: "insensitive" } },
-        { contentEn: { contains: search, mode: "insensitive" } },
+        { title: { contains: search, mode: "insensitive" } },
+        { content: { contains: search, mode: "insensitive" } },
       ];
     }
 
@@ -73,10 +71,8 @@ export async function GET(req: NextRequest) {
           id: true,
           zodiacSign: true,
           icon: true,
-          titleNe: true,
-          titleEn: true,
-          contentNe: true,
-          contentEn: true,
+          title: true,
+          content: true,
           date: true,
           isPublished: true,
           createdAt: true,
@@ -121,10 +117,8 @@ export async function POST(req: NextRequest) {
     const {
       zodiacSign,
       icon,
-      titleNe,
-      titleEn,
-      contentNe,
-      contentEn,
+      title,
+      content,
       date,
       isPublished,
     } = validation;
@@ -133,10 +127,8 @@ export async function POST(req: NextRequest) {
       data: {
         zodiacSign: zodiacSign as string,
         icon: (icon as string) || "Sparkles",
-        titleNe: titleNe as string,
-        titleEn: titleEn as string,
-        contentNe: contentNe as string,
-        contentEn: contentEn as string,
+        title: title as string,
+        content: content as string,
         date: date ? new Date(date as string) : new Date(),
         isPublished: isPublished as boolean,
         authorId: authenticatedReq.user!.id,

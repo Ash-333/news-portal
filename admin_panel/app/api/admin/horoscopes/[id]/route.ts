@@ -85,10 +85,10 @@ export async function PATCH(
 
     if (body.zodiacSign !== undefined) updateData.zodiacSign = body.zodiacSign;
     if (body.icon !== undefined) updateData.icon = body.icon;
-    if (body.titleNe !== undefined) updateData.titleNe = body.titleNe;
-    if (body.titleEn !== undefined) updateData.titleEn = body.titleEn;
-    if (body.contentNe !== undefined) updateData.contentNe = body.contentNe;
-    if (body.contentEn !== undefined) updateData.contentEn = body.contentEn;
+    if (body.title !== undefined) updateData.title = body.title;
+    if (body.title !== undefined) updateData.title = body.title;
+    if (body.content !== undefined) updateData.content = body.content;
+    if (body.content !== undefined) updateData.content = body.content;
     if (body.date !== undefined) updateData.date = new Date(body.date);
     if (body.isPublished !== undefined)
       updateData.isPublished = body.isPublished;

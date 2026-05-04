@@ -7,7 +7,7 @@ import { AdBox } from '@/components/ads/AdBox';
 import { FlashUpdateSidebar } from '@/components/FlashUpdateSidebar';
 import { JsonLd } from '@/components/JsonLd';
 import { NewsArticleJsonLd, WebSiteJsonLd } from '@/lib/jsonLd';
-import { getFeaturedArticles, getLatestArticles, getArticles } from '@/lib/api/articles';
+import { getFeaturedArticles, getLatestArticles, getArticles, getPopularArticles } from '@/lib/api/articles';
 import { getCategories } from '@/lib/api/categories';
 import { getPolls } from '@/lib/api/polls';
 import { HoroscopeSection } from '@/components/horoscopes/HoroscopeSection';
@@ -16,7 +16,6 @@ import { PhotoGallerySection } from '@/components/sections/PhotoGallerySection';
 import { FullWidthArticlesSection } from '@/components/sections/FullWidthArticlesSection';
 import { WorldDiasporaSection } from '@/components/sections/WorldDiasporaSection';
 import { Article, Poll, Category } from '@/types';
-import { getServerLanguage } from '@/lib/utils/language';
 
 // Custom Category Sections
 import { NewsSection } from '@/components/sections/NewsSection';
@@ -30,31 +29,19 @@ import { TechnologySection } from '@/components/sections/TechnologySection';
 
 export const revalidate = 60;
 
-export async function generateMetadata({ searchParams }: { searchParams?: { lang?: string } }): Promise<Metadata> {
-  const urlLang = searchParams?.lang as string | undefined;
-  const serverLang = getServerLanguage();
-  const isNepali = urlLang === 'ne' || (!urlLang && serverLang === 'ne');
-
+export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: isNepali ? 'होम - HTC मिडिया' : 'Home - HTC Media',
-    description: isNepali
-      ? 'नेपाल र विश्वबाट ताजा समाचार, ब्रेकिङ न्यूज र गहन विश्लेषण।'
-      : 'Latest news, breaking news, and in-depth analysis from Nepal and around the world.',
+    title: 'HTC Media - News Portal',
+    description: 'Latest news from Nepal and around the world',
     openGraph: {
       type: 'website',
-      title: isNepali ? 'HTC मिडिया - तपाईंको विश्वसनीय समाचार स्रोत' : 'HTC Media - Your Trusted Source for News',
-      description: isNepali
-        ? 'नेपाल र विश्वबाट ताजा समाचार र अपडेटहरू।'
-        : 'Latest news and updates from Nepal and around the world.',
+      title: 'HTC Media - Your Trusted News Source',
+      description: 'Latest news from Nepal and around the world',
     },
   };
 }
 
-
-export default async function HomePage({ searchParams }: { searchParams?: { lang?: string } }) {
-  const urlLang = searchParams?.lang as string | undefined;
-  const serverLang = getServerLanguage();
-  const isNepali = urlLang === 'ne' || (!urlLang && serverLang === 'ne');
+export default async function HomePage() {
   const [
     featuredResult,
     latestResult,
@@ -81,6 +68,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { lang
     healthResult,
     lifestyleResult,
     cultureResult,
+    popularResult,
   ] = await Promise.allSettled([
     getFeaturedArticles(),
     getLatestArticles(60),
@@ -107,6 +95,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { lang
     getArticles({ category: 'swasthya', limit: 4 }),
     getArticles({ category: 'jeevan-shaili', limit: 10 }),
     getArticles({ category: 'dharma-sanskriti', limit: 7 }),
+    getPopularArticles("week", 10),
   ]);
 
   const featuredArticles =
@@ -124,17 +113,16 @@ export default async function HomePage({ searchParams }: { searchParams?: { lang
       ? categoriesResult.value.data
       : [];
 
-  const sortedByNewest = [...articles].sort(
-    (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
-  );
+  const sortedByNewest = [...articles].sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
 
   let fullWidthArticles = featuredArticles.length > 0
     ? featuredArticles
     : sortedByNewest.slice(0, 5);
-  const trendingArticles = [...articles].sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0)).slice(0, 8);
 
   const getArticlesFromResult = (result: PromiseSettledResult<any>) =>
     result.status === 'fulfilled' && result.value.success ? result.value.data : [];
+
+  const trendingArticles = getArticlesFromResult(popularResult);
 
   const newsArticles = getArticlesFromResult(newsResult);
   const politicsArticles = getArticlesFromResult(politicsResult);
@@ -206,167 +194,142 @@ export default async function HomePage({ searchParams }: { searchParams?: { lang
       <div className="min-h-screen">
         <div className="container mx-auto px-4 py-8">
           <FullWidthArticlesSection articles={fullWidthArticles} />
+
           <div className="mt-8 flex justify-center">
             <AdBox position="HOME_TOP" className="h-[90px] w-full max-w-[728px]" />
           </div>
         </div>
 
-        {/* <section className="border-t border-news-border dark:border-news-border-dark py-6">
-          <div className="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <div className="lg:col-span-8 space-y-8">
-              <LatestNewsSection articles={newsArticles} poll={activePoll} category={newsCategory} />
-            </div>
+        {/* News Section */}
+        {newsCategory && newsArticles.length > 0 && (
+          <NewsSection
+            articles={newsArticles}
+            category={newsCategory}
+            poll={activePoll}
+            mostReadArticles={trendingArticles}
+          />
+        )}
 
-            <aside className="lg:col-span-4 space-y-6">
-              {trendingArticles.length > 0 && (
-                (() => {
-                  const { PopularArticles } = require('@/components/article/PopularArticles');
-                  return <PopularArticles articles={trendingArticles} />;
-                })()
-              )}
-
-              <div className="space-y-6">
-                <div className="my-6">
-                  <AdBox position="SIDEBAR_TOP" className="h-[250px]" />
-                </div>
-                <FlashUpdateSidebar />
-              </div>
-            </aside>
-          </div>
-        </section> */}
-
-        <div className="space-y-8">
-          {/* News Section */}
-          {newsCategory && newsArticles.length > 0 && (
-            <NewsSection
-              articles={newsArticles}
-              category={newsCategory}
-              poll={activePoll}
-              mostReadArticles={trendingArticles}
-            />
-          )}
-
-          <div className="py-4 container mx-auto px-4 flex justify-center">
-            <AdBox position="HOME_MIDDLE" className="h-[90px] w-full max-w-[728px]" />
-          </div>
-
-          {/* Politics Section - Keep existing CategorySection */}
-          {politicsCategory && politicsArticles.length > 0 ? (
-            <CategorySection
-              category={politicsCategory}
-              articles={politicsArticles}
-              layout="grid"
-            />
-          ) : null}
-
-          <div className="py-4 container mx-auto px-4 flex justify-center">
-            <AdBox position="HOME_MIDDLE" className="h-[90px] w-full max-w-[728px]" />
-          </div>
-
-          {/* Story & Opinion Combined Section */}
-          {storyCategory && opinionCategory && (storyArticles.length > 0 || opinionArticles.length > 0) && (
-            <StoryOpinionSection
-              storyArticles={storyArticles}
-              storyCategory={storyCategory}
-              opinionArticles={opinionArticles}
-              opinionCategory={opinionCategory}
-            />
-          )}
-
-          <div className="py-4 container mx-auto px-4 flex justify-center">
-            <AdBox position="HOME_MIDDLE" className="h-[90px] w-full max-w-[728px]" />
-          </div>
-
-          {/* Entertainment Section */}
-          {entertainmentCategory && entertainmentArticles.length > 0 ? (
-            <CategorySection
-              category={entertainmentCategory}
-              articles={entertainmentArticles}
-              layout="entertainment"
-            />
-          ) : null}
-
-          <div className="py-4 container mx-auto px-4 flex justify-center">
-            <AdBox position="HOME_MIDDLE" className="h-[90px] w-full max-w-[728px]" />
-          </div>
-
-          {/* Sports Section */}
-          {sportsCategory && sportsArticles.length > 0 && (
-            <SportsHomeSection articles={sportsArticles} category={sportsCategory} />
-          )}
-
-          <div className="py-4 container mx-auto px-4 flex justify-center">
-            <AdBox position="HOME_MIDDLE" className="h-[90px] w-full max-w-[728px]" />
-          </div>
-
-          {/* World & Diaspora Section */}
-          {worldCategory && diasporaCategory && (
-            <WorldDiasporaSection
-              worldCategory={worldCategory}
-              worldArticles={worldArticles}
-              diasporaCategory={diasporaCategory}
-              diasporaArticles={diasporaArticles}
-            />
-          )}
-
-          <div className="py-4 container mx-auto px-4 flex justify-center">
-            <AdBox position="HOME_MIDDLE" className="h-[90px] w-full max-w-[728px]" />
-          </div>
-
-          {/* Economy Section */}
-          {economyCategory && economyArticles.length > 0 && (
-            <EconomySection articles={economyArticles} category={economyCategory} />
-          )}
-
-          {/* Society & Culture Combined Section */}
-          {societyCategory && cultureCategory && (societyArticles.length > 0 || cultureArticles.length > 0) && (
-            <SocietyCultureSection
-              societyCategory={societyCategory}
-              societyArticles={societyArticles}
-              cultureCategory={cultureCategory}
-              cultureArticles={cultureArticles}
-            />
-          )}
-
-          {/* Technology Section */}
-          {technologyCategory && technologyArticles.length > 0 && (
-            <TechnologySection articles={technologyArticles} category={technologyCategory} />
-          )}
-
-          {/* Lifestyle & Health Combined Section */}
-          {lifestyleCategory && healthCategory && (lifestyleArticles.length > 0 || healthArticles.length > 0) && (
-            <LifestyleHealthSection
-              lifestyleCategory={lifestyleCategory}
-              lifestyleArticles={lifestyleArticles}
-              healthCategory={healthCategory}
-              healthArticles={healthArticles}
-            />
-          )}
-
-          {/* Province Section */}
-          {hasProvinceNews && (
-            <ProvinceSection
-              provinces={[
-                { data: province1Articles, info: { slug: 'PROVINCE_1', nameNe: 'प्रदेश १', nameEn: 'Province 1' } },
-                { data: province2Articles, info: { slug: 'PROVINCE_2', nameNe: 'प्रदेश २', nameEn: 'Province 2' } },
-                { data: province3Articles, info: { slug: 'PROVINCE_3', nameNe: 'प्रदेश ३', nameEn: 'Province 3' } },
-                { data: province4Articles, info: { slug: 'PROVINCE_4', nameNe: 'प्रदेश ४', nameEn: 'Province 4' } },
-                { data: province5Articles, info: { slug: 'PROVINCE_5', nameNe: 'प्रदेश ५', nameEn: 'Province 5' } },
-                { data: province6Articles, info: { slug: 'PROVINCE_6', nameNe: 'प्रदेश ६', nameEn: 'Province 6' } },
-                { data: province7Articles, info: { slug: 'PROVINCE_7', nameNe: 'प्रदेश ७', nameEn: 'Province 7' } },
-              ]}
-            />
-          )}
-
-          <div className="py-4 container mx-auto px-4 flex justify-center">
-            <AdBox position="HOME_MIDDLE" className="h-[90px] w-full max-w-[728px]" />
-          </div>
+        <div className="py-4 container mx-auto px-4 flex justify-center">
+          <AdBox position="HOME_MIDDLE" className="h-[90px] w-full max-w-[728px]" />
         </div>
 
-        <HoroscopeSection />
-        <VideoSection />
-        <PhotoGallerySection />
+        {/* Politics Section */}
+        {politicsCategory && politicsArticles.length > 0 && (
+          <CategorySection
+            category={politicsCategory}
+            articles={politicsArticles}
+            layout="grid"
+          />
+        )}
+
+        <div className="py-4 container mx-auto px-4 flex justify-center">
+          <AdBox position="HOME_MIDDLE" className="h-[90px] w-full max-w-[728px]" />
+        </div>
+
+        {/* Story & Opinion Combined Section */}
+        {storyCategory && opinionCategory && (storyArticles.length > 0 || opinionArticles.length > 0) && (
+          <StoryOpinionSection
+            storyArticles={storyArticles}
+            storyCategory={storyCategory}
+            opinionArticles={opinionArticles}
+            opinionCategory={opinionCategory}
+          />
+        )}
+
+        <div className="py-4 container mx-auto px-4 flex justify-center">
+          <AdBox position="HOME_MIDDLE" className="h-[90px] w-full max-w-[728px]" />
+        </div>
+
+        {/* Entertainment Section */}
+        {entertainmentCategory && entertainmentArticles.length > 0 && (
+          <CategorySection
+            category={entertainmentCategory}
+            articles={entertainmentArticles}
+            layout="entertainment"
+          />
+        )}
+
+        <div className="py-4 container mx-auto px-4 flex justify-center">
+          <AdBox position="HOME_MIDDLE" className="h-[90px] w-full max-w-[728px]" />
+        </div>
+
+        {/* Sports Section */}
+        {sportsCategory && sportsArticles.length > 0 && (
+          <SportsHomeSection articles={sportsArticles} category={sportsCategory} />
+        )}
+
+        <div className="py-4 container mx-auto px-4 flex justify-center">
+          <AdBox position="HOME_MIDDLE" className="h-[90px] w-full max-w-[728px]" />
+        </div>
+
+        {/* World & Diaspora Section */}
+        {worldCategory && diasporaCategory && (
+          <WorldDiasporaSection
+            worldCategory={worldCategory}
+            worldArticles={worldArticles}
+            diasporaCategory={diasporaCategory}
+            diasporaArticles={diasporaArticles}
+          />
+        )}
+
+        <div className="py-4 container mx-auto px-4 flex justify-center">
+          <AdBox position="HOME_MIDDLE" className="h-[90px] w-full max-w-[728px]" />
+        </div>
+
+        {/* Economy Section */}
+        {economyCategory && economyArticles.length > 0 && (
+          <EconomySection articles={economyArticles} category={economyCategory} />
+        )}
+
+        {/* Society & Culture Combined Section */}
+        {societyCategory && cultureCategory && (societyArticles.length > 0 || cultureArticles.length > 0) && (
+          <SocietyCultureSection
+            societyCategory={societyCategory}
+            societyArticles={societyArticles}
+            cultureCategory={cultureCategory}
+            cultureArticles={cultureArticles}
+          />
+        )}
+
+        {/* Technology Section */}
+        {technologyCategory && technologyArticles.length > 0 && (
+          <TechnologySection articles={technologyArticles} category={technologyCategory} />
+        )}
+
+        {/* Lifestyle & Health Combined Section */}
+        {lifestyleCategory && healthCategory && (lifestyleArticles.length > 0 || healthArticles.length > 0) && (
+          <LifestyleHealthSection
+            lifestyleCategory={lifestyleCategory}
+            lifestyleArticles={lifestyleArticles}
+            healthCategory={healthCategory}
+            healthArticles={healthArticles}
+          />
+        )}
+
+        {/* Province Section */}
+        {hasProvinceNews && (
+          <ProvinceSection
+            provinces={[
+              { data: province1Articles, info: { slug: 'PROVINCE_1', name: 'Province 1' } },
+              { data: province2Articles, info: { slug: 'PROVINCE_2', name: 'Province 2' } },
+              { data: province3Articles, info: { slug: 'PROVINCE_3', name: 'Province 3' } },
+              { data: province4Articles, info: { slug: 'PROVINCE_4', name: 'Province 4' } },
+              { data: province5Articles, info: { slug: 'PROVINCE_5', name: 'Province 5' } },
+              { data: province6Articles, info: { slug: 'PROVINCE_6', name: 'Province 6' } },
+              { data: province7Articles, info: { slug: 'PROVINCE_7', name: 'Province 7' } },
+            ]}
+          />
+        )}
+
+        <div className="py-4 container mx-auto px-4 flex justify-center">
+          <AdBox position="HOME_MIDDLE" className="h-[90px] w-full max-w-[728px]" />
+        </div>
       </div>
+
+      <HoroscopeSection />
+      <VideoSection />
+      <PhotoGallerySection />
     </>
   );
 }

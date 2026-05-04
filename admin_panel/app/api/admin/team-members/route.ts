@@ -92,7 +92,7 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
 
-    const { name, nameNe, department, departmentNe, designation, designationNe, image, bio, bioNe, email, phone, newsEmail, facebook, order, isActive } = body;
+    const { name, department, departmentNe, designation, designationNe, image, bio, email, phone, newsEmail, facebook, order, isActive } = body;
 
     if (!name || !department || !designation) {
       return NextResponse.json(
@@ -108,14 +108,10 @@ export async function POST(req: NextRequest) {
     const member = await prisma.teamMember.create({
       data: {
         name,
-        nameNe: nameNe || name,
         department,
-        departmentNe: departmentNe || department,
         designation,
-        designationNe: designationNe || designation,
         image: image || "",
         bio: bio || "",
-        bioNe: bioNe || bio || "",
         email: email || "",
         phone: phone || "",
         newsEmail: newsEmail || "",

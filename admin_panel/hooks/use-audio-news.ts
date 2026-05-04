@@ -5,14 +5,12 @@ import { ApiResponse, PaginationInfo } from '@/types'
 
 export interface AudioNews {
   id: string
-  titleNe: string
-  titleEn: string
-  descriptionNe?: string
-  descriptionEn?: string
+  title: string
+  description?: string
   audioUrl: string
   thumbnailUrl?: string
   categoryId?: string
-  category?: { id: string; nameNe: string; nameEn: string }
+  category?: { id: string; name: string }
   authorId: string
   author: { id: string; name: string }
   isPublished: boolean
@@ -50,10 +48,8 @@ const fetchAudioNews = async (params: AudioNewsParams = {}): Promise<AudioNewsRe
 }
 
 const createAudioNews = async (data: {
-  titleNe: string
-  titleEn: string
-  descriptionNe?: string
-  descriptionEn?: string
+  title: string
+  description?: string
   audioUrl: string
   thumbnailUrl?: string
   categoryId?: string
@@ -69,7 +65,7 @@ const createAudioNews = async (data: {
   return result.data
 }
 
-const updateAudioNews = async ({ id, ...data }: Partial<AudioNews> & { id: string }): Promise<AudioNews> => {
+const updateAudioNews = async ({ id, data }: { id: string; data: Partial<AudioNews> }): Promise<AudioNews> => {
   const response = await fetch(`/api/admin/audio-news/${id}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },

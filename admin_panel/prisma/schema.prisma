@@ -49,40 +49,29 @@ enum CommentStatus {
   SPAM
 }
 
-enum Language {
-  NEPALI
-  ENGLISH
-}
-
 model User {
   id               String     @id @default(uuid())
   email            String     @unique
   passwordHash     String?
-  name             String     @map("name_en")
-  nameNe           String?    @map("name_ne")
+  name             String?    @map("name_ne")
   profilePhoto     String?    @map("profile_photo")
   bio              String?
   role             Role       @default(PUBLIC_USER)
   status           UserStatus @default(ACTIVE)
-  language         Language   @default(ENGLISH)
   lastLoginAt      DateTime?
   deletedAt        DateTime?
   createdAt        DateTime   @default(now())
   updatedAt        DateTime   @updatedAt
 
   // Relations
-  articles       Article[]
   comments       Comment[]
   bookmarks      Bookmark[]
   media          Media[]
   auditLogs      AuditLog[]
   notifications  Notification[]
-  videos         Video[]
   advertisements Advertisement[]
   pollVotes      PollVote[]
   horoscopes     Horoscope[]
-  audioNews      AudioNews[]
-  photoGalleries PhotoGallery[]
 
   @@index([status])
   @@index([deletedAt])
@@ -91,8 +80,7 @@ model User {
 
 model Category {
   id        String   @id @default(uuid())
-  nameNe    String   @map("name_ne")
-  nameEn    String   @map("name_en")
+  name      String   @map("name_ne")
   slug      String   @unique
   parentId  String?  @map("parent_id")
   createdAt DateTime @default(now()) @map("created_at")
@@ -112,8 +100,7 @@ model Category {
 
 model Tag {
   id     String @id @default(uuid())
-  nameNe String @map("name_ne")
-  nameEn String @map("name_en")
+  name   String @map("name_ne")
   slug   String @unique
 
   // Relations
@@ -124,35 +111,31 @@ model Tag {
 
 model Article {
   id              String        @id @default(uuid())
-  titleNe         String        @map("title_ne")
-  titleEn         String        @map("title_en")
-  subheadingNe    String?       @map("subheading_ne")
-  subheadingEn    String?       @map("subheading_en")
-  contentNe       String        @map("content_ne")
-  contentEn       String        @map("content_en")
-  excerptNe       String?       @map("excerpt_ne")
-  excerptEn       String?       @map("excerpt_en")
-  summaryNe       String?       @map("summary_ne")
-  summaryEn       String?       @map("summary_en")
+  title           String        @map("title_ne")
+  subheading      String?       @map("subheading_ne")
+  content         String        @map("content_ne")
+  excerpt         String?       @map("excerpt_ne")
+  summary         String?       @map("summary_ne")
   slug            String        @unique
   status          ArticleStatus @default(DRAFT)
   isFlashUpdate   Boolean       @default(false) @map("is_flash_update")
   isFeatured      Boolean       @default(false) @map("is_featured")
+  isTitleOnly     Boolean       @default(false) @map("is_title_only")
   scheduledAt     DateTime?     @map("scheduled_at")
   publishedAt     DateTime?     @map("published_at")
   viewCount       Int           @default(0) @map("view_count")
   authorId        String        @map("author_id")
   categoryId      String        @map("category_id")
   metaTitle       String?       @map("meta_title")
-  metaDescription String?       @map("meta_description")
+  metaDescription String?      @map("meta_description")
   ogImage         String?       @map("og_image")
-  featuredImageId String?       @map("featured_image_id")
+  featuredImageId String?      @map("featured_image_id")
   deletedAt       DateTime?     @map("deleted_at")
   createdAt       DateTime      @default(now()) @map("created_at")
   updatedAt       DateTime      @updatedAt @map("updated_at")
 
   // Relations
-  author    User         @relation(fields: [authorId], references: [id])
+  author    Author   @relation(fields: [authorId], references: [id])
   category  Category     @relation(fields: [categoryId], references: [id])
   featuredImage Media?   @relation(fields: [featuredImageId], references: [id])
   tags      ArticleTag[]
@@ -166,6 +149,7 @@ model Article {
   @@index([categoryId])
   @@index([isFlashUpdate])
   @@index([isFeatured])
+  @@index([isTitleOnly])
   @@index([deletedAt])
   @@index([status, deletedAt, publishedAt])
   @@index([status, deletedAt, authorId])
@@ -296,8 +280,7 @@ model SiteSetting {
 
 model Video {
   id            String    @id @default(uuid())
-  titleNe       String    @map("title_ne")
-  titleEn       String    @map("title_en")
+  title         String    @map("title_ne")
   youtubeUrl    String    @map("youtube_url")
   thumbnailUrl  String    @map("thumbnail_url")
   iframeUrl     String    @map("iframe_url")
@@ -309,7 +292,7 @@ model Video {
   updatedAt     DateTime  @updatedAt @map("updated_at")
 
   // Relations
-  author User @relation(fields: [authorId], references: [id])
+  author Author @relation(fields: [authorId], references: [id])
 
   @@index([authorId])
   @@index([isPublished])
@@ -319,8 +302,7 @@ model Video {
 
 model Advertisement {
   id        String    @id @default(uuid())
-  titleNe   String    @map("title_ne")
-  titleEn   String    @map("title_en")
+  title     String    @map("title_ne")
   mediaUrl  String    @map("media_url")
   mediaType String    @default("IMAGE") @map("media_type")
   linkUrl   String?   @map("link_url")
@@ -346,8 +328,7 @@ model Advertisement {
 // Poll Models
 model Poll {
   id          String    @id @default(uuid())
-  questionNe  String    @map("question_ne")
-  questionEn  String    @map("question_en")
+  question    String    @map("question_ne")
   description String?   @map("description")
   isActive    Boolean   @default(true) @map("is_active")
   isMultiple  Boolean   @default(false) @map("is_multiple")
@@ -368,8 +349,7 @@ model Poll {
 
 model PollOption {
   id        String   @id @default(uuid())
-  textNe    String   @map("text_ne")
-  textEn    String   @map("text_en")
+  text      String   @map("text_ne")
   order     Int      @default(0)
   pollId    String   @map("poll_id")
   createdAt DateTime @default(now()) @map("created_at")
@@ -409,10 +389,8 @@ model Horoscope {
   id          String   @id @default(uuid())
   zodiacSign  String   @map("zodiac_sign") // e.g., "aries", "taurus", etc.
   icon        String   @default("Sparkles") // Lucide icon name
-  titleNe     String   @map("title_ne")
-  titleEn     String   @map("title_en")
-  contentNe   String   @map("content_ne")
-  contentEn   String   @map("content_en")
+  title       String   @map("title_ne")
+  content     String   @map("content_ne")
   date        DateTime @default(now()) @map("date")
   isPublished Boolean  @default(false) @map("is_published")
   authorId    String   @map("author_id")
@@ -432,10 +410,8 @@ model Horoscope {
 // Audio News Model
 model AudioNews {
   id            String   @id @default(uuid())
-  titleNe       String   @map("title_ne")
-  titleEn       String   @map("title_en")
-  descriptionNe String?  @map("description_ne")
-  descriptionEn String?  @map("description_en")
+  title         String   @map("title_ne")
+  description   String?  @map("description_ne")
   audioUrl      String   @map("audio_url")
   thumbnailUrl String?  @map("thumbnail_url")
   categoryId    String?  @map("category_id")
@@ -447,7 +423,7 @@ model AudioNews {
   updatedAt     DateTime @updatedAt @map("updated_at")
 
   // Relations
-  author   User      @relation(fields: [authorId], references: [id])
+  author   Author   @relation(fields: [authorId], references: [id])
   category Category? @relation(fields: [categoryId], references: [id])
 
   @@index([authorId])
@@ -479,21 +455,17 @@ model PageView {
 // Team Member Model
 model TeamMember {
   id          String   @id @default(uuid())
-  name       String   @map("name")
-  nameNe     String?  @map("name_ne")
-  department String   @map("department")
-  departmentNe String? @map("department_ne")
-  designation String  @map("designation")
-  designationNe String? @map("designation_ne")
-  image      String?  @map("image")
-  bio        String?
-  bioNe      String?  @map("bio_ne")
-  email      String?
-  phone      String?
-  newsEmail  String?  @map("news_email")
-  facebook   String?
-  order      Int      @default(0) @map("order")
-  isActive   Boolean  @default(true) @map("is_active")
+  name        String   @map("name_ne")
+  department  String   @map("department_ne")
+  designation String   @map("designation_ne")
+  image       String?  @map("image")
+  bio         String?  @map("bio_ne")
+  email       String?
+  phone       String?
+  newsEmail   String?  @map("news_email")
+  facebook    String?
+  order       Int      @default(0) @map("order")
+  isActive    Boolean  @default(true) @map("is_active")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
@@ -502,21 +474,40 @@ model TeamMember {
   @@map("team_members")
 }
 
+// Author Model (for article authorship, separate from User accounts)
+model Author {
+  id        String   @id @default(uuid())
+  name      String   @map("name_ne")
+  bio       String?  @map("bio_ne")
+  image     String?
+  email     String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  articles      Article[]
+  videos        Video[]
+  audioNews     AudioNews[]
+  photoGalleries PhotoGallery[]
+
+  @@index([isActive])
+  @@map("authors")
+}
+
 // Photo Gallery Models
 model PhotoGallery {
   id           String    @id @default(uuid())
-  titleNe      String    @map("title_ne")
-  titleEn      String    @map("title_en")
-  excerptNe    String?   @map("excerpt_ne")
-  excerptEn    String?   @map("excerpt_en")
+  title        String    @map("title_ne")
+  excerpt      String?   @map("excerpt_ne")
   slug         String    @unique
   isPublished  Boolean   @default(false) @map("is_published")
   authorId     String    @map("author_id")
   coverImageId String?   @map("cover_image_id")
   createdAt    DateTime  @default(now()) @map("created_at")
-  updatedAt    DateTime  @updatedAt @map("updated_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
 
-  author     User                    @relation(fields: [authorId], references: [id])
+  author     Author                  @relation(fields: [authorId], references: [id])
   coverImage Media?                  @relation("CoverPhotoGallery", fields: [coverImageId], references: [id])
   photos     PhotoGalleryPhoto[]
 
@@ -531,8 +522,7 @@ model PhotoGalleryPhoto {
   photoGalleryId  String   @map("photo_gallery_id")
   mediaId         String   @map("media_id")
   order           Int      @default(0)
-  captionNe       String?  @map("caption_ne")
-  captionEn       String?  @map("caption_en")
+  caption         String?  @map("caption_ne")
   createdAt       DateTime @default(now()) @map("created_at")
 
   photoGallery PhotoGallery @relation(fields: [photoGalleryId], references: [id], onDelete: Cascade)

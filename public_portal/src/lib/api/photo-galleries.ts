@@ -12,33 +12,29 @@ export interface PhotoGalleryMedia {
 export interface PhotoGalleryPhoto {
   id: string;
   order: number;
-  captionNe?: string;
-  captionEn?: string;
+  caption?: string;
   media: PhotoGalleryMedia;
 }
 
 export interface PhotoGallery {
   id: string;
-  titleNe: string;
-  titleEn: string;
-  excerptNe?: string;
-  excerptEn?: string;
+  title?: string;
+  excerpt?: string;
   slug: string;
   isPublished: boolean;
   publishedAt?: string;
   createdAt?: string;
   updatedAt?: string;
+  author?: {
+    id: string;
+    name: string;
+    image?: string;
+  };
   coverImage?: {
     id: string;
     url: string;
     filename: string;
   } | null;
-  author: {
-    id: string;
-    name: string;
-    nameNe?: string;
-    profilePhoto?: string;
-  };
   photos: PhotoGalleryPhoto[];
 }
 
@@ -48,14 +44,14 @@ export interface PhotoGalleriesParams {
   search?: string;
 }
 
-export async function getPhotoGalleries(params: PhotoGalleriesParams = {}): Promise<{ data: PhotoGallery[], pagination: any }> {
+export async function getPhotoGalleries(params: PhotoGalleriesParams = {}): Promise<{ data: PhotoGallery[], pagination: Pagination }> {
   const qs = new URLSearchParams();
   if (params.page) qs.set('page', params.page.toString());
   if (params.limit) qs.set('limit', params.limit.toString());
   if (params.search) qs.set('search', params.search);
 
-  const endpoint = `/api/photo-galleries${qs ? `?${qs}` : ''}`;
-  const response: ApiResponse<{ data: PhotoGallery[], pagination: any }> = await apiFetch(endpoint, {
+  const endpoint = `/api/photo-galleries${qs.toString() ? `?${qs}` : ''}`;
+  const response: ApiResponse<{ data: PhotoGallery[], pagination: Pagination }> = await apiFetch(endpoint, {
     method: 'GET',
     next: { revalidate: 300 },
   });

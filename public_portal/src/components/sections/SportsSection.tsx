@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { Article, Category } from '@/types';
-import { useLanguage } from '@/context/LanguageContext';
+
 import { ArticleCard } from '@/components/ArticleCard';
 import { cn } from '@/lib/utils';
 import { useState, useMemo } from 'react';
@@ -28,7 +28,7 @@ function getAllSubcategoryIds(subcategories: Category[]): string[] {
 }
 
 export function SportsSection({ articles, subcategories = [] }: SportsSectionProps) {
-  const { isNepali, t } = useLanguage();
+
   const [selectedSubcategory, setSelectedSubcategory] = useState<string>('all');
 
   const filteredArticles = useMemo(() => {
@@ -59,15 +59,15 @@ export function SportsSection({ articles, subcategories = [] }: SportsSectionPro
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div className="w-1 h-6 bg-news-red rounded-full" />
-            <h2 className={cn('text-xl font-bold text-gray-900 dark:text-white', isNepali ? 'font-nepali' : '')}>
-              {t('nav.sports')}
+            <h2 className={cn('text-xl font-bold text-gray-900 dark:text-white', 'font-nepali')}>
+              
             </h2>
           </div>
           <Link
             href="/category/sports"
             className="flex items-center gap-1 text-sm text-news-red hover:underline"
           >
-            <span className={isNepali ? 'font-nepali' : ''}>{t('category.viewAll')}</span>
+            <span className={'font-nepali'}></span>
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
@@ -83,7 +83,7 @@ export function SportsSection({ articles, subcategories = [] }: SportsSectionPro
                     : 'text-gray-600 dark:text-gray-400 hover:text-news-red hover:bg-gray-50 dark:hover:bg-gray-800'
                 }`}
               >
-                {isNepali ? 'सबै' : 'All'}
+                {'सबै'}
               </button>
               {subcategories.map((subcategory) => (
                 <button
@@ -95,7 +95,7 @@ export function SportsSection({ articles, subcategories = [] }: SportsSectionPro
                       : 'text-gray-600 dark:text-gray-400 hover:text-news-red hover:bg-gray-50 dark:hover:bg-gray-800'
                   }`}
                 >
-                  {isNepali ? (subcategory.nameNe || subcategory.nameEn) : (subcategory.nameEn || subcategory.nameNe)}
+                  {subcategory.name}
                 </button>
               ))}
             </div>
@@ -104,7 +104,7 @@ export function SportsSection({ articles, subcategories = [] }: SportsSectionPro
 
         {filteredArticles.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
-            {isNepali ? 'कुनै समाचार छैन' : 'No articles found'}
+            {'कुनै समाचार छैन'}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

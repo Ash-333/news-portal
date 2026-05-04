@@ -21,7 +21,6 @@ export async function GET(req: NextRequest) {
         status: true,
         profilePhoto: true,
         bio: true,
-        language: true,
         createdAt: true,
       },
     });

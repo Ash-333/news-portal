@@ -11,12 +11,13 @@ import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { EmptyState } from '@/components/ui/empty-state'
 import { toast } from 'sonner'
 import { useVideos, useDeleteVideo, useTogglePublishVideo } from '@/hooks/use-videos'
+import AuthorSelect from '@/components/author-select'
 
 export default function VideosPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [showForm, setShowForm] = useState(false)
-  const [formData, setFormData] = useState({ titleNe: '', titleEn: '', youtubeUrl: '' })
+  const [formData, setFormData] = useState({ title: '', youtubeUrl: '', authorId: '' })
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const { data, isLoading } = useVideos({ search: searchQuery || undefined })
@@ -24,8 +25,8 @@ export default function VideosPage() {
   const togglePublish = useTogglePublishVideo()
 
   const handleCreate = async () => {
-    if (!formData.titleEn || !formData.titleNe || !formData.youtubeUrl) {
-      toast.error('Please fill all fields')
+    if (!formData.title || !formData.youtubeUrl || !formData.authorId) {
+      toast.error('Please fill all required fields')
       return
     }
     setIsSubmitting(true)
@@ -39,7 +40,7 @@ export default function VideosPage() {
       if (result.success) {
         toast.success('Video created successfully')
         setShowForm(false)
-        setFormData({ titleNe: '', titleEn: '', youtubeUrl: '' })
+        setFormData({ title: '', youtubeUrl: '', authorId: '' })
         window.location.reload()
       } else {
         toast.error(result.message || 'Failed to create video')
@@ -78,26 +79,15 @@ export default function VideosPage() {
         <Card>
           <CardContent className="p-6 space-y-4">
             <h3 className="text-lg font-semibold">Add New Video</h3>
-            <div className="grid gap-4 md:grid-cols-2">
-              <div>
-                <label className="text-sm font-medium">Title (English)</label>
+            <div>
+                <label className="text-sm font-medium">Title</label>
                 <Input
-                  value={formData.titleEn}
-                  onChange={(e) => setFormData(p => ({ ...p, titleEn: e.target.value }))}
-                  placeholder="Enter video title in English"
+                  value={formData.title}
+                  onChange={(e) => setFormData(p => ({ ...p, title: e.target.value }))}
+                  placeholder="Enter video title"
                   className="mt-1"
                 />
               </div>
-              <div>
-                <label className="text-sm font-medium">Title (Nepali)</label>
-                <Input
-                  value={formData.titleNe}
-                  onChange={(e) => setFormData(p => ({ ...p, titleNe: e.target.value }))}
-                  placeholder="Enter video title in Nepali"
-                  className="mt-1"
-                />
-              </div>
-            </div>
             <div>
               <label className="text-sm font-medium">YouTube URL</label>
               <Input
@@ -106,6 +96,15 @@ export default function VideosPage() {
                 placeholder="https://www.youtube.com/watch?v=..."
                 className="mt-1"
               />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Author</label>
+              <div className="mt-1">
+                <AuthorSelect
+                  value={formData.authorId}
+                  onValueChange={(value) => setFormData(p => ({ ...p, authorId: value }))}
+                />
+              </div>
             </div>
             {previewThumb && (
               <div className="mt-2">
@@ -155,10 +154,10 @@ export default function VideosPage() {
               <CardContent className="p-0">
                 <div className="relative aspect-video bg-slate-900">
                   <img
-                    src={video.thumbnailUrl}
-                    alt={video.titleEn}
-                    className="w-full h-full object-cover"
-                  />
+                     src={video.thumbnailUrl}
+                     alt={video.title}
+                     className="w-full h-full object-cover"
+                   />
                   <div className="absolute top-2 right-2">
                     <span className={`px-2 py-0.5 rounded text-xs font-medium ${video.isPublished ? 'bg-green-500 text-white' : 'bg-yellow-500 text-black'}`}>
                       {video.isPublished ? 'Published' : 'Draft'}
@@ -166,8 +165,8 @@ export default function VideosPage() {
                   </div>
                 </div>
                 <div className="p-3">
-                  <p className="font-medium text-sm truncate">{video.titleEn}</p>
-                  <p className="text-xs text-slate-500 truncate">{video.titleNe}</p>
+                   <p className="font-medium text-sm truncate">{video.title}</p>
+                   <p className="text-xs text-slate-500 truncate">by {video.author?.name}</p>
                   <p className="text-xs text-slate-400 mt-1">by {video.author?.name}</p>
                   <div className="flex gap-1 mt-2">
                     <Button

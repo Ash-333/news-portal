@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { register } from '@/lib/api/auth';
-import { useLanguage } from '@/context/LanguageContext';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,8 +12,7 @@ import { User, Mail, Lock, Eye, EyeOff, AlertCircle, CheckCircle2 } from 'lucide
 
 export default function RegisterPage() {
   const router = useRouter();
-  const { isNepali, t } = useLanguage();
-  
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -29,12 +28,12 @@ export default function RegisterPage() {
 
     // Validation
     if (password !== confirmPassword) {
-      setError(t('auth.passwordMismatch'));
+      setError('पासवर्ड मेल खाँदैन');
       return;
     }
 
     if (password.length < 8) {
-      setError(t('auth.passwordTooShort'));
+      setError('पासवर्ड कम्तिमा ८ अक्षर हुनुपर्छ');
       return;
     }
 
@@ -44,7 +43,7 @@ export default function RegisterPage() {
       await register({ name, email, password, confirmPassword });
       setSuccess(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : t('auth.registerFailed'));
+      setError(err instanceof Error ? err.message : 'दर्ता गर्न असफल');
     } finally {
       setIsLoading(false);
     }
@@ -58,17 +57,17 @@ export default function RegisterPage() {
             <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
               <CheckCircle2 className="w-8 h-8 text-green-500" />
             </div>
-            <h1 className={isNepali ? 'font-nepali text-2xl font-bold' : 'text-2xl font-bold'}>
-              {t('auth.registerSuccess')}
+            <h1 className='text-2xl font-bold'>
+              दर्ता सफल भयो!
             </h1>
             <p className="text-gray-600 dark:text-gray-400 mt-4 mb-6">
-              {t('auth.verifyEmailSent')}
+              तपाईंको खाता सिर्जना भयो। अब तपाईं लगइन गर्न सक्नुहुन्छ।
             </p>
             <Link 
               href="/login"
               className="inline-block py-2 px-6 bg-news-red hover:bg-news-red-dark text-white rounded-lg transition-colors"
             >
-              {t('user.login')}
+              लगइनमा जानुहोस्
             </Link>
           </div>
         </div>
@@ -82,11 +81,11 @@ export default function RegisterPage() {
         <div className="bg-white dark:bg-news-card-dark rounded-xl shadow-lg p-8">
           {/* Header */}
           <div className="text-center mb-8">
-            <h1 className={isNepali ? 'font-nepali text-2xl font-bold' : 'text-2xl font-bold'}>
-              {t('auth.createAccount')}
+            <h1 className='text-2xl font-bold'>
+              खाता सिर्जना गर्नुहोस्
             </h1>
             <p className="text-gray-500 dark:text-gray-400 mt-2">
-              {t('auth.registerSubtitle')}
+              दर्ता गर्न तलका विवरणहरू भर्नुहोस्
             </p>
           </div>
 
@@ -102,41 +101,41 @@ export default function RegisterPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Name */}
             <div className="space-y-2">
-              <Label htmlFor="name">{t('user.name')}</Label>
+               <Label htmlFor="name">पूरा नाम</Label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <Input
-                  id="name"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder={isNepali ? 'तपाईंको नाम' : 'Your name'}
-                  className="pl-10"
-                  required
-                />
+                 <Input
+                    id="name"
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder={'तपाईंको नाम'}
+                    className="pl-10"
+                    required
+                  />
               </div>
             </div>
 
             {/* Email */}
             <div className="space-y-2">
-              <Label htmlFor="email">{t('user.email')}</Label>
+                <Label htmlFor="email">इमेल</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder={isNepali ? 'तपाईंको इमेल' : 'your@email.com'}
-                  className="pl-10"
-                  required
-                />
+                 <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder={'तपाईंको इमेल'}
+                    className="pl-10"
+                    required
+                  />
               </div>
             </div>
 
             {/* Password */}
             <div className="space-y-2">
-              <Label htmlFor="password">{t('user.password')}</Label>
+                <Label htmlFor="password">पासवर्ड</Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <Input
@@ -144,7 +143,7 @@ export default function RegisterPage() {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder={isNepali ? '••••••••' : '••••••••'}
+                  placeholder={'••••••••'}
                   className="pl-10 pr-10"
                   required
                 />
@@ -160,7 +159,7 @@ export default function RegisterPage() {
 
             {/* Confirm Password */}
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">{t('auth.confirmPassword')}</Label>
+              <Label htmlFor="confirmPassword">पासवर्ड पुष्टि गर्नुहोस्</Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <Input
@@ -168,7 +167,7 @@ export default function RegisterPage() {
                   type={showPassword ? 'text' : 'password'}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder={isNepali ? '••••••••' : '••••••••'}
+                  placeholder={'पासवर्ड पुष्टि गर्नुहोस्'}
                   className="pl-10"
                   required
                 />
@@ -176,23 +175,23 @@ export default function RegisterPage() {
             </div>
 
             {/* Submit Button */}
-            <Button
-              type="submit"
-              disabled={isLoading}
-              className="w-full py-3 bg-news-red hover:bg-news-red-dark text-white font-medium rounded-lg transition-colors disabled:opacity-60"
-            >
-              {isLoading ? t('common.loading') : t('user.register')}
-            </Button>
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="w-full py-3 bg-news-red hover:bg-news-red-dark text-white font-medium rounded-lg transition-colors disabled:opacity-60"
+              >
+                {isLoading ? 'प्रस्तुत गर्दै...' : 'दर्ता गर्नुहोस्'}
+              </Button>
           </form>
 
           {/* Login Link */}
           <div className="mt-6 text-center">
-            <p className="text-gray-600 dark:text-gray-400">
-              {t('user.hasAccount')}{' '}
-              <Link href="/login" className="text-news-red hover:underline font-medium">
-                {t('user.login')}
-              </Link>
-            </p>
+              <p className="text-gray-600 dark:text-gray-400">
+                खाता छ? 
+                <Link href="/login" className="text-news-red hover:underline font-medium">
+                  लगइन गर्नुहोस्
+                </Link>
+              </p>
           </div>
         </div>
       </div>

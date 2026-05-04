@@ -110,8 +110,7 @@ export async function GET(req: NextRequest) {
           take: 10,
           select: {
             id: true,
-            titleNe: true,
-            titleEn: true,
+            title: true,
             slug: true,
             viewCount: true,
             publishedAt: true,
@@ -119,19 +118,18 @@ export async function GET(req: NextRequest) {
               select: { name: true },
             },
             category: {
-              select: { nameNe: true, nameEn: true },
+              select: { name: true },
             },
           },
         })
 
         const formattedTopArticles = topArticles.map(a => ({
           id: a.id,
-          titleNe: a.titleNe,
-          titleEn: a.titleEn,
+          title: a.title,
           slug: a.slug,
           views: a.viewCount,
-          authorName: a.author.name,
-          categoryName: a.category.nameEn,
+          authorName: a.author?.name || 'Unknown',
+          categoryName: a.category.name,
           publishedAt: a.publishedAt,
         }))
 

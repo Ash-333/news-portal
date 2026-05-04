@@ -29,13 +29,11 @@ export async function GET(req: NextRequest) {
         status: true,
         profilePhoto: true,
         bio: true,
-        language: true,
         lastLoginAt: true,
         createdAt: true,
         updatedAt: true,
         _count: {
           select: {
-            articles: true,
             comments: true,
             bookmarks: true,
           },
@@ -162,7 +160,6 @@ export async function PATCH(req: NextRequest) {
         email: true,
         bio: true,
         profilePhoto: true,
-        language: true,
         updatedAt: true,
       },
     });

@@ -46,8 +46,7 @@ export async function PATCH(
       },
       select: {
         id: true,
-        titleNe: true,
-        titleEn: true,
+        title: true,
         scheduledAt: true,
         status: true,
       },

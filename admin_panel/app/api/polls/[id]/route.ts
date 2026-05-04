@@ -23,8 +23,7 @@ export async function GET(
       },
       select: {
         id: true,
-        questionNe: true,
-        questionEn: true,
+        question: true,
         description: true,
         isMultiple: true,
         startsAt: true,
@@ -32,8 +31,7 @@ export async function GET(
         options: {
           select: {
             id: true,
-            textNe: true,
-            textEn: true,
+            text: true,
             _count: {
               select: {
                 votes: true,
@@ -76,8 +74,7 @@ export async function GET(
 
     const formattedOptions = poll.options.map((opt) => ({
       id: opt.id,
-      textNe: opt.textNe,
-      textEn: opt.textEn,
+      text: opt.text,
       voteCount: opt._count.votes,
       percentage:
         totalVotes > 0 ? Math.round((opt._count.votes / totalVotes) * 100) : 0,

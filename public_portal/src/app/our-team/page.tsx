@@ -1,13 +1,10 @@
 import { Metadata } from 'next';
 import { TeamMember } from '@/types';
 import { getTeamMembers } from '@/lib/api/team';
-import { getServerLanguage } from '@/lib/utils/language';
 
 interface TeamPageProps {
   searchParams?: { lang?: string };
 }
-
-
 
 export const revalidate = 120;
 
@@ -19,9 +16,11 @@ export async function generateMetadata({}: TeamPageProps): Promise<Metadata> {
 }
 
 export default async function TeamPage({ searchParams }: TeamPageProps) {
-  const lang = (searchParams?.lang === 'en' || searchParams?.lang === 'ne') ? searchParams.lang : 'ne';
+
   const result = await getTeamMembers();
   const members = result.success ? result.data : [];
+
+  const lang = searchParams?.lang === 'ne' ? 'ne' : 'en';
 
   const pageTitle = lang === 'ne' ? 'हाम्रो टिम' : 'Our Team';
   const noMembers = lang === 'ne' 
@@ -31,7 +30,7 @@ export default async function TeamPage({ searchParams }: TeamPageProps) {
   // Group members by department
   const membersByDepartment: Record<string, TeamMember[]> = {};
   members.forEach((member) => {
-    const dept = lang === 'ne' ? member.departmentNe : member.department;
+    const dept = member.department || 'Other';
     if (!membersByDepartment[dept]) {
       membersByDepartment[dept] = [];
     }
@@ -65,19 +64,19 @@ export default async function TeamPage({ searchParams }: TeamPageProps) {
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center bg-gray-300">
-                          <span className="text-4xl text-gray-500">
-                            {member.name.charAt(0)}
-                          </span>
-                        </div>
+                           <span className="text-4xl text-gray-500">
+                             {(member.name || '?').charAt(0)}
+                           </span>
+                         </div>
                       )}
                     </div>
                     <div className="p-4">
                       <h3 className="text-lg font-semibold">
-                        {lang === 'ne' ? member.nameNe : member.name}
-                      </h3>
+                         {lang === 'ne' ? (member.name || '') : (member.name || '')}
+                       </h3>
                       <p className="text-news-primary text-sm">
-                        {lang === 'ne' ? member.designationNe : member.designation}
-                      </p>
+                         {member.designation || ''}
+                       </p>
                       <div className="mt-2 space-y-1">
                         {member.newsEmail && (
                           <a

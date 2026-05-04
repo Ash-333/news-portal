@@ -3,11 +3,10 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Article, Category } from '@/types';
-import { useLanguage } from '@/context/LanguageContext';
+
 import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getArticleImage } from '@/lib/utils/image';
-import { getTitle } from '@/lib/utils/lang';
 
 interface SocietyCultureSectionProps {
   societyCategory: Category;
@@ -22,12 +21,11 @@ export function SocietyCultureSection({
   cultureCategory,
   cultureArticles,
 }: SocietyCultureSectionProps) {
-  const { isNepali, language, t } = useLanguage();
 
   if (societyArticles.length === 0 && cultureArticles.length === 0) return null;
 
-  const societyName = isNepali ? societyCategory.nameNe : societyCategory.nameEn;
-  const cultureName = isNepali ? cultureCategory.nameNe : cultureCategory.nameEn;
+  const societyName = societyCategory.name || '';
+  const cultureName = cultureCategory.name || '';
 
   const societyFeatured = societyArticles[0];
   const societyGrid = societyArticles.slice(1, 4);
@@ -43,9 +41,9 @@ export function SocietyCultureSection({
             <div className="w-1 h-6 bg-news-red rounded-full" />
             <h2 className={cn(
               'text-xl md:text-2xl font-bold text-gray-900 dark:text-white',
-              isNepali ? 'font-nepali' : ''
+              'font-nepali'
             )}>
-              {isNepali ? 'समाज र संस्कृति' : 'Society & Culture'}
+              {'समाज र संस्कृति'}
             </h2>
           </div>
         </div>
@@ -58,7 +56,7 @@ export function SocietyCultureSection({
                 <div className="w-1 h-5 bg-news-red rounded-full" />
                 <h3 className={cn(
                   'text-lg font-bold text-gray-900 dark:text-white',
-                  isNepali ? 'font-nepali' : ''
+                  'font-nepali'
                 )}>
                   {societyName}
                 </h3>
@@ -67,7 +65,7 @@ export function SocietyCultureSection({
                 href={`/category/${societyCategory.slug}`}
                 className="flex items-center gap-1 text-xs text-news-red hover:underline font-medium"
               >
-                <span className={isNepali ? 'font-nepali' : ''}>{t('category.viewAll')}</span>
+                <span className={'font-nepali'}></span>
                 <ArrowRight className="h-3 w-3" />
               </Link>
             </div>
@@ -79,51 +77,51 @@ export function SocietyCultureSection({
                 className="block relative aspect-[16/9] rounded-xl overflow-hidden mb-4 group"
               >
                 <Image
-                  src={getArticleImage(societyFeatured)}
-                  alt={getTitle(societyFeatured, language)}
-                  fill
+                   src={getArticleImage(societyFeatured)}
+                   alt={societyFeatured.title || ''}
+                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                   sizes="(max-width: 1024px) 100vw, 500px"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-4 flex flex-col justify-end">
                   <h4 className={cn(
-                    'font-bold text-white line-clamp-2 group-hover:text-red-300 transition-colors',
-                    isNepali ? 'font-nepali text-lg leading-[1.2]' : 'text-lg font-heading leading-tight'
-                  )}>
-                    {getTitle(societyFeatured, language)}
-                  </h4>
+                     'font-bold text-white line-clamp-2 group-hover:text-red-300 transition-colors',
+                     'font-nepali text-lg leading-[1.2]'
+                   )}>
+                     {societyFeatured.title || ''}
+                   </h4>
                 </div>
               </Link>
             )}
 
-            {/* Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {societyGrid.map((article) => (
-                <article key={article.id} className="group">
-                  <Link
-                    href={`/article/${article.slug}`}
-                    className="block relative aspect-[16/10] rounded-lg overflow-hidden mb-2"
-                  >
-                    <Image
-                      src={getArticleImage(article)}
-                      alt={getTitle(article, language)}
-                      fill
-                      className="object-cover transition-transform duration-300 group-hover:scale-105"
-                      sizes="(max-width: 768px) 100vw, 150px"
-                    />
-                  </Link>
-                  <Link href={`/article/${article.slug}`}>
-                    <h5 className={cn(
-                      'font-medium text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-news-red transition-colors',
-                      isNepali ? 'font-nepali text-sm leading-relaxed' : 'text-sm'
-                    )}>
-                      {getTitle(article, language)}
-                    </h5>
-                  </Link>
-                </article>
-              ))}
-            </div>
+             {/* Grid */}
+             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+               {societyGrid.map((article) => (
+                 <article key={article.id} className="group">
+                   <Link
+                     href={`/article/${article.slug}`}
+                     className="block relative aspect-[16/10] rounded-lg overflow-hidden mb-2"
+                   >
+                     <Image
+                       src={getArticleImage(article)}
+                       alt={article.title || ''}
+                       fill
+                       className="object-cover transition-transform duration-300 group-hover:scale-105"
+                       sizes="(max-width: 768px) 100vw, 150px"
+                     />
+                   </Link>
+                   <Link href={`/article/${article.slug}`}>
+                     <h5 className={cn(
+                       'font-medium text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-news-red transition-colors',
+                       'font-nepali text-sm leading-relaxed'
+                     )}>
+                       {article.title || ''}
+                     </h5>
+                   </Link>
+                 </article>
+               ))}
+             </div>
           </div>
 
           {/* Right: Culture (Dharam) - 40% */}
@@ -133,7 +131,7 @@ export function SocietyCultureSection({
                 <div className="w-1 h-5 bg-yellow-600 rounded-full" />
                 <h3 className={cn(
                   'text-lg font-bold text-gray-900 dark:text-white',
-                  isNepali ? 'font-nepali' : ''
+                  'font-nepali'
                 )}>
                   {cultureName}
                 </h3>
@@ -142,62 +140,62 @@ export function SocietyCultureSection({
                 href={`/category/${cultureCategory.slug}`}
                 className="flex items-center gap-1 text-xs text-news-red hover:underline font-medium"
               >
-                <span className={isNepali ? 'font-nepali' : ''}>{t('category.viewAll')}</span>
+                <span className={'font-nepali'}></span>
                 <ArrowRight className="h-3 w-3" />
               </Link>
             </div>
 
-            {/* Featured */}
-            {cultureFeatured && (
-              <Link
-                href={`/article/${cultureFeatured.slug}`}
-                className="block relative aspect-[16/9] rounded-xl overflow-hidden mb-4 group"
-              >
-                <Image
-                  src={getArticleImage(cultureFeatured)}
-                  alt={getTitle(cultureFeatured, language)}
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  sizes="(max-width: 1024px) 100vw, 500px"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-4 flex flex-col justify-end">
-                  <h4 className={cn(
-                    'font-bold text-white line-clamp-2 group-hover:text-red-300 transition-colors',
-                    isNepali ? 'font-nepali text-lg leading-[1.2]' : 'text-lg font-heading leading-tight'
-                  )}>
-                    {getTitle(cultureFeatured, language)}
-                  </h4>
-                </div>
-              </Link>
-            )}
+             {/* Featured */}
+             {cultureFeatured && (
+               <Link
+                 href={`/article/${cultureFeatured.slug}`}
+                 className="block relative aspect-[16/9] rounded-xl overflow-hidden mb-4 group"
+               >
+                 <Image
+                   src={getArticleImage(cultureFeatured)}
+                   alt={cultureFeatured.title || ''}
+                   fill
+                   className="object-cover transition-transform duration-700 group-hover:scale-105"
+                   sizes="(max-width: 1024px) 100vw, 500px"
+                 />
+                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                 <div className="absolute bottom-0 left-0 right-0 p-4 flex flex-col justify-end">
+                   <h4 className={cn(
+                     'font-bold text-white line-clamp-2 group-hover:text-red-300 transition-colors',
+                     'font-nepali text-lg leading-[1.2]'
+                   )}>
+                     {cultureFeatured.title || ''}
+                   </h4>
+                 </div>
+               </Link>
+             )}
 
-            {/* Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {cultureGrid.map((article) => (
-                <article key={article.id} className="group">
-                  <Link
-                    href={`/article/${article.slug}`}
-                    className="block relative aspect-[16/10] rounded-lg overflow-hidden mb-2"
-                  >
-                    <Image
-                      src={getArticleImage(article)}
-                      alt={getTitle(article, language)}
-                      fill
-                      className="object-cover transition-transform duration-300 group-hover:scale-105"
-                      sizes="(max-width: 768px) 100vw, 150px"
-                    />
-                  </Link>
-                  <Link href={`/article/${article.slug}`}>
-                    <h5 className={cn(
-                      'font-medium text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-news-red transition-colors',
-                      isNepali ? 'font-nepali text-sm leading-relaxed' : 'text-sm'
-                    )}>
-                      {getTitle(article, language)}
-                    </h5>
-                  </Link>
-                </article>
-              ))}
+             {/* Grid */}
+             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+               {cultureGrid.map((article) => (
+                 <article key={article.id} className="group">
+                   <Link
+                     href={`/article/${article.slug}`}
+                     className="block relative aspect-[16/10] rounded-lg overflow-hidden mb-2"
+                   >
+                     <Image
+                       src={getArticleImage(article)}
+                       alt={article.title || ''}
+                       fill
+                       className="object-cover transition-transform duration-300 group-hover:scale-105"
+                       sizes="(max-width: 768px) 100vw, 150px"
+                     />
+                   </Link>
+                   <Link href={`/article/${article.slug}`}>
+                     <h5 className={cn(
+                       'font-medium text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-news-red transition-colors',
+                       'font-nepali text-sm leading-relaxed'
+                     )}>
+                       {article.title || ''}
+                     </h5>
+                   </Link>
+                 </article>
+               ))}
             </div>
           </div>
         </div>

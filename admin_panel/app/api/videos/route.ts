@@ -19,8 +19,8 @@ export async function GET(request: Request) {
           isPublished: true,
           deletedAt: null,
           OR: search ? [
-            { titleNe: { contains: search, mode: 'insensitive' } },
-            { titleEn: { contains: search, mode: 'insensitive' } },
+            { title: { contains: search, mode: 'insensitive' } },
+  
           ] : undefined
         }
 
@@ -31,7 +31,7 @@ export async function GET(request: Request) {
             skip: (page - 1) * limit,
             take: limit,
             include: {
-              author: { select: { name: true, profilePhoto: true } }
+              author: { select: { id: true, name: true, image: true } }
             }
           }),
           prisma.video.count({ where: where as any })

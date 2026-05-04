@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { useHoroscopes } from '@/hooks/useHoroscopes';
-import { useLanguage } from '@/context/LanguageContext';
+
 import { cn } from '@/lib/utils';
 import {
   ChevronLeft,
@@ -51,7 +51,7 @@ interface HoroscopeSectionProps {
 }
 
 export function HoroscopeSection({ className }: HoroscopeSectionProps) {
-  const { isNepali, t } = useLanguage();
+
   const [selectedSign, setSelectedSign] = useState('aries');
   const { data: horoscopes, isLoading } = useHoroscopes();
 
@@ -97,8 +97,8 @@ export function HoroscopeSection({ className }: HoroscopeSectionProps) {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div className="w-1 h-8 bg-news-red rounded-full" />
-            <h2 className={cn('text-xl md:text-2xl font-bold text-gray-900 dark:text-white', isNepali ? 'font-nepali' : '')}>
-              {isNepali ? 'दैनिक राशिफल' : 'Daily Horoscope'}
+            <h2 className={cn('text-xl md:text-2xl font-bold text-gray-900 dark:text-white', 'font-nepali')}>
+              {'दैनिक राशिफल'}
             </h2>
           </div>
         </div>
@@ -132,13 +132,13 @@ export function HoroscopeSection({ className }: HoroscopeSectionProps) {
               {/* Content */}
               <div className="flex-1 p-6">
                 <h3 className="font-bold text-2xl text-gray-900 dark:text-white mb-2">
-                  {isNepali ? selectedHoroscope?.titleNe : selectedHoroscope?.titleEn}
+                  {selectedHoroscope?.title || ''}
                 </h3>
                 <p className="text-sm text-gray-500 mb-4">
-                  {selectedHoroscope?.date && new Date(selectedHoroscope.date).toLocaleDateString(isNepali ? 'ne-NP' : 'en-US')}
+                  {selectedHoroscope?.date && new Date(selectedHoroscope.date).toLocaleDateString('ne-NP')}
                 </p>
                 <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                  {isNepali ? selectedHoroscope?.contentNe : selectedHoroscope?.contentEn}
+                  {selectedHoroscope?.content || ''}
                 </p>
               </div>
             </div>
@@ -164,7 +164,7 @@ export function HoroscopeSection({ className }: HoroscopeSectionProps) {
                   )}
                 >
                   <SignIcon className="w-6 h-6 mb-1" />
-                  <span className={cn('text-xs font-medium', isNepali ? 'font-nepali' : '')}>
+                  <span className={cn('text-xs font-medium', 'font-nepali')}>
                     {horoscope.zodiacSign.charAt(0).toUpperCase() + horoscope.zodiacSign.slice(1, 3)}
                   </span>
                 </button>

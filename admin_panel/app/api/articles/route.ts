@@ -92,10 +92,10 @@ export async function GET(req: NextRequest) {
 
         if (search) {
           where.OR = [
-            { titleNe: { contains: search, mode: "insensitive" } },
-            { titleEn: { contains: search, mode: "insensitive" } },
-            { excerptNe: { contains: search, mode: "insensitive" } },
-            { excerptEn: { contains: search, mode: "insensitive" } },
+            { title: { contains: search, mode: "insensitive" } },
+            { title: { contains: search, mode: "insensitive" } },
+            { excerpt: { contains: search, mode: "insensitive" } },
+            { excerpt: { contains: search, mode: "insensitive" } },
           ];
         }
 
@@ -128,36 +128,33 @@ export async function GET(req: NextRequest) {
         const [articles, total] = await Promise.all([
           prisma.article.findMany({
             where,
-            select: {
-              id: true,
-              titleNe: true,
-              titleEn: true,
-              subheadingNe: true,
-              subheadingEn: true,
-              excerptNe: true,
-              excerptEn: true,
+             select: {
+               id: true,
+               title: true,
+               subheading: true,
+               excerpt: true,
               slug: true,
               isFlashUpdate: true,
               isFeatured: true,
+              isTitleOnly: true,
               publishedAt: true,
               viewCount: true,
               ogImage: true,
               featuredImage: {
                 select: { id: true, url: true },
               },
-              author: {
-                select: { id: true, name: true, nameNe: true, profilePhoto: true },
-              },
+author: {
+              select: { id: true, name: true, image: true },
+            },
               category: {
-                select: { id: true, nameNe: true, nameEn: true, slug: true },
+                select: { id: true, name: true, slug: true },
               },
               tags: {
                 select: {
                   tag: {
                     select: {
                       id: true,
-                      nameNe: true,
-                      nameEn: true,
+                      name: true,
                       slug: true,
                     },
                   },

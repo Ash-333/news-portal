@@ -16,11 +16,11 @@ export function getArticleImage(article: Article): string {
 }
 
 export function getAuthorAvatar(
-  profilePhoto: string | null | undefined,
+  image: string | null | undefined,
   _name: string | undefined,
 ): string {
-  if (profilePhoto) {
-    return profilePhoto;
+  if (image) {
+    return image;
   }
   return "/images/avatar-placeholder.jpg";
 }

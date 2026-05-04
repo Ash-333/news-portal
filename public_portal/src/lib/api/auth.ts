@@ -25,7 +25,8 @@ export interface AuthResponse {
   email: string;
   name: string;
   role: string;
-  profilePhoto: string | null;
+  profilePhoto?: string | null;
+  image?: string | null;
   accessToken: string;
   refreshToken: string;
   expiresIn: number;

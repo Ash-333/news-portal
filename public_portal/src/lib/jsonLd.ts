@@ -1,6 +1,5 @@
 import { Article, JsonLdData } from '@/types';
 import { getArticleImage } from '@/lib/utils/image';
-import { getCategoryName, getTitle } from '@/lib/utils/lang';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://yoursite.com';
 const siteName = 'HTC Media';
@@ -25,8 +24,8 @@ export function WebSiteJsonLd(): JsonLdData {
 
 // NewsArticle JSON-LD
 export function NewsArticleJsonLd(article: Article & { url: string }): JsonLdData {
-  const title = getTitle(article, 'ne');
-  const description = article.excerptNe;
+  const title = article.title;
+  const description = article.excerpt;
   const image = getArticleImage(article);
 
   return {
@@ -53,8 +52,8 @@ export function NewsArticleJsonLd(article: Article & { url: string }): JsonLdDat
       '@type': 'WebPage',
       '@id': article.url,
     },
-    articleSection: getCategoryName(article.category, 'ne'),
-    keywords: article.tags.map((tag) => tag.nameNe).join(', '),
+    articleSection: article.category.name,
+    keywords: article.tags.map((tag) => tag.name).join(', '),
     inLanguage: 'ne-NP',
   };
 }
@@ -104,17 +103,17 @@ export function NewsMediaOrganizationJsonLd(): JsonLdData {
 // Person (Author) JSON-LD
 export function PersonJsonLd(author: {
   id: string;
-  name: string;
+  name?: string;
   bio?: string | null;
-  profilePhoto?: string | null;
+  image?: string | null;
   slug?: string;
 }): JsonLdData {
   return {
     '@context': 'https://schema.org',
     '@type': 'Person',
-    name: author.name,
+    name: author.name || '',
     description: author.bio,
-    image: author.profilePhoto || undefined,
+    image: author.image || undefined,
     url: author.slug ? `${siteUrl}/author/${author.slug}` : undefined,
     jobTitle: 'Journalist',
     worksFor: {

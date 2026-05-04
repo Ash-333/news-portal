@@ -32,7 +32,7 @@ export async function PATCH(
           select: { id: true, name: true },
         },
         article: {
-          select: { id: true, titleNe: true, titleEn: true },
+          select: { id: true, title: true },
         },
       },
     })

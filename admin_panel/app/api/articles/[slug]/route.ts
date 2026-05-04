@@ -9,8 +9,7 @@ const CACHE_TTL = 600; // 10 minutes
 function formatArticle(article: any) {
   return {
     ...article,
-    contentNe: article.contentNe,
-    contentEn: article.contentEn,
+    content: article.content,
     tags: article.tags.map((t: any) => t.tag),
     featuredImage: article.featuredImage
       ? { ...article.featuredImage, url: article.featuredImage.url }
@@ -41,12 +40,9 @@ export async function GET(
             : { slug, status: ArticleStatus.PUBLISHED, deletedAt: null },
           select: {
             id: true,
-            titleNe: true,
-            titleEn: true,
-            contentNe: true,
-            contentEn: true,
-            excerptNe: true,
-            excerptEn: true,
+            title: true,
+            content: true,
+            excerpt: true,
             slug: true,
             isFlashUpdate: true,
             isFeatured: true,
@@ -57,15 +53,15 @@ export async function GET(
             ogImage: true,
             featuredImage: { select: { id: true, url: true } },
             author: {
-              select: { id: true, name: true, nameNe: true, profilePhoto: true, bio: true },
+              select: { id: true, name: true, image: true, bio: true },
             },
             category: {
-              select: { id: true, nameNe: true, nameEn: true, slug: true },
+              select: { id: true, name: true, slug: true },
             },
             tags: {
               select: {
                 tag: {
-                  select: { id: true, nameNe: true, nameEn: true, slug: true },
+                  select: { id: true, name: true, slug: true },
                 },
               },
             },

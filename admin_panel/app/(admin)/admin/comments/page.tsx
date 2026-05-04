@@ -46,12 +46,12 @@ export default function CommentsPage() {
       key: 'content',
       header: 'Comment',
       render: (comment) => (
-        <div>
-          <p className="text-sm line-clamp-2">{comment.content}</p>
-          <p className="text-xs text-slate-500 mt-1">
-            on &quot;{comment.article?.titleEn}&quot;
-          </p>
-        </div>
+         <div>
+           <p className="text-sm line-clamp-2">{comment.content}</p>
+           <p className="text-xs text-slate-500 mt-1">
+             on &quot;{comment.article?.title}&quot;
+           </p>
+         </div>
       ),
     },
     {

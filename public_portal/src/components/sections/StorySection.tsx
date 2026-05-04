@@ -3,11 +3,10 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Article, Category } from '@/types';
-import { useLanguage } from '@/context/LanguageContext';
+
 import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getArticleImage } from '@/lib/utils/image';
-import { getTitle } from '@/lib/utils/lang';
 
 interface StorySectionProps {
   articles: Article[];
@@ -15,11 +14,10 @@ interface StorySectionProps {
 }
 
 export function StorySection({ articles, category }: StorySectionProps) {
-  const { isNepali, language, t } = useLanguage();
 
   if (!articles.length) return null;
 
-  const categoryName = isNepali ? category.nameNe : category.nameEn;
+  const categoryName = category.name;
   const displayArticles = articles.slice(0, 3);
 
   return (
@@ -31,7 +29,7 @@ export function StorySection({ articles, category }: StorySectionProps) {
             <div className="w-1 h-6 bg-news-red rounded-full" />
             <h2 className={cn(
               'text-xl md:text-2xl font-bold text-gray-900 dark:text-white',
-              isNepali ? 'font-nepali' : ''
+              'font-nepali'
             )}>
               {categoryName}
             </h2>
@@ -40,7 +38,7 @@ export function StorySection({ articles, category }: StorySectionProps) {
             href={`/category/${category.slug}`}
             className="flex items-center gap-1 text-sm text-news-red hover:underline font-medium"
           >
-            <span className={isNepali ? 'font-nepali' : ''}>{t('category.viewAll')}</span>
+            <span className={'font-nepali'}></span>
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
@@ -48,7 +46,7 @@ export function StorySection({ articles, category }: StorySectionProps) {
         {/* 3 Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
           {displayArticles.map((article) => {
-            const title = getTitle(article, language);
+            const title = article.title;
             return (
               <article key={article.id} className="group">
                 <Link
@@ -57,7 +55,7 @@ export function StorySection({ articles, category }: StorySectionProps) {
                 >
                   <Image
                     src={getArticleImage(article)}
-                    alt={title}
+                    alt={title  || 'Article'}
                     fill
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
                     sizes="(max-width: 768px) 100vw, 400px"
@@ -66,9 +64,9 @@ export function StorySection({ articles, category }: StorySectionProps) {
                 <Link href={`/article/${article.slug}`}>
                   <h3 className={cn(
                     'font-bold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-news-red transition-colors',
-                    isNepali ? 'font-nepali text-base leading-relaxed' : 'text-base lg:text-lg leading-snug'
+                    'font-nepali text-base leading-relaxed'
                   )}>
-                    {title}
+                    {title  || ''}
                   </h3>
                 </Link>
               </article>

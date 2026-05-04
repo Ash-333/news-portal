@@ -5,7 +5,6 @@ import {
   ArticleStatus,
   MediaType,
   CommentStatus,
-  Language,
 } from "@prisma/client";
 
 const booleanFromInput = z.preprocess((value) => {
@@ -18,6 +17,11 @@ const booleanFromInput = z.preprocess((value) => {
 export const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(1, "Password is required"),
+});
+
+export const changePasswordSchema = z.object({
+  currentPassword: z.string().min(1, "Current password is required"),
+  newPassword: z.string().min(8, "New password must be at least 8 characters"),
 });
 
 export const registerSchema = z
@@ -50,7 +54,6 @@ export const resetPasswordSchema = z
 // User Validations
 export const createUserSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
-  nameNe: z.string().optional(),
   bio: z.string().max(500, "Bio must be less than 500 characters").optional(),
   profilePhoto: z.string().url("Invalid URL").optional().or(z.literal("")),
   email: z.string().email("Invalid email address"),
@@ -62,45 +65,33 @@ export const updateUserSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters").optional(),
   bio: z.string().max(500, "Bio must be less than 500 characters").optional(),
   profilePhoto: z.string().url("Invalid URL").optional().or(z.literal("")),
-  language: z.enum([Language.NEPALI, Language.ENGLISH]).optional(),
-});
-
-export const updateUserRoleSchema = z.object({
-  role: z.enum([Role.PUBLIC_USER, Role.AUTHOR, Role.ADMIN, Role.SUPERADMIN]),
-});
-
-export const updateUserStatusSchema = z.object({
-  status: z.enum([UserStatus.ACTIVE, UserStatus.SUSPENDED, UserStatus.BANNED]),
-});
-
-export const changePasswordSchema = z
-  .object({
-    currentPassword: z.string().min(1, "Current password is required"),
-    newPassword: z
-      .string()
-      .min(8, "New password must be at least 8 characters"),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.newPassword === data.confirmPassword, {
+  newPassword: z.string().min(8, "New password must be at least 8 characters").optional(),
+  confirmPassword: z.string().optional(),
+})
+  .refine((data) => !data.newPassword || data.newPassword === data.confirmPassword, {
     message: "Passwords don't match",
     path: ["confirmPassword"],
   });
 
+export const updateUserRoleSchema = z.object({
+  role: z.enum([Role.AUTHOR, Role.ADMIN, Role.SUPERADMIN]),
+});
+
+export const updateUserStatusSchema = z.object({
+  status: z.enum([UserStatus.ACTIVE, UserStatus.SUSPENDED, UserStatus.PENDING]),
+});
+
 // Article Validations
 export const articleSchema = z.object({
-  titleNe: z.string().min(1, "Nepali title is required"),
-  titleEn: z.string().min(1, "English title is required"),
-  contentNe: z.string().min(1, "Nepali content is required"),
-  contentEn: z.string().min(1, "English content is required"),
-  excerptNe: z
-    .string()
-    .max(500, "Excerpt must be less than 500 characters")
-    .optional(),
-  excerptEn: z
+  title: z.string().min(1, "Title is required"),
+  subheading: z.string().optional(),
+  content: z.string().min(1, "Content is required"),
+  excerpt: z
     .string()
     .max(500, "Excerpt must be less than 500 characters")
     .optional(),
   categoryId: z.string().uuid("Invalid category"),
+  subcategoryId: z.string().uuid("Invalid subcategory").optional().or(z.literal("")),
   tagIds: z.array(z.string().uuid()).default([]),
   metaTitle: z
     .string()
@@ -113,6 +104,7 @@ export const articleSchema = z.object({
   ogImage: z.string().url("Invalid URL").optional().or(z.literal("")),
   isFlashUpdate: booleanFromInput.default(false),
   isFeatured: booleanFromInput.default(false),
+  isTitleOnly: booleanFromInput.default(false),
   publishedAt: z
     .string()
     .regex(
@@ -134,6 +126,7 @@ export const articleSchema = z.object({
     .uuid("Invalid featured image")
     .optional()
     .or(z.literal("")),
+  authorId: z.string().uuid("Invalid author").optional().or(z.literal("")),
 });
 
 export const articleStatusSchema = z.object({
@@ -157,8 +150,7 @@ export const scheduleArticleSchema = z.object({
 
 // Category Validations
 export const categorySchema = z.object({
-  nameNe: z.string().min(1, "Nepali name is required"),
-  nameEn: z.string().min(1, "English name is required"),
+  name: z.string().min(1, "Name is required"),
   slug: z
     .string()
     .min(1, "Slug is required")
@@ -175,8 +167,7 @@ export const categorySchema = z.object({
 
 // Tag Validations
 export const tagSchema = z.object({
-  nameNe: z.string().min(1, "Nepali name is required"),
-  nameEn: z.string().min(1, "English name is required"),
+  name: z.string().min(1, "Name is required"),
   slug: z
     .string()
     .min(1, "Slug is required")
@@ -230,7 +221,6 @@ export const siteSettingsSchema = z.object({
   siteName: z.string().min(1, "Site name is required"),
   siteLogo: z.string().url("Invalid URL").optional().or(z.literal("")),
   favicon: z.string().url("Invalid URL").optional().or(z.literal("")),
-  defaultLanguage: z.enum([Language.NEPALI, Language.ENGLISH]),
   smtpHost: z.string().min(1, "SMTP host is required"),
   smtpPort: z.number().int().min(1).max(65535),
   smtpUser: z.string().min(1, "SMTP user is required"),
@@ -325,12 +315,12 @@ export const analyticsDateRangeSchema = z.object({
 
 // Video Validations
 export const videoSchema = z.object({
-  titleNe: z.string().min(1, "Nepali title is required"),
-  titleEn: z.string().min(1, "English title is required"),
+  title: z.string().min(1, "Title is required"),
   youtubeUrl: z
     .string()
     .url("Invalid YouTube URL")
     .min(1, "YouTube URL is required"),
+  authorId: z.string().min(1, "Author is required"),
 });
 
 export const videoFilterSchema = z.object({
@@ -340,8 +330,7 @@ export const videoFilterSchema = z.object({
 
 // Advertisement Validations
 export const advertisementSchema = z.object({
-  titleNe: z.string().min(1, "Nepali title is required"),
-  titleEn: z.string().min(1, "English title is required"),
+  title: z.string().min(1, "Title is required"),
   mediaUrl: z.string().min(1, "Media URL is required"),
   mediaType: z.enum(["IMAGE", "GIF"]).default("IMAGE"),
   linkUrl: z.string().url("Invalid URL").optional().or(z.literal("")),
@@ -374,10 +363,8 @@ export const advertisementSchema = z.object({
 export const horoscopeSchema = z.object({
   zodiacSign: z.string().min(1, "Zodiac sign is required"),
   icon: z.string().optional().default("Sparkles"),
-  titleNe: z.string().min(1, "Nepali title is required"),
-  titleEn: z.string().min(1, "English title is required"),
-  contentNe: z.string().min(1, "Nepali content is required"),
-  contentEn: z.string().min(1, "English content is required"),
+  title: z.string().min(1, "Title is required"),
+  content: z.string().min(1, "Content is required"),
   date: z.string().datetime().optional().or(z.literal("")),
   isPublished: booleanFromInput.default(false),
 });
@@ -390,10 +377,8 @@ export const horoscopeFilterSchema = z.object({
 
 // Audio News Validations
 export const audioNewsSchema = z.object({
-  titleNe: z.string().min(1, "Nepali title is required"),
-  titleEn: z.string().min(1, "English title is required"),
-  descriptionNe: z.string().optional(),
-  descriptionEn: z.string().optional(),
+  title: z.string().min(1, "Title is required"),
+  description: z.string().optional(),
   audioUrl: z.string().min(1, "Audio URL is required"),
   thumbnailUrl: z.string().url("Invalid URL").optional().or(z.literal("")),
   categoryId: z.string().uuid("Invalid category").optional().or(z.literal("")),
@@ -427,14 +412,8 @@ export type AudioNewsFormData = z.infer<typeof audioNewsSchema>;
 
 // Photo Gallery Validations
 export const photoGallerySchema = z.object({
-  titleNe: z.string().min(1, "Nepali title is required"),
-  titleEn: z.string().min(1, "English title is required"),
-  excerptNe: z
-    .string()
-    .max(500, "Excerpt must be less than 500 characters")
-    .optional()
-    .or(z.literal("")),
-  excerptEn: z
+  title: z.string().min(1, "Title is required"),
+  excerpt: z
     .string()
     .max(500, "Excerpt must be less than 500 characters")
     .optional()
@@ -449,8 +428,7 @@ export const photoGallerySchema = z.object({
     .array(
       z.object({
         mediaId: z.string().uuid("Invalid media"),
-        captionNe: z.string().optional(),
-        captionEn: z.string().optional(),
+        caption: z.string().optional(),
         order: z.number().int().default(0),
       }),
     )
@@ -458,3 +436,14 @@ export const photoGallerySchema = z.object({
 });
 
 export type PhotoGalleryFormData = z.infer<typeof photoGallerySchema>;
+
+// Author Validations
+export const authorSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  bio: z.string().optional(),
+  image: z.string().url("Invalid URL").optional().or(z.literal("")),
+  email: z.string().email("Invalid email address").optional().or(z.literal("")),
+  isActive: booleanFromInput.default(true),
+});
+
+export type AuthorFormData = z.infer<typeof authorSchema>;

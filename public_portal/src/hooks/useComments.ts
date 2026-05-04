@@ -47,6 +47,7 @@ export function usePostComment() {
         user: {
           id: '',
           name: 'You',
+          image: null,
           profilePhoto: null,
         },
         replies: [],

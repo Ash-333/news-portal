@@ -24,7 +24,6 @@ const manageableRoles = [Role.AUTHOR, Role.ADMIN, Role.SUPERADMIN] as const
 
 const createUserSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
-  nameNe: z.string().optional(),
   bio: z.string().optional(),
   profilePhoto: z.string().optional(),
   email: z.string().email('Invalid email address'),
@@ -168,21 +167,10 @@ export default function CreateUserPage() {
                 placeholder="Enter user's full name"
                 className="mt-1"
               />
-              {errors.name && <p className="text-sm text-red-600 mt-1">{errors.name.message}</p>}
-            </div>
+             {errors.name && <p className="text-sm text-red-600 mt-1">{errors.name.message}</p>}
+           </div>
 
-            <div>
-              <Label htmlFor="nameNe">Full Name (Nepali)</Label>
-              <Input
-                id="nameNe"
-                {...register('nameNe')}
-                placeholder="उपयोगकर्ताको पूरा नाम"
-                className="mt-1"
-              />
-              {errors.nameNe && <p className="text-sm text-red-600 mt-1">{errors.nameNe.message}</p>}
-            </div>
-
-            <div>
+             <div>
               <Label>Profile Photo</Label>
               <div className="mt-1 space-y-2">
                 {profilePhoto ? (

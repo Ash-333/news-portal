@@ -52,8 +52,8 @@ export async function GET(req: NextRequest) {
     if (isPublished !== undefined) where.isPublished = isPublished
     if (search) {
       where.OR = [
-        { titleNe: { contains: search, mode: 'insensitive' } },
-        { titleEn: { contains: search, mode: 'insensitive' } },
+        { title: { contains: search, mode: 'insensitive' } },
+        { title: { contains: search, mode: 'insensitive' } },
       ]
     }
 
@@ -62,8 +62,7 @@ export async function GET(req: NextRequest) {
         where,
         select: {
           id: true,
-          titleNe: true,
-          titleEn: true,
+          title: true,
           youtubeUrl: true,
           thumbnailUrl: true,
           iframeUrl: true,
@@ -104,7 +103,7 @@ export async function POST(req: NextRequest) {
     const validation = await validationMiddleware(videoSchema)(req)
     if (validation instanceof NextResponse) return validation
 
-    const { titleNe, titleEn, youtubeUrl } = validation
+    const { title, youtubeUrl } = validation
 
     const videoId = extractYouTubeId(youtubeUrl as string)
     if (!videoId) {
@@ -119,8 +118,7 @@ export async function POST(req: NextRequest) {
 
     const video = await prisma.video.create({
       data: {
-        titleNe: titleNe as string,
-        titleEn: titleEn as string,
+        title: title as string,
         youtubeUrl: youtubeUrl as string,
         thumbnailUrl,
         iframeUrl,

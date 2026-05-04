@@ -16,8 +16,7 @@ import { PageHeader } from '@/components/ui/page-header'
 import { toast } from 'sonner'
 
 const pollSchema = z.object({
-  questionEn: z.string().min(1, 'English question is required'),
-  questionNe: z.string().min(1, 'Nepali question is required'),
+  question: z.string().min(1, 'Question is required'),
   description: z.string().optional(),
   isActive: z.boolean(),
   isMultiple: z.boolean(),
@@ -25,8 +24,7 @@ const pollSchema = z.object({
   expiresAt: z.string().optional(),
   options: z.array(z.object({
     id: z.string().optional(),
-    textEn: z.string(),
-    textNe: z.string(),
+    text: z.string(),
   })).optional(),
 })
 
@@ -34,14 +32,12 @@ type PollFormData = z.infer<typeof pollSchema>
 
 interface Option {
   id: string
-  textEn: string
-  textNe: string
+  text: string
 }
 
 interface Poll {
   id: string
-  questionNe: string
-  questionEn: string
+  question: string
   description: string | null
   isActive: boolean
   isMultiple: boolean
@@ -49,8 +45,7 @@ interface Poll {
   expiresAt: string | null
   options: Array<{
     id: string
-    textNe: string
-    textEn: string
+    text: string
     order: number
   }>
 }
@@ -78,49 +73,47 @@ export default function EditPollPage() {
   const isActive = watch('isActive')
   const isMultiple = watch('isMultiple')
 
-  useEffect(() => {
-    const fetchPoll = async () => {
-      try {
-        const response = await fetch(`/api/admin/polls/${pollId}`)
-        const data = await response.json()
-        
-        if (data.success) {
-          const poll: Poll = data.data
+    useEffect(() => {
+      const fetchPoll = async () => {
+        try {
+          const response = await fetch(`/api/admin/polls/${pollId}`)
+          const data = await response.json()
           
-          reset({
-            questionEn: poll.questionEn,
-            questionNe: poll.questionNe,
-            description: poll.description || '',
-            isActive: poll.isActive,
-            isMultiple: poll.isMultiple,
-            startsAt: poll.startsAt ? poll.startsAt.slice(0, 16) : '',
-            expiresAt: poll.expiresAt ? poll.expiresAt.slice(0, 16) : '',
-          })
+          if (data.success) {
+            const poll: Poll = data.data
+            
+            reset({
+              question: poll.question,
+              description: poll.description || '',
+              isActive: poll.isActive,
+              isMultiple: poll.isMultiple,
+              startsAt: poll.startsAt ? poll.startsAt.slice(0, 16) : '',
+              expiresAt: poll.expiresAt ? poll.expiresAt.slice(0, 16) : '',
+            })
 
-          setOptions(poll.options.map(opt => ({
-            id: opt.id,
-            textEn: opt.textEn,
-            textNe: opt.textNe,
-          })))
-        } else {
-          toast.error('Poll not found')
-          router.push('/admin/polls')
+            setOptions(poll.options.map(opt => ({
+              id: opt.id,
+              text: opt.text,
+            })))
+          } else {
+            toast.error('Poll not found')
+            router.push('/admin/polls')
+          }
+        } catch (error) {
+          console.error('Error fetching poll:', error)
+          toast.error('Failed to load poll')
+        } finally {
+          setIsLoading(false)
         }
-      } catch (error) {
-        console.error('Error fetching poll:', error)
-        toast.error('Failed to load poll')
-      } finally {
-        setIsLoading(false)
       }
-    }
 
-    if (pollId) {
-      fetchPoll()
-    }
-  }, [pollId, router, reset])
+      if (pollId) {
+        fetchPoll()
+      }
+    }, [pollId, router, reset])
 
   const addOption = () => {
-    setOptions([...options, { id: `new-${Date.now()}`, textEn: '', textNe: '' }])
+    setOptions([...options, { id: `new-${Date.now()}`, text: '' }])
   }
 
   const removeOption = (id: string) => {
@@ -131,9 +124,9 @@ export default function EditPollPage() {
     setOptions(options.filter(opt => opt.id !== id))
   }
 
-  const updateOption = (id: string, field: 'textEn' | 'textNe', value: string) => {
+  const updateOption = (id: string, value: string) => {
     setOptions(options.map(opt => 
-      opt.id === id ? { ...opt, [field]: value } : opt
+      opt.id === id ? { ...opt, text: value } : opt
     ))
   }
 
@@ -143,9 +136,9 @@ export default function EditPollPage() {
       return
     }
     
-    const hasEmptyOption = options.some(opt => !opt.textEn.trim() || !opt.textNe.trim())
+    const hasEmptyOption = options.some(opt => !opt.text.trim())
     if (hasEmptyOption) {
-      toast.error('All options must have text in both languages')
+      toast.error('All options must have text')
       return
     }
 
@@ -166,8 +159,7 @@ export default function EditPollPage() {
           expiresAt: formatDateTime(data.expiresAt || ''),
           options: options.map(opt => ({
             id: opt.id?.startsWith('new-') ? undefined : opt.id,
-            textEn: opt.textEn,
-            textNe: opt.textNe,
+            text: opt.text,
           })),
         }),
       })
@@ -227,29 +219,15 @@ export default function EditPollPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <Label htmlFor="questionEn">Question (English) *</Label>
+                  <Label htmlFor="question">Question *</Label>
                   <Input
-                    id="questionEn"
-                    {...register('questionEn')}
-                    placeholder="Enter question in English"
+                    id="question"
+                    {...register('question')}
+                    placeholder="Enter question"
                     className="mt-1"
                   />
-                  {errors.questionEn && (
-                    <p className="text-sm text-red-600 mt-1">{errors.questionEn.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <Label htmlFor="questionNe">Question (Nepali) *</Label>
-                  <Input
-                    id="questionNe"
-                    {...register('questionNe')}
-                    placeholder="Enter question in Nepali"
-                    className="mt-1"
-                    dir="ltr"
-                  />
-                  {errors.questionNe && (
-                    <p className="text-sm text-red-600 mt-1">{errors.questionNe.message}</p>
+                  {errors.question && (
+                    <p className="text-sm text-red-600 mt-1">{errors.question.message}</p>
                   )}
                 </div>
 
@@ -273,17 +251,11 @@ export default function EditPollPage() {
               <CardContent className="space-y-4">
                 {options.map((option, index) => (
                   <div key={option.id} className="flex gap-4 items-start">
-                    <div className="flex-1 space-y-2">
+                    <div className="flex-1">
                       <Input
-                        value={option.textEn}
-                        onChange={(e) => updateOption(option.id, 'textEn', e.target.value)}
-                        placeholder={`Option ${index + 1} (English)`}
-                      />
-                      <Input
-                        value={option.textNe}
-                        onChange={(e) => updateOption(option.id, 'textNe', e.target.value)}
-                        placeholder={`Option ${index + 1} (Nepali)`}
-                        dir="ltr"
+                        value={option.text}
+                        onChange={(e) => updateOption(option.id, e.target.value)}
+                        placeholder={`Option ${index + 1}`}
                       />
                     </div>
                     <Button

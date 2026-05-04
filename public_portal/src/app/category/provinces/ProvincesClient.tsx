@@ -6,8 +6,7 @@ import Image from 'next/image';
 import { Article } from '@/types';
 import { getArticles } from '@/lib/api/articles';
 import { getArticleImage } from '@/lib/utils/image';
-import { getTitle } from '@/lib/utils/lang';
-import { useLanguage } from '@/context/LanguageContext';
+
 import { cn } from '@/lib/utils';
 
 interface ProvincesClientProps {
@@ -18,7 +17,6 @@ interface ProvincesClientProps {
     total: number;
     totalPages: number;
   };
-  isNepali: boolean;
 }
 
 interface PaginationMeta {
@@ -28,8 +26,8 @@ interface PaginationMeta {
   totalPages: number;
 }
 
-export function ProvincesClient({ initialArticles, initialPagination, isNepali }: ProvincesClientProps) {
-  const { language } = useLanguage();
+export function ProvincesClient({ initialArticles, initialPagination }: ProvincesClientProps) {
+  
   const [articles, setArticles] = useState<Article[]>(initialArticles);
   const [pagination, setPagination] = useState<PaginationMeta | undefined>(initialPagination);
   const [loading, setLoading] = useState(false);
@@ -94,19 +92,19 @@ export function ProvincesClient({ initialArticles, initialPagination, isNepali }
             <Link href={`/article/${article.slug}`}>
               <div className="block relative aspect-[16/10] rounded-lg overflow-hidden mb-2">
                 <Image
-                  src={getArticleImage(article)}
-                  alt={getTitle(article, language)}
-                  fill
+                   src={getArticleImage(article)}
+                   alt={article.title || ''}
+                   fill
                   className="object-cover transition-transform duration-300 group-hover:scale-105"
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                 />
               </div>
-              <h3 className={cn(
-                'font-medium text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-news-red transition-colors',
-                isNepali ? 'font-nepali text-sm' : 'text-sm'
-              )}>
-                {getTitle(article, language)}
-              </h3>
+                 <h3 className={cn(
+                   'font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-news-red transition-colors',
+                   'font-nepali text-lg'
+                 )}>
+                  {article.title || ''}
+                </h3>
             </Link>
           </article>
         ))}

@@ -1,9 +1,8 @@
 import type { Metadata } from 'next';
-import { Inter, Merriweather, Mukta } from 'next/font/google';
+import { Mukta } from 'next/font/google';
 import { Suspense } from 'react';
 import './globals.css';
 import { ThemeProvider } from '@/providers/ThemeProvider';
-import { LanguageProvider } from '@/context/LanguageContext';
 import { QueryProvider } from '@/providers/QueryProvider';
 import { AuthProvider } from '@/context/AuthContext';
 import { TopBar } from '@/components/layout/TopBar';
@@ -15,19 +14,6 @@ import { FloatingWatchButton } from '@/components/ui/FloatingWatchButton';
 import { FlashNewsSheet } from '@/components/ui/FlashNewsSheet';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { GoogleAnalytics } from '@next/third-parties/google';
-
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap',
-});
-
-const merriweather = Merriweather({
-  weight: ['400', '700', '900'],
-  subsets: ['latin'],
-  variable: '--font-merriweather',
-  display: 'swap',
-});
 
 const mukta = Mukta({
   weight: ['400', '500', '600', '700'],
@@ -55,7 +41,6 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'ne_NP',
-    alternateLocale: 'en_US',
     url: SITE_URL,
     siteName: 'HTC Media',
     title: 'HTC Media - Your Trusted Source for News',
@@ -107,12 +92,11 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className={`${inter.variable} ${merriweather.variable} ${mukta.variable} antialiased`}>
+      <body className={`${mukta.variable} antialiased`}>
         <ThemeProvider>
           <TooltipProvider>
-            <LanguageProvider>
-              <QueryProvider>
-                <AuthProvider>
+            <QueryProvider>
+              <AuthProvider>
                   <a href="#main-content" className="skip-link">
                     Skip to main content
                   </a>
@@ -132,7 +116,6 @@ export default function RootLayout({
                   </div>
                 </AuthProvider>
               </QueryProvider>
-            </LanguageProvider>
           </TooltipProvider>
         </ThemeProvider>
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ''} />

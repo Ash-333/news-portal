@@ -23,8 +23,7 @@ export async function PATCH(
       data: { status: ArticleStatus.APPROVED },
       select: {
         id: true,
-        titleNe: true,
-        titleEn: true,
+        title: true,
         status: true,
       },
     })

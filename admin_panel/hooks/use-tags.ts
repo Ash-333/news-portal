@@ -15,7 +15,7 @@ const fetchTags = async (search?: string): Promise<Tag[]> => {
   return result.data
 }
 
-const createTag = async (data: { nameNe: string; nameEn: string; slug: string }): Promise<Tag> => {
+const createTag = async (data: { name: string; slug: string }): Promise<Tag> => {
   const response = await fetch('/api/admin/tags', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

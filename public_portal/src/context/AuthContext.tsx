@@ -1,6 +1,7 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import type { ReactNode } from 'react';
 import { User } from '@/types';
 import { getCurrentUser, login as apiLogin, logout as apiLogout, LoginCredentials, RegisterData, refreshAccessToken } from '@/lib/api/auth';
 
@@ -123,9 +124,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         email: response.data.email,
         name: response.data.name,
         role: response.data.role,
+        image: response.data.image || response.data.profilePhoto || null,
         profilePhoto: response.data.profilePhoto,
         bio: null,
-        language: 'ENGLISH',
         createdAt: new Date().toISOString()
       };
       setUser(user);

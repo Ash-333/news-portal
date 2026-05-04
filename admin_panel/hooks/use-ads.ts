@@ -22,16 +22,15 @@ const createAd = async (data: FormData): Promise<Advertisement> => {
 
   if (!mediaResult.success) throw new Error(mediaResult.message || 'Failed to upload media')
 
-  // Then create the ad with the media URL
-  const adData = {
-    titleNe: data.get('titleNe') as string,
-    titleEn: data.get('titleEn') as string,
-    mediaUrl: mediaResult.data.url,
-    mediaType: (data.get('file') as File)?.type?.includes('gif') ? 'GIF' : 'IMAGE',
-    linkUrl: data.get('linkUrl') as string || '',
-    position: data.get('position') as string || 'SIDEBAR',
-    isActive: true,
-  }
+   // Then create the ad with the media URL
+   const adData = {
+     title: data.get('title') as string,
+     mediaUrl: mediaResult.data.url,
+     mediaType: (data.get('file') as File)?.type?.includes('gif') ? 'GIF' : 'IMAGE',
+     linkUrl: data.get('linkUrl') as string || '',
+     position: data.get('position') as string || 'SIDEBAR',
+     isActive: true,
+   }
 
   const response = await fetch('/api/admin/ads', {
     method: 'POST',
@@ -76,14 +75,13 @@ const updateAd = async ({ id, data }: { id: string; data: FormData | Record<stri
       mediaType = file.type?.includes('gif') ? 'GIF' : 'IMAGE'
     }
 
-    adData = {
-      titleNe: data.get('titleNe') as string,
-      titleEn: data.get('titleEn') as string,
-      linkUrl: data.get('linkUrl') as string || '',
-      position: data.get('position') as string || 'SIDEBAR',
-      isActive: String(data.get('isActive')) === 'true',
-      ...(mediaUrl && { mediaUrl, mediaType }),
-    }
+     adData = {
+       title: data.get('title') as string,
+       linkUrl: data.get('linkUrl') as string || '',
+       position: data.get('position') as string || 'SIDEBAR',
+       isActive: String(data.get('isActive')) === 'true',
+       ...(mediaUrl && { mediaUrl, mediaType }),
+     }
   } else {
     adData = data
   }

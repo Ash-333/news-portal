@@ -1,14 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Search, Filter, X } from 'lucide-react';
-import { useLanguage } from '@/context/LanguageContext';
+
 import { getArticleImage } from '@/lib/utils/image';
 import { cn } from '@/lib/utils';
-import { useCategoriesQuery, usePublishedArticlesQuery } from '@/hooks/useNewsQueries';
+import { useCategoriesQuery } from '@/hooks/useNewsQueries';
+import { useArticles } from '@/hooks/useArticles';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface SearchResult {
@@ -19,12 +20,10 @@ interface SearchResult {
   publishedAt: string;
   category: {
     name: string;
-    nameNe?: string;
     slug: string;
   };
   author: {
     name: string;
-    nameNe?: string;
     slug: string;
   };
   featuredImage?: string;
@@ -32,35 +31,34 @@ interface SearchResult {
 
 export function SearchClient() {
   const searchParams = useSearchParams();
-  const { language, isNepali, t } = useLanguage();
+
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '');
   const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'relevance');
+  const [debouncedSearch, setDebouncedSearch] = useState(searchParams.get('q') || '');
 
   const { data: categories = [] } = useCategoriesQuery();
-  const { data: articles = [] } = usePublishedArticlesQuery();
 
-  // Filter and search logic
-  const filteredArticles = articles.filter((article) => {
-    const matchesQuery = !searchQuery ||
-      article.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      article.excerpt?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      article.content?.toLowerCase().includes(searchQuery.toLowerCase());
-
-    const matchesCategory = !selectedCategory || article.category.slug === selectedCategory;
-
-    return matchesQuery && matchesCategory;
+  const { data: articles = [], isLoading } = useArticles({
+    search: debouncedSearch || undefined,
+    category: selectedCategory || undefined,
   });
 
-  // Sort articles
-  const sortedArticles = [...filteredArticles].sort((a, b) => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  const sortedArticles = [...articles].sort((a, b) => {
     switch (sortBy) {
       case 'date':
         return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
       case 'title':
         return (a.title || '').localeCompare(b.title || '');
-      default: // relevance
-        return 0; // Keep original order for relevance
+      default:
+        return 0;
     }
   });
 
@@ -75,8 +73,7 @@ export function SearchClient() {
       slug: article.category.slug,
     },
     author: {
-      name: article.author.name,
-      nameNe: article.author.nameNe,
+      name: article.author.name || '',
       slug: article.author.slug || '',
     },
     featuredImage: getArticleImage(article),
@@ -101,181 +98,167 @@ export function SearchClient() {
     } else {
       params.delete('sort');
     }
-
-    // Update URL without causing a navigation
-    window.history.replaceState({}, '', `?${params.toString()}`);
-  };
-
-  const clearFilters = () => {
-    setSearchQuery('');
-    setSelectedCategory('');
-    setSortBy('relevance');
-    window.history.replaceState({}, '', window.location.pathname);
+    window.history.pushState(null, '', `?${params.toString()}`);
   };
 
   return (
-    <div className="py-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-news-bg-dark py-8">
       <div className="container mx-auto px-4">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-            {t('search.title')}
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            {t('search.description')}
-          </p>
-        </div>
-
-        {/* Search Form */}
-        <form onSubmit={handleSearch} className="max-w-2xl mx-auto mb-8">
-          <div className="flex gap-2">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={t('search.placeholder')}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-news-red focus:border-transparent bg-white dark:bg-news-card-dark text-gray-900 dark:text-white"
-              />
-            </div>
-            <button
-              type="submit"
-              className="px-6 py-3 bg-news-red text-white rounded-lg hover:bg-news-red/90 transition-colors font-medium"
-            >
-              {t('search.button')}
-            </button>
-          </div>
-        </form>
-
-        {/* Filters */}
-        <div className="max-w-4xl mx-auto mb-8">
-          <div className="flex flex-wrap items-center gap-4 p-4 bg-gray-50 dark:bg-news-card-dark rounded-lg">
-            <div className="flex items-center gap-2">
-              <Filter className="h-5 w-5 text-gray-500" />
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                {t('search.filters')}:
-              </span>
-            </div>
-
-            {/* Category Filter */}
-            <Select value={selectedCategory || 'all'} onValueChange={(val) => setSelectedCategory(val === 'all' ? '' : val)}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder={t('search.allCategories')} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t('search.allCategories')}</SelectItem>
-                {categories.map((category) => (
-                  <SelectItem key={category.id} value={category.slug}>
-                    {category.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            {/* Sort By */}
-            <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-[160px]">
-                <SelectValue placeholder={t('search.sortRelevance')} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="relevance">{t('search.sortRelevance')}</SelectItem>
-                <SelectItem value="date">{t('search.sortDate')}</SelectItem>
-                <SelectItem value="title">{t('search.sortTitle')}</SelectItem>
-              </SelectContent>
-            </Select>
-
-            {/* Clear Filters */}
-            {(searchQuery || selectedCategory || sortBy !== 'relevance') && (
-              <button
-                onClick={clearFilters}
-                className="flex items-center gap-1 px-3 py-1 text-sm text-news-red hover:text-news-red/80 transition-colors"
-              >
-                <X className="h-4 w-4" />
-                {t('search.clearFilters')}
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Results */}
         <div className="max-w-4xl mx-auto">
-          {searchResults.length === 0 ? (
-            <div className="text-center py-16">
-              <Search className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                {t('search.noResults')}
-              </h3>
-              <p className="text-gray-600 dark:text-gray-400">
-                {t('search.tryDifferent')}
-              </p>
-            </div>
-          ) : (
-            <>
-              <div className="flex items-center justify-between mb-6">
-                <p className="text-gray-600 dark:text-gray-400">
-                  {searchResults.length} results
-                </p>
+          {/* Search Header */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+              Search News
+            </h1>
+
+            <form onSubmit={handleSearch} className="space-y-4">
+              {/* Search Input */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="लेखहरू खोज्नुहोस्..."
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-news-card-dark text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-news-red"
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery('');
+                      const params = new URLSearchParams(searchParams.toString());
+                      params.delete('q');
+                      window.history.pushState(null, '', `?${params.toString()}`);
+                    }}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+                  >
+                    <X className="h-4 w-4 text-gray-400" />
+                  </button>
+                )}
               </div>
 
-              <div className="space-y-6">
-                {searchResults.map((result) => (
-                  <article
-                    key={result.id}
-                    className="flex gap-4 p-4 bg-white dark:bg-news-card-dark rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow"
-                  >
-                    {/* Image */}
-                    {result.featuredImage && (
-                      <div className="flex-shrink-0">
+              {/* Filters */}
+              <div className="flex flex-wrap gap-4">
+                {/* Category Filter */}
+                <div className="flex-1 min-w-[200px]">
+                  <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                    <SelectTrigger className="w-full">
+                      <div className="flex items-center gap-2">
+                        <Filter className="h-4 w-4" />
+                        <SelectValue placeholder="सबै श्रेणीहरू" />
+                      </div>
+                    </SelectTrigger>
+                    <SelectContent>
+                       <SelectItem value="">सबै श्रेणीहरू</SelectItem>
+                      {categories.map((cat) => (
+                        <SelectItem key={cat.id} value={cat.slug}>
+                          {cat.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Sort By */}
+                <div className="flex-1 min-w-[200px]">
+                  <Select value={sortBy} onValueChange={setSortBy}>
+                    <SelectTrigger className="w-full">
+                       <SelectValue placeholder="क्रमबद्ध गर्नुहोस्..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="relevance">Relevance</SelectItem>
+                      <SelectItem value="date">Date (Newest)</SelectItem>
+                      <SelectItem value="title">Title (A-Z)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          {/* Results */}
+          {isLoading ? (
+            <div className="space-y-6">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="flex gap-4">
+                  <div className="w-32 h-24 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 w-3/4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                    <div className="h-3 w-1/2 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                    <div className="h-3 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : searchResults.length > 0 ? (
+            <div className="space-y-6">
+              <p className="text-sm text-gray-500">
+                Found {searchResults.length} result{searchResults.length !== 1 ? 's' : ''}
+              </p>
+              {searchResults.map((result) => (
+                <article key={result.id} className="flex gap-4 group">
+                  {result.featuredImage && (
+                    <Link href={`/article/${result.slug}`} className="shrink-0">
+                      <div className="w-32 h-24 relative rounded-lg overflow-hidden">
                         <Image
                           src={result.featuredImage}
                           alt={result.title}
-                          width={120}
-                          height={80}
-                          className="rounded object-cover"
+                          fill
+                          className="object-cover transition-transform duration-300 group-hover:scale-105"
+                          sizes="128px"
                         />
                       </div>
-                    )}
-
-                    {/* Content */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Link
-                          href={`/category/${result.category.slug}`}
-                          className="text-xs font-medium text-news-red hover:text-news-red/80"
-                        >
-                          {result.category.name}
-                        </Link>
-                        <span className="text-gray-400">•</span>
-                        <Link
-                          href={`/author/${result.author.slug}`}
-                          className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-                        >
-                          {isNepali ? (result.author.nameNe || result.author.name) : result.author.name}
-                        </Link>
-                        <span className="text-gray-400">•</span>
-                        <time className="text-xs text-gray-500 dark:text-gray-400">
-                          {new Date(result.publishedAt).toLocaleDateString()}
-                        </time>
-                      </div>
-
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                        <Link
-                          href={`/article/${result.slug}`}
-                          className="hover:text-news-red transition-colors"
-                        >
-                          {result.title}
-                        </Link>
-                      </h3>
-
-                      <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2">
-                        {result.excerpt}
-                      </p>
+                    </Link>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Link
+                        href={`/category/${result.category.slug}`}
+                        className="text-xs font-medium text-news-red hover:text-news-red/80"
+                      >
+                        {result.category.name}
+                      </Link>
+                      <span className="text-gray-400">•</span>
+                      <Link
+                        href={`/author/${result.author.slug}`}
+                        className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                      >
+                        {result.author.name}
+                      </Link>
+                      <span className="text-gray-400">•</span>
+                      <time className="text-xs text-gray-500 dark:text-gray-400">
+                        {new Date(result.publishedAt).toLocaleDateString()}
+                      </time>
                     </div>
-                  </article>
-                ))}
-              </div>
-            </>
+
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                      <Link
+                        href={`/article/${result.slug}`}
+                        className="hover:text-news-red transition-colors"
+                      >
+                        {result.title}
+                      </Link>
+                    </h3>
+
+                    <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2">
+                      {result.excerpt}
+                    </p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          ) : searchQuery ? (
+            <div className="text-center py-12">
+              <Search className="h-16 w-16 mx-auto text-gray-300 mb-4" />
+              <p className="text-gray-500 mb-2">No results found for "{searchQuery}"</p>
+              <p className="text-sm text-gray-400">Try different keywords or remove filters</p>
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <Search className="h-16 w-16 mx-auto text-gray-300 mb-4" />
+              <p className="text-gray-500">Start typing to search for articles</p>
+            </div>
           )}
         </div>
       </div>

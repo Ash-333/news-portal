@@ -1,7 +1,7 @@
 'use client';
 
 import { useAdsQuery } from '@/hooks/useNewsQueries';
-import { useLanguage } from '@/context/LanguageContext';
+
 import { cn } from '@/lib/utils';
 import { AdPlaceholder } from '@/components/ui/AdPlaceholder';
 import { Megaphone } from 'lucide-react';
@@ -13,7 +13,7 @@ interface SectionSidebarAdProps {
 }
 
 export function SectionSidebarAd({ position, className }: SectionSidebarAdProps) {
-  const { isNepali } = useLanguage();
+
   const { data, isLoading } = useAdsQuery();
   const ads = data?.data || [];
   
@@ -65,7 +65,7 @@ export function SectionSidebarAd({ position, className }: SectionSidebarAdProps)
         ) : (
           <img
             src={activeAd.mediaUrl}
-            alt={isNepali ? activeAd.titleNe : activeAd.titleEn}
+            alt={activeAd.title}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
         )}

@@ -17,8 +17,7 @@ import { toast } from 'sonner'
 
 interface Poll {
   id: string
-  questionNe: string
-  questionEn: string
+  question: string
   description: string | null
   isActive: boolean
   isMultiple: boolean
@@ -121,8 +120,7 @@ export default function PollsPage() {
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
-                    <h3 className="font-medium">{poll.questionEn}</h3>
-                    <p className="text-sm text-slate-500">{poll.questionNe}</p>
+                    <h3 className="font-medium">{poll.question}</h3>
                     <div className="flex gap-4 mt-2 text-xs text-slate-500">
                       <span>{poll._count.options} options</span>
                       <span>{poll._count.votes} votes</span>

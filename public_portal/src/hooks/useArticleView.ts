@@ -35,7 +35,6 @@ export function useArticleView(slug: string | undefined) {
     // Track the view
     const trackView = async () => {
 
-
       try {
         const response = await apiFetch(`/api/articles/${slug}/view`, {
           method: "POST",

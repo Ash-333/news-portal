@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Facebook, Twitter, Link2, Printer, Check } from 'lucide-react';
-import { useLanguage } from '@/context/LanguageContext';
+
 import { getShareUrls, copyToClipboard, cn } from '@/lib/utils';
 
 interface ShareBarProps {
@@ -11,7 +11,7 @@ interface ShareBarProps {
 }
 
 export function ShareBar({ url = '', title = '' }: ShareBarProps) {
-  const { isNepali, t } = useLanguage();
+
   const [copied, setCopied] = useState(false);
 
   const shareUrls = getShareUrls(url, title);
@@ -65,8 +65,8 @@ export function ShareBar({ url = '', title = '' }: ShareBarProps) {
 
   return (
     <div className="flex flex-wrap items-center gap-2 py-4">
-      <span className={cn('text-sm text-gray-500 mr-2', isNepali ? 'font-nepali' : '')}>
-        {t('article.share')}:
+      <span className={cn('text-sm text-gray-500 mr-2', 'font-nepali')}>
+        सेयर गर्नुहोस्:
       </span>
 
       {shareButtons.map((button) => (
@@ -79,7 +79,7 @@ export function ShareBar({ url = '', title = '' }: ShareBarProps) {
             'flex items-center gap-2 px-3 py-2 rounded-lg text-white text-sm transition-colors',
             button.color
           )}
-          aria-label={`Share on ${button.name}`}
+           aria-label={`${button.name} मा सेयर गर्नुहोस्`}
         >
           <button.icon className="h-4 w-4" />
           <span className="hidden sm:inline">{button.name}</span>
@@ -94,21 +94,21 @@ export function ShareBar({ url = '', title = '' }: ShareBarProps) {
             ? 'bg-green-600 text-white'
             : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
         )}
-        aria-label="Copy link"
+         aria-label="लिङ्क कपी गर्नुहोस्"
       >
         {copied ? <Check className="h-4 w-4" /> : <Link2 className="h-4 w-4" />}
         <span className="hidden sm:inline">
-          {copied ? 'Copied!' : t('article.copyLink')}
+           {copied ? 'कपी भयो!' : 'लिङ्क कपी'}
         </span>
       </button>
 
       <button
         onClick={handlePrint}
         className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-        aria-label="Print"
+         aria-label="प्रिन्ट गर्नुहोस्"
       >
         <Printer className="h-4 w-4" />
-        <span className="hidden sm:inline">{t('article.print')}</span>
+         <span className="hidden sm:inline">प्रिन्ट</span>
       </button>
     </div>
   );

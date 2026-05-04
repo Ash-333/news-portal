@@ -6,12 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
-interface PollCardProps {
-  pollId: string
-  language?: 'en' | 'ne'
-}
-
-export function PollCard({ pollId, language = 'en' }: PollCardProps) {
+export function PollCard({ pollId }: { pollId: string }) {
   const { data: poll, isLoading, error } = usePublicPoll(pollId)
   const voteMutation = useVotePoll()
   const [selectedOption, setSelectedOption] = useState<string | null>(null)
@@ -31,7 +26,7 @@ export function PollCard({ pollId, language = 'en' }: PollCardProps) {
     return null
   }
 
-  const question = language === 'ne' ? poll.questionNe : poll.questionEn
+  const question = poll.question
   const description = poll.description
   const isMultiple = poll.isMultiple
 
@@ -56,7 +51,7 @@ export function PollCard({ pollId, language = 'en' }: PollCardProps) {
       </CardHeader>
       <CardContent className="space-y-3">
         {poll.options.map((option) => {
-          const text = language === 'ne' ? option.textNe : option.textEn
+          const text = option.text
           
           return (
             <div
@@ -98,7 +93,7 @@ export function PollCard({ pollId, language = 'en' }: PollCardProps) {
 
         <div className="pt-2 flex items-center justify-between">
           <span className="text-sm text-slate-500">
-            {poll.totalVotes} {language === 'en' ? 'votes' : 'मतदान'}
+            {poll.totalVotes} मतदान
           </span>
           
           {!hasVoted && (
@@ -107,15 +102,15 @@ export function PollCard({ pollId, language = 'en' }: PollCardProps) {
               disabled={!selectedOption || voteMutation.isPending}
             >
               {voteMutation.isPending 
-                ? (language === 'en' ? 'Voting...' : 'मतदान हुँदै...')
-                : (language === 'en' ? 'Vote' : 'मतदान गर्नुहोस्')
+                ? 'मतदान हुँदै...'
+                : 'मतदान गर्नुहोस्'
               }
             </Button>
           )}
           
           {hasVoted && (
             <span className="text-sm text-green-600 font-medium">
-              {language === 'en' ? 'Thank you for voting!' : 'मतदानको लागि धन्यवाद!'}
+              मतदानको लागि धन्यवाद!
             </span>
           )}
         </div>

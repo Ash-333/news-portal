@@ -3,19 +3,18 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, Search, Bookmark, Share2, MessageCircle } from 'lucide-react';
-import { useLanguage } from '@/context/LanguageContext';
+
 import { cn } from '@/lib/utils';
 
 export function MobileBottomBar() {
   const pathname = usePathname();
-  const { isNepali, t } = useLanguage();
 
   const navItems = [
-    { href: '/', icon: Home, label: t('nav.home') },
-    { href: '/search', icon: Search, label: t('search.searchButton') },
-    { href: '/bookmarks', icon: Bookmark, label: t('user.bookmarks') },
-    { href: '#share', icon: Share2, label: t('article.share') },
-    { href: '#comments', icon: MessageCircle, label: t('article.comments') },
+    { href: '/', icon: Home, label: 'होम' },
+    { href: '/search', icon: Search, label: 'खोज' },
+    { href: '/bookmarks', icon: Bookmark, label: 'बुकमार्क' },
+    { href: '#share', icon: Share2, label: 'सेयर' },
+    { href: '#comments', icon: MessageCircle, label: 'टिप्पणी' },
   ];
 
   const handleShare = async () => {
@@ -57,7 +56,7 @@ export function MobileBottomBar() {
                 aria-label={item.label as string}
               >
                 <Icon className="h-5 w-5" />
-                <span className={cn('text-xs', isNepali ? 'font-nepali' : '')}>
+                <span className={cn('text-xs', 'font-nepali')}>
                   {item.label}
                 </span>
               </button>
@@ -73,7 +72,7 @@ export function MobileBottomBar() {
                 aria-label={item.label as string}
               >
                 <Icon className="h-5 w-5" />
-                <span className={cn('text-xs', isNepali ? 'font-nepali' : '')}>
+                <span className={cn('text-xs', 'font-nepali')}>
                   {item.label}
                 </span>
               </button>
@@ -92,7 +91,7 @@ export function MobileBottomBar() {
               )}
             >
               <Icon className="h-5 w-5" />
-              <span className={cn('text-xs', isNepali ? 'font-nepali' : '')}>
+              <span className={cn('text-xs', 'font-nepali')}>
                 {item.label}
               </span>
             </Link>

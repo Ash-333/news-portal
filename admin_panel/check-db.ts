@@ -10,7 +10,7 @@ async function main() {
   console.log('Users:', JSON.stringify(users, null, 2))
 
   const categories = await prisma.category.findMany({
-    select: { id: true, nameEn: true }
+    select: { id: true, name: true }
   })
   console.log('Categories:', JSON.stringify(categories, null, 2))
 }

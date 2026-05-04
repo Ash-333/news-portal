@@ -244,7 +244,7 @@ export default function DashboardPage() {
                     className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-900 rounded-lg"
                   >
                     <div>
-                      <p className="font-medium text-sm">{article.titleEn}</p>
+                      <p className="font-medium text-sm">{article.title}</p>
                       <p className="text-xs text-slate-500">by {article.author?.name}</p>
                     </div>
                     <div className="flex gap-2">
@@ -302,7 +302,7 @@ export default function DashboardPage() {
                       key={article.id}
                       className="border-b border-slate-100 dark:border-slate-900 hover:bg-slate-50 dark:hover:bg-slate-900/50"
                     >
-                      <td className="py-3">{article.titleEn}</td>
+                       <td className="py-3">{article.title}</td>
                       <td className="py-3">{article.authorName}</td>
                       <td className="py-3">{article.categoryName}</td>
                       <td className="py-3 text-right">{article.views.toLocaleString()}</td>

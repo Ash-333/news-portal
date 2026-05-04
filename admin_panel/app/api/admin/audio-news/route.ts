@@ -81,10 +81,8 @@ export async function GET(req: NextRequest) {
     if (categoryId) where.categoryId = categoryId;
     if (search) {
       where.OR = [
-        { titleNe: { contains: search, mode: "insensitive" } },
-        { titleEn: { contains: search, mode: "insensitive" } },
-        { descriptionNe: { contains: search, mode: "insensitive" } },
-        { descriptionEn: { contains: search, mode: "insensitive" } },
+        { title: { contains: search, mode: "insensitive" } },
+        { description: { contains: search, mode: "insensitive" } },
       ];
     }
 
@@ -93,10 +91,8 @@ export async function GET(req: NextRequest) {
         where,
         select: {
           id: true,
-          titleNe: true,
-          titleEn: true,
-          descriptionNe: true,
-          descriptionEn: true,
+          title: true,
+          description: true,
           audioUrl: true,
           thumbnailUrl: true,
           categoryId: true,
@@ -106,7 +102,7 @@ export async function GET(req: NextRequest) {
           createdAt: true,
           updatedAt: true,
           author: { select: { id: true, name: true } },
-          category: { select: { id: true, nameEn: true, nameNe: true } },
+          category: { select: { id: true, name: true } },
         },
         orderBy: sortBy ? { [sortBy]: order } : { createdAt: "desc" },
         skip: (page - 1) * limit,
@@ -143,10 +139,8 @@ export async function POST(req: NextRequest) {
     const formData = await req.formData();
 
     // Extract fields from form data
-    const titleNe = formData.get("titleNe") as string;
-    const titleEn = formData.get("titleEn") as string;
-    const descriptionNe = formData.get("descriptionNe") as string | null;
-    const descriptionEn = formData.get("descriptionEn") as string | null;
+    const title = formData.get("title") as string;
+    const description = formData.get("description") as string | null;
     const categoryId = formData.get("categoryId") as string | null;
     const isPublished = formData.get("isPublished") === "true";
     const audioFile = formData.get("audioFile") as File | null;
@@ -154,12 +148,12 @@ export async function POST(req: NextRequest) {
     const thumbnailUrl = formData.get("thumbnailUrl") as string | null;
 
     // Validate required fields
-    if (!titleNe || !titleEn) {
+    if (!title) {
       return NextResponse.json(
         {
           success: false,
           data: null,
-          message: "Title (English) and Title (Nepali) are required",
+          message: "Title is required",
         },
         { status: 400 },
       );
@@ -205,10 +199,8 @@ export async function POST(req: NextRequest) {
 
     const audioNews = await prisma.audioNews.create({
       data: {
-        titleNe,
-        titleEn,
-        descriptionNe: descriptionNe || undefined,
-        descriptionEn: descriptionEn || undefined,
+        title,
+        description: description || undefined,
         audioUrl,
         thumbnailUrl: thumbnailUrlValue || undefined,
         categoryId: categoryId || undefined,

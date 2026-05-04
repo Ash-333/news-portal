@@ -60,9 +60,11 @@ export function getFeaturedArticles(): Promise<ApiResponse<Article[]>> {
 
 export function getPopularArticles(
   period?: "today" | "week" | "month",
+  limit?: number,
 ): Promise<ApiResponse<Article[]>> {
   const query = new URLSearchParams();
   if (period) query.set("period", period);
+  if (limit) query.set("limit", String(limit));
   const qs = query.toString();
   const endpoint = `/api/articles/popular${qs ? `?${qs}` : ""}`;
   return apiFetch<Article[]>(endpoint, { method: "GET" });

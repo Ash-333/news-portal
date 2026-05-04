@@ -6,10 +6,10 @@ import { processContent } from '@/lib/utils/content';
 
 interface ArticleContentProps {
   content: string;
-  lang: 'ne' | 'en';
+  lang?: 'ne' | 'en';
 }
 
-export function ArticleContent({ content, lang }: ArticleContentProps) {
+export function ArticleContent({ content, lang = 'ne' }: ArticleContentProps) {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? '';
   const processed = processContent(content, apiUrl);
   const clean = DOMPurify.sanitize(processed);

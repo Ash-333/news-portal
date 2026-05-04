@@ -18,6 +18,7 @@ import {
 } from '@/hooks/use-audio-news'
 import { FeaturedImageSelector } from '@/components/featured-image-selector'
 import { Media } from '@/types'
+import AuthorSelect from '@/components/author-select'
 
 export default function AudioNewsPage() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -25,11 +26,10 @@ export default function AudioNewsPage() {
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [formData, setFormData] = useState({
-    titleNe: '',
-    titleEn: '',
-    descriptionNe: '',
-    descriptionEn: '',
+    title: '',
+    description: '',
     categoryId: '',
+    authorId: '',
     isPublished: false
   })
   const [audioFile, setAudioFile] = useState<File | null>(null)
@@ -47,18 +47,17 @@ export default function AudioNewsPage() {
   const togglePublish = useTogglePublishAudioNews()
 
   const handleCreate = async () => {
-    if (!formData.titleEn || !formData.titleNe || !audioFile) {
+    if (!formData.title || !audioFile || !formData.authorId) {
       toast.error('Please fill all required fields and upload an audio file')
       return
     }
     setIsSubmitting(true)
     try {
       const formDataToSend = new FormData()
-      formDataToSend.append('titleNe', formData.titleNe)
-      formDataToSend.append('titleEn', formData.titleEn)
-      if (formData.descriptionNe) formDataToSend.append('descriptionNe', formData.descriptionNe)
-      if (formData.descriptionEn) formDataToSend.append('descriptionEn', formData.descriptionEn)
+      formDataToSend.append('title', formData.title)
+      if (formData.description) formDataToSend.append('description', formData.description)
       if (formData.categoryId) formDataToSend.append('categoryId', formData.categoryId)
+      formDataToSend.append('authorId', formData.authorId)
       formDataToSend.append('isPublished', formData.isPublished.toString())
       formDataToSend.append('audioFile', audioFile)
       if (thumbnailFile) formDataToSend.append('thumbnailFile', thumbnailFile)
@@ -72,7 +71,7 @@ export default function AudioNewsPage() {
       if (result.success) {
         toast.success('Audio news created successfully')
         setShowForm(false)
-        setFormData({ titleNe: '', titleEn: '', descriptionNe: '', descriptionEn: '', categoryId: '', isPublished: false })
+        setFormData({ title: '', description: '', categoryId: '', authorId: '', isPublished: false })
         setAudioFile(null)
         setThumbnailFile(null)
         setThumbnailMedia(null)
@@ -88,18 +87,17 @@ export default function AudioNewsPage() {
   }
 
   const handleUpdate = async () => {
-    if (!editingId || !formData.titleEn || !formData.titleNe) {
+    if (!editingId || !formData.title || !formData.authorId) {
       toast.error('Please fill all required fields')
       return
     }
     setIsSubmitting(true)
     try {
       const formDataToSend = new FormData()
-      formDataToSend.append('titleNe', formData.titleNe)
-      formDataToSend.append('titleEn', formData.titleEn)
-      if (formData.descriptionNe) formDataToSend.append('descriptionNe', formData.descriptionNe)
-      if (formData.descriptionEn) formDataToSend.append('descriptionEn', formData.descriptionEn)
+      formDataToSend.append('title', formData.title)
+      if (formData.description) formDataToSend.append('description', formData.description)
       if (formData.categoryId) formDataToSend.append('categoryId', formData.categoryId)
+      formDataToSend.append('authorId', formData.authorId)
       formDataToSend.append('isPublished', formData.isPublished.toString())
       // Only include audio file if a new one is selected
       if (audioFile) formDataToSend.append('audioFile', audioFile)
@@ -117,7 +115,7 @@ export default function AudioNewsPage() {
         toast.success('Audio news updated successfully')
         setShowForm(false)
         setEditingId(null)
-        setFormData({ titleNe: '', titleEn: '', descriptionNe: '', descriptionEn: '', categoryId: '', isPublished: false })
+        setFormData({ title: '', description: '', categoryId: '', authorId: '', isPublished: false })
         setAudioFile(null)
         setThumbnailFile(null)
         setThumbnailMedia(null)
@@ -136,11 +134,10 @@ export default function AudioNewsPage() {
 
   const handleEdit = (audioNews: any) => {
     setFormData({
-      titleNe: audioNews.titleNe,
-      titleEn: audioNews.titleEn,
-      descriptionNe: audioNews.descriptionNe || '',
-      descriptionEn: audioNews.descriptionEn || '',
+      title: audioNews.title,
+      description: audioNews.description || '',
       categoryId: audioNews.categoryId || '',
+      authorId: audioNews.author?.id || '',
       isPublished: audioNews.isPublished
     })
     setExistingAudioUrl(audioNews.audioUrl || '')
@@ -168,7 +165,7 @@ export default function AudioNewsPage() {
   const handleCancel = () => {
     setShowForm(false)
     setEditingId(null)
-    setFormData({ titleNe: '', titleEn: '', descriptionNe: '', descriptionEn: '', categoryId: '', isPublished: false })
+    setFormData({ title: '', description: '', categoryId: '', authorId: '', isPublished: false })
     setAudioFile(null)
     setThumbnailFile(null)
     setThumbnailMedia(null)
@@ -196,46 +193,25 @@ export default function AudioNewsPage() {
         <Card>
           <CardContent className="p-6 space-y-4">
             <h3 className="text-lg font-semibold">{editingId ? 'Edit Audio News' : 'Add New Audio News'}</h3>
-            <div className="grid gap-4 md:grid-cols-2">
               <div>
-                <label className="text-sm font-medium">Title (English) *</label>
+                <label className="text-sm font-medium">Title *</label>
                 <Input
-                  value={formData.titleEn}
-                  onChange={(e) => setFormData(p => ({ ...p, titleEn: e.target.value }))}
-                  placeholder="Enter title in English"
+                  value={formData.title}
+                  onChange={(e) => setFormData(p => ({ ...p, title: e.target.value }))}
+                  placeholder="Enter title"
                   className="mt-1"
                 />
               </div>
               <div>
-                <label className="text-sm font-medium">Title (Nepali) *</label>
-                <Input
-                  value={formData.titleNe}
-                  onChange={(e) => setFormData(p => ({ ...p, titleNe: e.target.value }))}
-                  placeholder="Enter title in Nepali"
+                <label className="text-sm font-medium">Description</label>
+                <Textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData(p => ({ ...p, description: e.target.value }))}
+                  placeholder="Enter description"
                   className="mt-1"
+                  rows={3}
                 />
               </div>
-            </div>
-            <div>
-              <label className="text-sm font-medium">Description (English)</label>
-              <Textarea
-                value={formData.descriptionEn}
-                onChange={(e) => setFormData(p => ({ ...p, descriptionEn: e.target.value }))}
-                placeholder="Enter description in English"
-                className="mt-1"
-                rows={3}
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium">Description (Nepali)</label>
-              <Textarea
-                value={formData.descriptionNe}
-                onChange={(e) => setFormData(p => ({ ...p, descriptionNe: e.target.value }))}
-                placeholder="Enter description in Nepali"
-                className="mt-1"
-                rows={3}
-              />
-            </div>
             <div>
               <label className="text-sm font-medium">Audio File *</label>
               <div className="mt-1">
@@ -271,6 +247,15 @@ export default function AudioNewsPage() {
                 <FeaturedImageSelector
                   value={thumbnailMedia}
                   onChange={(media) => setThumbnailMedia(media)}
+                />
+              </div>
+            </div>
+            <div>
+              <label className="text-sm font-medium">Author *</label>
+              <div className="mt-1">
+                <AuthorSelect
+                  value={formData.authorId}
+                  onValueChange={(value) => setFormData(p => ({ ...p, authorId: value }))}
                 />
               </div>
             </div>
@@ -326,11 +311,11 @@ export default function AudioNewsPage() {
               <CardContent className="p-0">
                 <div className="relative aspect-video bg-slate-900">
                   {audio.thumbnailUrl ? (
-                    <img
-                      src={audio.thumbnailUrl}
-                      alt={audio.titleEn}
-                      className="w-full h-full object-cover"
-                    />
+                   <img
+                     src={audio.thumbnailUrl}
+                     alt={audio.title}
+                     className="w-full h-full object-cover"
+                   />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-slate-800">
                       <Play className="w-12 h-12 text-slate-400" />
@@ -348,8 +333,8 @@ export default function AudioNewsPage() {
                   </div>
                 </div>
                 <div className="p-3">
-                  <p className="font-medium text-sm truncate">{audio.titleEn}</p>
-                  <p className="text-xs text-slate-500 truncate">{audio.titleNe}</p>
+                   <p className="font-medium text-sm truncate">{audio.title}</p>
+                   <p className="text-xs text-slate-500 truncate">by {audio.author?.name}</p>
                   <p className="text-xs text-slate-400 mt-1">by {audio.author?.name}</p>
                   <div className="flex gap-1 mt-2">
                     <Button variant="ghost" size="sm" onClick={() => handleEdit(audio)}>

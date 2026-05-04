@@ -6,11 +6,9 @@ import { VideoCard } from '@/components/videos/VideoCard';
 import { ItemListJsonLd, BreadcrumbListJsonLd } from '@/lib/jsonLd';
 import { getArticles } from '@/lib/api/articles';
 import { getVideos } from '@/lib/api/videos';
-import { getServerLanguage } from '@/lib/utils/language';
 
 interface ProvincePageProps {
   params: { slug: string };
-  searchParams?: { lang?: string };
 }
 
 const slugToProvince: Record<string, string> = {
@@ -23,14 +21,14 @@ const slugToProvince: Record<string, string> = {
   'sudurpashchim': 'PROVINCE_7',
 };
 
-const provinceData: Record<string, { name: string; nameNe: string }> = {
-  PROVINCE_1: { name: 'Koshi', nameNe: 'कोशी प्रदेश' },
-  PROVINCE_2: { name: 'Madhesh', nameNe: 'मधेश प्रदेश' },
-  PROVINCE_3: { name: 'Bagmati', nameNe: 'बागमती प्रदेश' },
-  PROVINCE_4: { name: 'Gandaki', nameNe: 'गण्डकी प्रदेश' },
-  PROVINCE_5: { name: 'Lumbini', nameNe: 'लुम्बिनी प्रदेश' },
-  PROVINCE_6: { name: 'Karnali', nameNe: 'कर्णाली प्रदेश' },
-  PROVINCE_7: { name: 'Sudurpashchim', nameNe: 'सुदूरपश्चिम प्रदेश' },
+const provinceData: Record<string, { name: string }> = {
+  PROVINCE_1: { name: 'Koshi' },
+  PROVINCE_2: { name: 'Madhesh' },
+  PROVINCE_3: { name: 'Bagmati' },
+  PROVINCE_4: { name: 'Gandaki' },
+  PROVINCE_5: { name: 'Lumbini' },
+  PROVINCE_6: { name: 'Karnali' },
+  PROVINCE_7: { name: 'Sudurpashchim' },
 };
 
 export const revalidate = 120;
@@ -46,12 +44,12 @@ export async function generateMetadata({ params }: ProvincePageProps): Promise<M
   }
 
   return {
-    title: `${province.nameNe} - HTC Media`,
-    description: `Latest news and updates from ${province.name}`,
+    title: `${province.name} Province - HTC Media`,
+    description: `Latest news and updates from ${province.name} Province`,
   };
 }
 
-export default async function ProvincePage({ params, searchParams }: ProvincePageProps) {
+export default async function ProvincePage({ params }: ProvincePageProps) {
   const provinceKey = slugToProvince[params.slug.toLowerCase()];
   const province = provinceData[provinceKey];
   
@@ -59,20 +57,10 @@ export default async function ProvincePage({ params, searchParams }: ProvincePag
     notFound();
   }
 
-  const lang = getServerLanguage();
-
   const articlesRes = await getArticles({ province: provinceKey, limit: 20 });
   const articles = articlesRes.success ? articlesRes.data : [];
   const videosRes = await getVideos({ limit: 6 });
   const videos = videosRes.success ? videosRes.data : [];
-
-  const pageTitle = lang === 'ne' ? province.nameNe : `${province.name} Province`;
-  const pageDesc = lang === 'ne' 
-    ? `नेपालको ${province.name} बाट ताजा समाचार र अपडेटहरु`
-    : `Latest news and updates from ${province.name} Province`;
-  const newsTitle = lang === 'ne' ? 'समाचार' : 'News';
-  const noNews = lang === 'ne' ? 'यस प्रदेशमा हालसम्म कुनै समाचार छैन।' : 'No news available in this province yet.';
-  const videoTitle = lang === 'ne' ? 'भिडियो अपडेट' : 'Video Updates';
 
   return (
     <>
@@ -80,30 +68,30 @@ export default async function ProvincePage({ params, searchParams }: ProvincePag
         data={ItemListJsonLd(
           articles.map((article) => ({
             url: `${process.env.NEXT_PUBLIC_SITE_URL}/article/${article.slug}`,
-            name: (lang === 'ne' ? article.titleNe : article.titleEn) || '',
+            name: article.title || '',
           }))
         )}
       />
       <JsonLd
         data={BreadcrumbListJsonLd([
-          { name: 'Home', url: `${process.env.NEXT_PUBLIC_SITE_URL}` },
-          { name: 'Provinces', url: `${process.env.NEXT_PUBLIC_SITE_URL}/provinces` },
-          { name: province.name, url: `${process.env.NEXT_PUBLIC_SITE_URL}/provinces/${params.slug}` },
+          { name: 'गृह', url: `${process.env.NEXT_PUBLIC_SITE_URL}` },
+          { name: 'प्रदेशहरू', url: `${process.env.NEXT_PUBLIC_SITE_URL}/provinces` },
+          { name: `${province.name} Province`, url: `${process.env.NEXT_PUBLIC_SITE_URL}/provinces/${params.slug}` },
         ])}
       />
 
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold">{pageTitle}</h1>
+          <h1 className="text-3xl font-bold">{province.name} प्रदेश</h1>
           <p className="text-gray-600 dark:text-gray-400 mt-2">
-            {pageDesc}
+            {province.name} प्रदेशबाट ताजा समाचार र अपडेट
           </p>
         </div>
 
         {articles.length > 0 ? (
           <>
             <section className="mb-12">
-              <h2 className="text-2xl font-bold mb-6">{newsTitle}</h2>
+              <h2 className="text-2xl font-bold mb-6">समाचार</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {articles.slice(0, 6).map((article) => (
                   <ArticleCard key={article.id} article={article} />
@@ -123,13 +111,13 @@ export default async function ProvincePage({ params, searchParams }: ProvincePag
           </>
         ) : (
           <p className="text-gray-500 text-center py-12">
-            {noNews}
+            No news available in this province yet.
           </p>
         )}
 
         {videos.length > 0 && (
           <section className="mt-12">
-            <h2 className="text-2xl font-bold mb-6">{videoTitle}</h2>
+            <h2 className="text-2xl font-bold mb-6">Video Updates</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {videos.slice(0, 6).map((video) => (
                 <VideoCard key={video.id} video={video} />

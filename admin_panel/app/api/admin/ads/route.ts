@@ -86,8 +86,7 @@ export async function POST(req: NextRequest) {
     if (endDate && endDate !== "") adData.endDate = new Date(endDate as string);
 
     const adDataClean = adData as {
-      titleNe: string;
-      titleEn: string;
+      title: string;
       mediaUrl: string;
       mediaType?: string;
       linkUrl?: string | null;

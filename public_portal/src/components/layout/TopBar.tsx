@@ -1,9 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 import { Calendar, Facebook, Twitter, Youtube, Instagram } from 'lucide-react';
-import { useLanguage } from '@/context/LanguageContext';
+
 import { toNepaliDigits, formatDate } from '@/lib/utils';
 import { AdBox } from '@/components/ads/AdBox';
 import { NepaliDate } from "nepali-date-library";
@@ -11,10 +10,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getSocialLinks, SocialLinks } from '@/lib/api/settings';
 
 export function TopBar() {
-  const { language, toggleLanguage, isNepali, t } = useLanguage();
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const bsDate = new NepaliDate();
 
@@ -26,25 +22,6 @@ export function TopBar() {
 
   const socialLinks = socialLinksResponse?.data;
 
-  const handleLanguageToggle = () => {
-    const newLang = isNepali ? 'en' : 'ne';
-
-    // Set cookie for server components - with proper attributes for reliability
-    document.cookie = `language=${newLang};path=/;max-age=31536000;SameSite=Lax`;
-
-    // Get current lang param and update it
-    const currentLang = searchParams.get('lang');
-    const params = new URLSearchParams(searchParams.toString());
-
-    params.set('lang', newLang);
-
-    // Navigate to the same path with the new language parameter
-    router.push(`${pathname}?${params.toString()}`);
-
-    // Also toggle the internal language state
-    toggleLanguage();
-  };
-
   const facebookUrl = socialLinks?.facebookUrl || 'https://facebook.com';
   const twitterUrl = socialLinks?.twitterUrl || 'https://twitter.com';
   const youtubeUrl = socialLinks?.youtubeUrl || 'https://youtube.com';
@@ -55,26 +32,17 @@ export function TopBar() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
           {/* Date */}
-          <div className="flex items-center gap-4 text-sm">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
-              <span className={isNepali ? 'font-nepali' : ''}>
-                {isNepali ? (
-                  <>
-                    <span className="font-medium">{toNepaliDigits(String(bsDate))}</span>
-                    <span className="mx-2">|</span>
-                    <span>{toNepaliDigits(formatDate(currentDate, 'ne'))}</span>
-                  </>
-                ) : (
-                  formatDate(currentDate, 'en')
-                )}
-              </span>
-            </div>
-          </div>
+           <div className="flex items-center gap-4 text-sm">
+             <div className="flex items-center gap-2">
+               <Calendar className="h-4 w-4" />
+               <span className='font-nepali'>
+                 <span className="font-medium">{String(bsDate)}</span>
+               </span>
+             </div>
+           </div>
 
-          {/* Social Icons and Language Toggle */}
+          {/* Social Icons */}
           <div className="flex items-center gap-4">
-            {/* Social Icons */}
             <div className="hidden md:flex items-center gap-3">
               {socialLinks?.facebookUrl && (
                 <a
@@ -82,7 +50,7 @@ export function TopBar() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-white/80 transition-colors"
-                  aria-label="Facebook"
+                   aria-label="फेसबुक"
                 >
                   <Facebook className="h-4 w-4" />
                 </a>
@@ -93,7 +61,7 @@ export function TopBar() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-white/80 transition-colors"
-                  aria-label="Twitter"
+                   aria-label="ट्विटर"
                 >
                   <Twitter className="h-4 w-4" />
                 </a>
@@ -104,7 +72,7 @@ export function TopBar() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-white/80 transition-colors"
-                  aria-label="YouTube"
+                   aria-label="युट्युब"
                 >
                   <Youtube className="h-4 w-4" />
                 </a>
@@ -115,23 +83,12 @@ export function TopBar() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-white/80 transition-colors"
-                  aria-label="Instagram"
+                   aria-label="इन्स्टाग्राम"
                 >
                   <Instagram className="h-4 w-4" />
                 </a>
               )}
             </div>
-
-            {/* Language Toggle */}
-            <button
-              onClick={handleLanguageToggle}
-              className="flex items-center gap-2 px-3 py-1 bg-white/20 rounded-full text-sm font-medium hover:bg-white/30 transition-colors"
-              aria-label={t('language.toggle') as string}
-            >
-              <span className={isNepali ? 'font-nepali' : ''}>
-                {isNepali ? t('language.english') : t('language.nepali')}
-              </span>
-            </button>
           </div>
         </div>
       </div>

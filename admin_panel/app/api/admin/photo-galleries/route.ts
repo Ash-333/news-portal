@@ -62,8 +62,7 @@ export async function GET(req: NextRequest) {
         where,
         select: {
           id: true,
-          titleNe: true,
-          titleEn: true,
+          title: true,
           slug: true,
           isPublished: true,
           createdAt: true,
@@ -72,7 +71,7 @@ export async function GET(req: NextRequest) {
             select: {
               id: true,
               name: true,
-              profilePhoto: true,
+              image: true,
             },
           },
           coverImage: {
@@ -134,10 +133,10 @@ export async function POST(req: NextRequest) {
       return validation;
     }
 
-    const { titleNe, titleEn, excerptNe, excerptEn, isPublished, coverImageId, photos } = validation;
+    const { title, excerpt, isPublished, coverImageId, photos } = validation;
 
     // Generate slug from English title
-    const baseSlug = titleEn
+    const baseSlug = title
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-|-$/g, "");
@@ -153,10 +152,8 @@ export async function POST(req: NextRequest) {
     const gallery = await prisma.$transaction(async (tx) => {
       const createdGallery = await tx.photoGallery.create({
         data: {
-          titleNe,
-          titleEn,
-          excerptNe: excerptNe || null,
-          excerptEn: excerptEn || null,
+          title,
+          excerpt: excerpt || null,
           slug,
           authorId: authenticatedReq.user!.id,
           isPublished: Boolean(isPublished),
@@ -164,16 +161,14 @@ export async function POST(req: NextRequest) {
           photos: {
             create: photos.map((photo, index) => ({
               mediaId: photo.mediaId,
-              captionNe: photo.captionNe || null,
-              captionEn: photo.captionEn || null,
+              caption: photo.caption || null,
               order: photo.order ?? index,
             })),
           },
         },
         select: {
           id: true,
-          titleNe: true,
-          titleEn: true,
+          title: true,
           slug: true,
           isPublished: true,
           createdAt: true,

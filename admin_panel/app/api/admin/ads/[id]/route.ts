@@ -53,8 +53,8 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const body = await req.json()
     const updateData: Record<string, unknown> = {}
 
-    if (body.titleNe !== undefined) updateData.titleNe = body.titleNe
-    if (body.titleEn !== undefined) updateData.titleEn = body.titleEn
+    if (body.title !== undefined) updateData.title = body.title
+    if (body.title !== undefined) updateData.title = body.title
     if (body.isActive !== undefined) updateData.isActive = body.isActive
     if (body.position !== undefined) updateData.position = body.position
     if (body.linkUrl !== undefined) updateData.linkUrl = body.linkUrl

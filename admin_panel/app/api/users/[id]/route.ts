@@ -47,13 +47,11 @@ export async function GET(
         status: true,
         profilePhoto: true,
         bio: true,
-        language: true,
         lastLoginAt: true,
         createdAt: true,
         updatedAt: true,
         _count: {
           select: {
-            articles: true,
             comments: true,
           },
         },
@@ -201,7 +199,7 @@ export async function PATCH(
 
       const updatedUser = await prisma.user.update({
         where: { id },
-        data: { status: validation.data.status },
+        data: { status: validation.data.status as any },
         select: {
           id: true,
           name: true,
@@ -245,7 +243,6 @@ export async function PATCH(
         email: true,
         bio: true,
         profilePhoto: true,
-        language: true,
         updatedAt: true,
       },
     });

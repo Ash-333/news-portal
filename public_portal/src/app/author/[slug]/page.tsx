@@ -7,7 +7,6 @@ import { JsonLd } from '@/components/JsonLd';
 import { PersonJsonLd, BreadcrumbListJsonLd } from '@/lib/jsonLd';
 import { ArticleCard } from '@/components/ArticleCard';
 import { deriveAuthorsFromArticles, fetchPublishedArticles } from '@/lib/api';
-import { getServerLanguage } from '@/lib/utils/language';
 
 interface AuthorPageProps {
   params: { slug: string };
@@ -28,9 +27,7 @@ export async function generateMetadata({ params }: AuthorPageProps): Promise<Met
     };
   }
 
-  const serverLang = await getServerLanguage();
-  const isNepali = serverLang === 'ne' || !serverLang;
-  const authorName = isNepali ? (author.nameNe || author.name) : author.name;
+  const authorName = author.name;
 
   return {
     title: authorName,
@@ -57,16 +54,13 @@ export default async function AuthorPage({ params, searchParams }: AuthorPagePro
   }
 
   // URL param takes precedence for shareability, otherwise use cookie-based server language
-  const urlLang = searchParams?.lang;
-  const serverLang = await getServerLanguage();
-  const userLang = urlLang || serverLang;
-  const isNepali = userLang === 'ne' || !userLang;
+  const lang = searchParams.lang === 'en' ? 'en' : 'ne';
 
   const articles = allArticles.filter((article) => article.author.slug === params.slug);
   const url = `${SITE_URL}/author/${author.slug}`;
 
-  const authorName = isNepali ? (author.nameNe || author.name) : (author.name || author.nameNe);
-  const authorBio = isNepali ? (author.bioNe || author.bio) : (author.bio || author.bioNe);
+  const authorName = author.name || '';
+  const authorBio = author.bio || '';
 
   return (
     <>
@@ -132,7 +126,7 @@ export default async function AuthorPage({ params, searchParams }: AuthorPagePro
                         target="_blank"
                         rel="noopener noreferrer"
                         className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center hover:bg-news-red hover:text-white transition-colors"
-                        aria-label="Twitter"
+                         aria-label="ट्विटर"
                       >
                         <Twitter className="h-5 w-5" />
                       </a>
@@ -143,7 +137,7 @@ export default async function AuthorPage({ params, searchParams }: AuthorPagePro
                         target="_blank"
                         rel="noopener noreferrer"
                         className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center hover:bg-news-red hover:text-white transition-colors"
-                        aria-label="Facebook"
+                         aria-label="फेसबुक"
                       >
                         <Facebook className="h-5 w-5" />
                       </a>
@@ -154,7 +148,7 @@ export default async function AuthorPage({ params, searchParams }: AuthorPagePro
                         target="_blank"
                         rel="noopener noreferrer"
                         className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center hover:bg-news-red hover:text-white transition-colors"
-                        aria-label="LinkedIn"
+                         aria-label="लिंक्डइन"
                       >
                         <Linkedin className="h-5 w-5" />
                       </a>
@@ -163,7 +157,7 @@ export default async function AuthorPage({ params, searchParams }: AuthorPagePro
                       <a
                         href={`mailto:${author.email}`}
                         className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center hover:bg-news-red hover:text-white transition-colors"
-                        aria-label="Email"
+                         aria-label="इमेल"
                       >
                         <Mail className="h-5 w-5" />
                       </a>
@@ -177,7 +171,7 @@ export default async function AuthorPage({ params, searchParams }: AuthorPagePro
           {/* Articles */}
           <div>
             <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
-              Articles by {authorName}
+               {authorName} द्वारा लेखहरू
             </h2>
 
             {articles.length === 0 ? (

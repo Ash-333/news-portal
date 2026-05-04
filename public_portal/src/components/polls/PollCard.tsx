@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Poll } from '@/types';
-import { useLanguage } from '@/context/LanguageContext';
+
 import { useVotePoll, markAsVoted } from '@/hooks/usePolls';
 import { useAuth } from '@/context/AuthContext';
 import { cn } from '@/lib/utils';
@@ -15,7 +15,7 @@ interface PollCardProps {
 }
 
 export function PollCard({ poll, showResults = false, className }: PollCardProps) {
-  const { isNepali, t } = useLanguage();
+
   const { isAuthenticated } = useAuth();
   const voteMutation = useVotePoll();
 
@@ -33,13 +33,12 @@ export function PollCard({ poll, showResults = false, className }: PollCardProps
   const [showResultsNow, setShowResultsNow] = useState(showResults || poll.hasVoted || hasVoted);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const question = isNepali ? poll.questionNe : poll.questionEn;
+  const question = poll.question || '';
 
   const handleVote = async () => {
     if (!selectedOption) return;
 
     setErrorMessage(null);
-
 
     try {
       await voteMutation.mutateAsync({ pollId: poll.id, optionId: selectedOption });
@@ -91,7 +90,7 @@ export function PollCard({ poll, showResults = false, className }: PollCardProps
                 <div className="relative">
                   <div
                     className={cn(
-                      'h-10 rounded-md transition-all overflow-hidden',
+                      'h-10 rounded-md transition-all',
                       isVotedOption
                         ? 'bg-news-red/20 dark:bg-news-red/30'
                         : 'bg-gray-100 dark:bg-gray-800'
@@ -100,7 +99,7 @@ export function PollCard({ poll, showResults = false, className }: PollCardProps
                   />
                   <div className="absolute inset-0 flex items-center justify-between px-3">
                     <span className="text-sm font-medium text-gray-900 dark:text-white">
-                      {isNepali ? option.textNe : option.textEn}
+                      {option.text}
                       {isVotedOption && (
                         <CheckCircle2 className="inline-block w-4 h-4 ml-1 text-news-red" />
                       )}
@@ -124,7 +123,7 @@ export function PollCard({ poll, showResults = false, className }: PollCardProps
                   )}
                 >
                   <span className="text-sm font-medium text-gray-900 dark:text-white">
-                    {isNepali ? option.textNe : option.textEn}
+                    {option.text}
                   </span>
                 </button>
               )}
@@ -140,7 +139,7 @@ export function PollCard({ poll, showResults = false, className }: PollCardProps
           disabled={voteMutation.isPending}
           className="mt-4 w-full py-2 px-4 bg-news-red text-white rounded-md hover:bg-news-red-dark transition-colors disabled:opacity-60"
         >
-          {voteMutation.isPending ? t('common.loading') : t('polls.vote')}
+          {voteMutation.isPending ? 'Voting...' : 'Vote'}
         </button>
       )}
 
@@ -154,11 +153,11 @@ export function PollCard({ poll, showResults = false, className }: PollCardProps
       {/* Footer with stats */}
       <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-800 flex justify-between items-center">
         <span className="text-xs text-gray-500">
-          {poll.totalVotes} {t('polls.votes')}
+          {poll.totalVotes} vote{poll.totalVotes !== 1 ? 's' : ''}
         </span>
-        {poll.expiresAt && new Date(poll.expiresAt) < new Date() && (
+        {poll.expiresAt && new Date(poll.expiresAt) > new Date() && (
           <span className="text-xs text-red-500">
-            {t('polls.expired')}
+            Ends {new Date(poll.expiresAt).toLocaleDateString()}
           </span>
         )}
       </div>
@@ -176,7 +175,6 @@ export function PollCardSkeleton({ className }: { className?: string }) {
         <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded" />
         <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded" />
       </div>
-      <div className="mt-4 h-10 bg-gray-200 dark:bg-gray-700 rounded" />
     </div>
   );
 }

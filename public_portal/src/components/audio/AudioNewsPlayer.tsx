@@ -7,8 +7,7 @@ import { Play, Pause, Volume2, VolumeX, Headphones } from 'lucide-react';
 
 interface AudioNewsPlayerProps {
   audioUrl: string;
-  title: string;
-  titleNe?: string;
+  title?: string;
   thumbnailUrl?: string;
   className?: string;
   autoPlay?: boolean;
@@ -17,7 +16,6 @@ interface AudioNewsPlayerProps {
 export function AudioNewsPlayer({
   audioUrl,
   title,
-  titleNe,
   thumbnailUrl,
   className,
   autoPlay = false,
@@ -118,7 +116,7 @@ export function AudioNewsPlayer({
           {thumbnailUrl ? (
             <Image
               src={thumbnailUrl}
-              alt={titleNe || title}
+              alt={title || 'Audio News'}
               fill
               className="object-cover"
             />
@@ -132,10 +130,10 @@ export function AudioNewsPlayer({
         <button
           onClick={togglePlay}
           className="w-10 h-10 flex items-center justify-center rounded-full bg-news-red text-white hover:bg-news-red-dark transition-colors shrink-0"
-          aria-label={isPlaying ? 'Pause' : 'Play'}
+           aria-label={isPlaying ? 'रोक्नुहोस्' : 'बजाउनुहोस्'}
         >
           {isPlaying ? (
-            <Pause className="w-4 h-4" />
+            <Pause className="w-4 h-4 ml-0.5" />
           ) : (
             <Play className="w-4 h-4 ml-0.5" />
           )}
@@ -143,7 +141,7 @@ export function AudioNewsPlayer({
 
         <div className="flex-1 min-w-0">
           <h4 className="font-medium text-gray-900 dark:text-white truncate text-sm">
-            {titleNe || title}
+            {title || 'Audio News'}
           </h4>
 
           <div
@@ -167,7 +165,7 @@ export function AudioNewsPlayer({
         <button
           onClick={toggleMute}
           className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400"
-          aria-label={isMuted ? 'Unmute' : 'Mute'}
+           aria-label={isMuted ? 'अनम्युट गर्नुहोस्' : 'म्युट गर्नुहोस्'}
         >
           {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
         </button>
@@ -181,9 +179,10 @@ export function AudioNewsPlayerSkeleton({ className }: { className?: string }) {
     <div className={cn('bg-white dark:bg-news-card-dark rounded-lg shadow-sm border border-news-border dark:border-news-border-dark p-4 animate-pulse', className)}>
       <div className="flex items-center gap-4">
         <div className="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-700" />
+        <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700" />
         <div className="flex-1">
           <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2" />
-          <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded w-full" />
+          <div className="h-1.5 bg-gray-200 dark:bg-gray-700 rounded w-full" />
         </div>
       </div>
     </div>

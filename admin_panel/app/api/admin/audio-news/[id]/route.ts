@@ -64,7 +64,7 @@ export async function GET(
       where: { id },
       include: {
         author: { select: { id: true, name: true } },
-        category: { select: { id: true, nameEn: true, nameNe: true } },
+        category: { select: { id: true, name: true } },
       },
     });
 
@@ -122,22 +122,17 @@ export async function PATCH(
       const formData = await req.formData();
 
       // Extract fields from form data
-      const titleNe = formData.get("titleNe") as string | null;
-      const titleEn = formData.get("titleEn") as string | null;
-      const descriptionNe = formData.get("descriptionNe") as string | null;
-      const descriptionEn = formData.get("descriptionEn") as string | null;
+      const title = formData.get("title") as string | null;
+      const description = formData.get("description") as string | null;
       const categoryId = formData.get("categoryId") as string | null;
       const isPublished = formData.get("isPublished");
       const audioFile = formData.get("audioFile") as File | null;
       const thumbnailFile = formData.get("thumbnailFile") as File | null;
       const thumbnailUrl = formData.get("thumbnailUrl") as string | null;
 
-      if (titleNe) updateData.titleNe = titleNe;
-      if (titleEn) updateData.titleEn = titleEn;
-      if (descriptionNe !== null)
-        updateData.descriptionNe = descriptionNe || null;
-      if (descriptionEn !== null)
-        updateData.descriptionEn = descriptionEn || null;
+      if (title) updateData.title = title;
+      if (description !== null)
+        updateData.description = description || null;
       if (categoryId !== null) updateData.categoryId = categoryId || null;
       if (isPublished !== null) {
         updateData.isPublished = isPublished === "true";
@@ -188,12 +183,9 @@ export async function PATCH(
       // Handle JSON body
       const body = await req.json();
 
-      if (body.titleNe !== undefined) updateData.titleNe = body.titleNe;
-      if (body.titleEn !== undefined) updateData.titleEn = body.titleEn;
-      if (body.descriptionNe !== undefined)
-        updateData.descriptionNe = body.descriptionNe;
-      if (body.descriptionEn !== undefined)
-        updateData.descriptionEn = body.descriptionEn;
+      if (body.title !== undefined) updateData.title = body.title;
+      if (body.description !== undefined)
+        updateData.description = body.description;
       if (body.audioUrl !== undefined) updateData.audioUrl = body.audioUrl;
       if (body.thumbnailUrl !== undefined)
         updateData.thumbnailUrl = body.thumbnailUrl;

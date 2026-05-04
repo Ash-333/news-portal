@@ -2,14 +2,13 @@
 
 import Link from 'next/link';
 import { Zap } from 'lucide-react';
-import { useLanguage } from '@/context/LanguageContext';
+
 import { useQuery } from '@tanstack/react-query';
 import { fetchPublishedArticles } from '@/lib/api';
 import { cn } from '@/lib/utils';
 
 export function FlashUpdateSidebar() {
-  const { isNepali } = useLanguage();
-  
+
   const { data: articlesResponse } = useQuery({
     queryKey: ['articles', 'sidebar-flash-updates'],
     queryFn: () => fetchPublishedArticles({ isFlashUpdate: true, limit: 5 }),
@@ -26,7 +25,7 @@ export function FlashUpdateSidebar() {
       <div className="bg-news-red text-white px-4 py-2 flex items-center gap-2">
         <Zap className="w-4 h-4" />
         <span className="font-semibold text-sm">
-          {isNepali ? 'ताजा अपडेट' : 'Flash Updates'}
+          {'ताजा अपडेट'}
         </span>
       </div>
       <ul className="divide-y divide-news-border dark:divide-gray-700">
@@ -38,9 +37,9 @@ export function FlashUpdateSidebar() {
             >
               <span className={cn(
                 'text-sm font-medium text-gray-900 dark:text-white line-clamp-2',
-                isNepali ? 'font-nepali' : ''
+                'font-nepali'
               )}>
-                {isNepali ? article.titleNe : article.titleEn}
+                {article.title}
               </span>
             </Link>
           </li>
@@ -51,7 +50,7 @@ export function FlashUpdateSidebar() {
           href={`/articles?flash=true`}
           className="text-news-red text-xs font-semibold hover:underline flex items-center gap-1"
         >
-          {isNepali ? 'सबै हेर्नुहोस्' : 'View All'}
+          {'सबै हेर्नुहोस्'}
           <ArrowRight className="w-3 h-3" />
         </Link>
       </div>

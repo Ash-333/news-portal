@@ -4,13 +4,11 @@ import { JsonLd } from '@/components/JsonLd';
 import { ItemListJsonLd, BreadcrumbListJsonLd } from '@/lib/jsonLd';
 import { getArticles } from '@/lib/api/articles';
 import { getCategories } from '@/lib/api/categories';
-import { getTitle } from '@/lib/utils/lang';
-import { getServerLanguage } from '@/lib/utils/language';
+
 import { CategoryClient } from './CategoryClient';
 
 interface CategoryPageProps {
   params: { slug: string };
-  searchParams?: { lang?: string };
 }
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://yoursite.com';
@@ -35,20 +33,13 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
     return { title: 'Category Not Found' };
   }
 
-  const lang = getServerLanguage();
-  const name = lang === 'ne' ? (category.nameNe || category.nameEn) : (category.nameEn || category.nameNe);
-
   return {
-    title: `${name} - News Portal`,
-    description: `Browse latest ${name} news and articles`,
+    title: `${category.name || category.slug} - News Portal`,
+    description: `Browse latest ${(category.name || category.slug)} news and articles`,
   };
 }
 
-export default async function CategoryPage({ params, searchParams }: CategoryPageProps) {
-  const urlLang = searchParams?.lang;
-  const serverLang = getServerLanguage();
-  const isNepali = urlLang === 'ne' || (!urlLang && serverLang === 'ne');
-
+export default async function CategoryPage({ params }: CategoryPageProps) {
   const [categoriesRes, articlesRes] = await Promise.all([
     getCategories(),
     getArticles({ category: params.slug, page: 1, limit: 20 }),
@@ -63,19 +54,15 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
 
   const allArticles = articlesRes.success ? articlesRes.data : [];
   const pagination = articlesRes.pagination;
-  const categoryName = isNepali
-    ? (category.nameNe || category.nameEn || category.slug)
-    : (category.nameEn || category.nameNe || category.slug);
-
-  const url = `${SITE_URL}/category/${category.slug}`;
   const subcategories = category.children || [];
+  const url = `${SITE_URL}/category/${category.slug}`;
 
   return (
     <>
       <JsonLd
         data={ItemListJsonLd(
           allArticles.map((a) => ({
-            name: getTitle(a, isNepali ? 'ne' : 'en'),
+            name: a.title || '',
             url: `${SITE_URL}/article/${a.slug}`,
           }))
         )}
@@ -83,7 +70,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
       <JsonLd
         data={BreadcrumbListJsonLd([
           { name: 'Home', url: `${SITE_URL}/` },
-          { name: categoryName, url },
+          { name: category.name || category.slug, url },
         ])}
       />
 
@@ -92,7 +79,6 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
         subcategories={subcategories}
         initialArticles={allArticles}
         initialPagination={pagination}
-        isNepali={isNepali}
       />
     </>
   );

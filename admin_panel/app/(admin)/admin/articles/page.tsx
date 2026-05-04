@@ -50,17 +50,17 @@ export default function ArticlesPage() {
   const updateStatus = useUpdateArticleStatus()
   const canReviewArticles = hasPermission(permissions.articlesReview)
 
-  // Flatten categories for dropdown
-  const flattenCategories = (cats: CategoryWithChildren[], prefix = ''): { id: string; name: string }[] => {
-    let result: { id: string; name: string }[] = []
-    for (const cat of cats) {
-      result.push({ id: cat.id, name: prefix + (cat.nameEn || cat.nameNe) })
-      if (cat.children && cat.children.length > 0) {
-        result = result.concat(flattenCategories(cat.children as CategoryWithChildren[], prefix + '— '))
-      }
-    }
-    return result
-  }
+   // Flatten categories for dropdown
+   const flattenCategories = (cats: CategoryWithChildren[], prefix = ''): { id: string; name: string }[] => {
+     let result: { id: string; name: string }[] = []
+     for (const cat of cats) {
+       result.push({ id: cat.id, name: prefix + cat.name })
+       if (cat.children && cat.children.length > 0) {
+         result = result.concat(flattenCategories(cat.children as CategoryWithChildren[], prefix + '— '))
+       }
+     }
+     return result
+   }
   const flatCategories = categories ? flattenCategories(categories) : []
 
   const handleDelete = async () => {
@@ -91,7 +91,7 @@ export default function ArticlesPage() {
       header: 'Title',
       render: (article) => (
         <div>
-          <p className="font-medium">{article.titleEn}</p>
+          <p className="font-medium">{article.title}</p>
           {article.isFlashUpdate && (
             <span className="text-xs text-red-600 font-medium">Flash Update</span>
           )}
@@ -106,7 +106,7 @@ export default function ArticlesPage() {
     {
       key: 'category',
       header: 'Category',
-      render: (article) => article.category?.nameEn || '-',
+      render: (article) => article.category?.name || '-',
     },
     {
       key: 'status',

@@ -14,8 +14,7 @@ function formatPhotoGalleries(galleries: any[]) {
     photos: (gallery.photos || []).map((p: any) => ({
       id: p.id,
       order: p.order,
-      captionNe: p.captionNe,
-      captionEn: p.captionEn,
+      caption: p.caption,
       media: {
         id: p.media.id,
         filename: p.media.filename,
@@ -47,8 +46,8 @@ export async function GET(req: NextRequest) {
 
         if (search) {
           where.OR = [
-            { titleNe: { contains: search, mode: "insensitive" } },
-            { titleEn: { contains: search, mode: "insensitive" } },
+            { title: { contains: search, mode: "insensitive" } },
+            { title: { contains: search, mode: "insensitive" } },
           ];
         }
 
@@ -58,10 +57,8 @@ export async function GET(req: NextRequest) {
             select: {
               id: true,
               slug: true,
-              titleNe: true,
-              titleEn: true,
-              excerptNe: true,
-              excerptEn: true,
+               title: true,
+               excerpt: true,
               isPublished: true,
               createdAt: true,
               coverImage: {
@@ -75,8 +72,7 @@ export async function GET(req: NextRequest) {
                 select: {
                   id: true,
                   name: true,
-                  nameNe: true,
-                  profilePhoto: true,
+                  image: true,
                 },
               },
               photos: {

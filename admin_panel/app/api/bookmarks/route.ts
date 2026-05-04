@@ -39,15 +39,13 @@ export async function GET(req: NextRequest) {
           article: {
             select: {
               id: true,
-              titleNe: true,
-              titleEn: true,
+              title: true,
               slug: true,
-              excerptNe: true,
-              excerptEn: true,
+              excerpt: true,
               ogImage: true,
               publishedAt: true,
               category: {
-                select: { id: true, nameNe: true, nameEn: true },
+                select: { id: true, name: true },
               },
             },
           },

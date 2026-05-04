@@ -16,7 +16,7 @@ export const articleKeys = {
   detail: (slug: string) => ['article', slug] as const,
   breaking: ['articles', 'flash-update'] as const,
   featured: ['articles', 'featured'] as const,
-  popular: (period?: string) => ['articles', 'popular', period] as const,
+  popular: (period?: string, limit?: number) => ['articles', 'popular', period, limit] as const,
   latest: (limit?: number) => ['articles', 'latest', limit] as const,
 };
 
@@ -73,11 +73,11 @@ export function useFeaturedArticles() {
   });
 }
 
-export function usePopularArticles(period?: 'today' | 'week' | 'month') {
+export function usePopularArticles(period?: 'today' | 'week' | 'month', limit?: number) {
   return useQuery({
-    queryKey: articleKeys.popular(period),
+    queryKey: articleKeys.popular(period, limit),
     queryFn: async () => {
-      const res = await getPopularArticles(period);
+      const res = await getPopularArticles(period, limit);
       return res.data as Article[];
     },
     staleTime: 15 * 60 * 1000,

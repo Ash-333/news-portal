@@ -14,7 +14,7 @@ const fetchCategories = async (): Promise<CategoryWithChildren[]> => {
   return result.data
 }
 
-const createCategory = async (data: { nameNe: string; nameEn: string; slug: string; parentId?: string }): Promise<Category> => {
+const createCategory = async (data: { name: string; slug: string; parentId?: string }): Promise<Category> => {
   const response = await fetch('/api/admin/categories', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

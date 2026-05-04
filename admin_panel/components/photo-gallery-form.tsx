@@ -10,25 +10,23 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { PageHeader } from '@/components/ui/page-header'
 import { useCreatePhotoGallery, useUpdatePhotoGallery, usePhotoGallery } from '@/hooks/use-photo-galleries'
 import { FeaturedImageSelector } from '@/components/featured-image-selector'
 import { MediaLibraryModal } from '@/components/media-library-modal'
 import type { Media } from '@/types'
 import { toast } from 'sonner'
+import AuthorSelect from './author-select'
 
 const photoGallerySchema = z.object({
-  titleNe: z.string().min(1, 'Nepali title is required'),
-  titleEn: z.string().min(1, 'English title is required'),
-  excerptNe: z.string().max(500).optional().or(z.literal('')),
-  excerptEn: z.string().max(500).optional().or(z.literal('')),
+  title: z.string().min(1, 'Title is required'),
+  excerpt: z.string().max(500).optional().or(z.literal('')),
   coverImageId: z.string().uuid().optional().or(z.literal('')),
+  authorId: z.string().min(1, 'Author is required'),
   photos: z.array(
     z.object({
       mediaId: z.string().uuid(),
-      captionNe: z.string().optional(),
-      captionEn: z.string().optional(),
+      caption: z.string().optional(),
       order: z.number().int().default(0),
     })
   ).min(1, 'At least one photo is required'),
@@ -44,7 +42,6 @@ interface PhotoGalleryFormProps {
 export function PhotoGalleryForm({ galleryId, isEditing }: PhotoGalleryFormProps) {
   const router = useRouter()
 
-  const [activeTab, setActiveTab] = useState('english')
   const [coverMedia, setCoverMedia] = useState<Media | null>(null)
   const [selectedPhotos, setSelectedPhotos] = useState<Media[]>([])
   const [isPhotosModalOpen, setIsPhotosModalOpen] = useState(false)
@@ -63,9 +60,9 @@ export function PhotoGalleryForm({ galleryId, isEditing }: PhotoGalleryFormProps
   } = useForm<PhotoGalleryFormData>({
     resolver: zodResolver(photoGallerySchema),
     defaultValues: {
-      excerptNe: '',
-      excerptEn: '',
+      excerpt: '',
       coverImageId: '',
+      authorId: '',
       photos: [],
     },
   })
@@ -86,16 +83,14 @@ export function PhotoGalleryForm({ galleryId, isEditing }: PhotoGalleryFormProps
         })) as Media[]
       )
       reset({
-        titleNe: existingGallery.titleNe,
-        titleEn: existingGallery.titleEn,
-        excerptNe: existingGallery.excerptNe || '',
-        excerptEn: existingGallery.excerptEn || '',
+        title: existingGallery.title,
+        excerpt: existingGallery.excerpt || '',
         coverImageId: existingGallery.coverImageId || '',
+        authorId: existingGallery.author?.id || '',
         isPublished: existingGallery.isPublished,
         photos: existingGallery.photos.map((p) => ({
           mediaId: p.mediaId,
-          captionNe: p.captionNe || '',
-          captionEn: p.captionEn || '',
+          caption: p.caption || '',
           order: p.order,
         })),
       } as PhotoGalleryFormData)
@@ -138,8 +133,7 @@ export function PhotoGalleryForm({ galleryId, isEditing }: PhotoGalleryFormProps
   const handleAddPhotos = (media: Media[]) => {
     const newPhotos = media.map((m, index) => ({
       mediaId: m.id,
-      captionNe: '',
-      captionEn: '',
+      caption: '',
       order: selectedPhotos.length + index,
     }))
     setSelectedPhotos((prev) => [...prev, ...media])
@@ -197,71 +191,33 @@ export function PhotoGalleryForm({ galleryId, isEditing }: PhotoGalleryFormProps
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
           <Card>
-            <CardContent className="p-6">
-              <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="mb-4">
-                  <TabsTrigger value="english">English</TabsTrigger>
-                  <TabsTrigger value="nepali">Nepali</TabsTrigger>
-                </TabsList>
+            <CardContent className="p-6 space-y-4">
+              <div>
+                <Label htmlFor="title">Title</Label>
+                <Input
+                  id="title"
+                  {...register('title')}
+                  placeholder="Enter gallery title"
+                  className="mt-1"
+                />
+                {errors.title && (
+                  <p className="text-sm text-red-600 mt-1">{errors.title.message}</p>
+                )}
+              </div>
 
-                <TabsContent value="english" className="space-y-4">
-                  <div>
-                    <Label htmlFor="titleEn">Title (English)</Label>
-                    <Input
-                      id="titleEn"
-                      {...register('titleEn')}
-                      placeholder="Enter gallery title in English"
-                      className="mt-1"
-                    />
-                    {errors.titleEn && (
-                      <p className="text-sm text-red-600 mt-1">{errors.titleEn.message}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <Label htmlFor="excerptEn">Excerpt (English)</Label>
-                    <textarea
-                      id="excerptEn"
-                      {...register('excerptEn')}
-                      placeholder="Brief description of the gallery"
-                      className="mt-1 block w-full rounded-md border bg-background p-2 text-sm"
-                      rows={3}
-                    />
-                    {errors.excerptEn && (
-                      <p className="text-sm text-red-600 mt-1">{errors.excerptEn.message}</p>
-                    )}
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="nepali" className="space-y-4">
-                  <div>
-                    <Label htmlFor="titleNe">Title (Nepali)</Label>
-                    <Input
-                      id="titleNe"
-                      {...register('titleNe')}
-                      placeholder="Enter gallery title in Nepali"
-                      className="mt-1"
-                    />
-                    {errors.titleNe && (
-                      <p className="text-sm text-red-600 mt-1">{errors.titleNe.message}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <Label htmlFor="excerptNe">Excerpt (Nepali)</Label>
-                    <textarea
-                      id="excerptNe"
-                      {...register('excerptNe')}
-                      placeholder="Brief description of the gallery"
-                      className="mt-1 block w-full rounded-md border bg-background p-2 text-sm"
-                      rows={3}
-                    />
-                    {errors.excerptNe && (
-                      <p className="text-sm text-red-600 mt-1">{errors.excerptNe.message}</p>
-                    )}
-                  </div>
-                </TabsContent>
-              </Tabs>
+              <div>
+                <Label htmlFor="excerpt">Excerpt</Label>
+                <textarea
+                  id="excerpt"
+                  {...register('excerpt')}
+                  placeholder="Brief description of the gallery"
+                  className="mt-1 block w-full rounded-md border bg-background p-2 text-sm"
+                  rows={3}
+                />
+                {errors.excerpt && (
+                  <p className="text-sm text-red-600 mt-1">{errors.excerpt.message}</p>
+                )}
+              </div>
             </CardContent>
           </Card>
 
@@ -287,67 +243,57 @@ export function PhotoGalleryForm({ galleryId, isEditing }: PhotoGalleryFormProps
                 </div>
               ) : (
                 <div className="space-y-2">
-                  {selectedPhotos.map((photo, index) => (
-                    <div
-                      key={`${photo.id}-${index}`}
-                      className="flex items-center gap-4 p-3 border rounded-lg bg-slate-50 dark:bg-slate-900"
+              {selectedPhotos.map((photo, index) => (
+                <div
+                  key={`${photo.id}-${index}`}
+                  className="flex items-center gap-4 p-3 border rounded-lg bg-slate-50 dark:bg-slate-900"
+                >
+                  <div className="flex flex-col items-center gap-1">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => handleMovePhoto(index, 'up')}
+                      disabled={index === 0}
                     >
-                      <div className="flex flex-col items-center gap-1">
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="h-6 w-6"
-                          onClick={() => handleMovePhoto(index, 'up')}
-                          disabled={index === 0}
-                        >
-                          ▲
-                        </Button>
-                        <GripVertical className="w-5 h-5 text-slate-400" />
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="h-6 w-6"
-                          onClick={() => handleMovePhoto(index, 'down')}
-                          disabled={index === selectedPhotos.length - 1}
-                        >
-                          ▼
-                        </Button>
-                      </div>
-                      <img
-                        src={photo.url}
-                        alt=""
-                        className="w-16 h-16 object-cover rounded-md"
-                      />
-                      <div className="flex-1 grid grid-cols-2 gap-4">
-                        <div>
-                          <Label className="text-xs">English Caption</Label>
-                          <Input
-                            {...register(`photos.${index}.captionEn`)}
-                            placeholder="Caption (EN)"
-                            className="text-sm"
-                          />
-                        </div>
-                        <div>
-                          <Label className="text-xs">Nepali Caption</Label>
-                          <Input
-                            {...register(`photos.${index}.captionNe`)}
-                            placeholder="Caption (NE)"
-                            className="text-sm"
-                          />
-                        </div>
-                      </div>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleRemovePhoto(index)}
-                      >
-                        <Trash2 className="w-4 h-4 text-red-600" />
-                      </Button>
-                    </div>
-                  ))}
+                      ▲
+                    </Button>
+                    <GripVertical className="w-5 h-5 text-slate-400" />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => handleMovePhoto(index, 'down')}
+                      disabled={index === selectedPhotos.length - 1}
+                    >
+                      ▼
+                    </Button>
+                  </div>
+                  <img
+                    src={photo.url}
+                    alt=""
+                    className="w-16 h-16 object-cover rounded-md"
+                  />
+                  <div className="flex-1">
+                    <Label className="text-xs">Caption</Label>
+                    <Input
+                      {...register(`photos.${index}.caption`)}
+                      placeholder="Caption"
+                      className="text-sm"
+                    />
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleRemovePhoto(index)}
+                  >
+                    <Trash2 className="w-4 h-4 text-red-600" />
+                  </Button>
+                </div>
+              ))}
                 </div>
               )}
               {errors.photos && (
@@ -398,6 +344,19 @@ export function PhotoGalleryForm({ galleryId, isEditing }: PhotoGalleryFormProps
               <p className="text-xs text-slate-500 mt-2">
                 Optional: Select a cover image for this gallery
               </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm font-medium">Author</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <AuthorSelect
+                value={watch('authorId') || ''}
+                onValueChange={(val) => setValue('authorId', val)}
+                error={errors.authorId?.message}
+              />
             </CardContent>
           </Card>
         </div>

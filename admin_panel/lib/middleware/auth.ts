@@ -82,7 +82,7 @@ export async function authMiddleware(
     authenticatedReq.user = {
       id: user.id,
       email: user.email,
-      name: user.name,
+      name: user.name ?? 'User',
       role: user.role,
     }
 

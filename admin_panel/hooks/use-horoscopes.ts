@@ -7,10 +7,8 @@ export interface Horoscope {
   id: string;
   zodiacSign: string;
   icon?: string;
-  titleNe: string;
-  titleEn: string;
-  contentNe: string;
-  contentEn: string;
+  title: string;
+  content: string;
   date: string;
   isPublished: boolean;
   createdAt: string;
@@ -51,10 +49,8 @@ const fetchHoroscopes = async (
 const createHoroscope = async (data: {
   zodiacSign: string;
   icon?: string;
-  titleNe: string;
-  titleEn: string;
-  contentNe: string;
-  contentEn: string;
+  title: string;
+  content: string;
   date?: string;
   isPublished?: boolean;
 }): Promise<Horoscope> => {

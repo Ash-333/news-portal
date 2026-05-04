@@ -6,14 +6,14 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Search, X, ChevronDown, Sun, Moon, Headphones, Menu } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { useLanguage } from '@/context/LanguageContext';
+
 import { cn } from '@/lib/utils';
 import { getCategories } from '@/lib/api/categories';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import type { NavItem, Category } from '@/types';
 
 export function Header() {
-  const { isNepali, t } = useLanguage();
+
   const { theme, setTheme } = useTheme();
   const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -36,34 +36,29 @@ export function Header() {
   const remainingCategories = categories.filter(cat => cat.slug !== 'provinces').slice(8);
 
   const navItems: NavItem[] = [
-    { label: 'Home', labelNe: 'होमपेज', href: '/' },
+    { label: 'गृह', href: '/' },
     ...(provincesCategory?.children?.length ? [{
-      label: 'Provinces',
-      labelNe: 'प्रदेशहरु',
+      label: 'प्रदेशहरू',
       href: '/category/provinces',
       hasDropdown: true,
       children: provincesCategory.children.map((child: any) => ({
-        label: child.nameEn || '',
-        labelNe: child.nameNe || '',
+        label: child.name || '',
         href: `/category/${child.slug}`,
       })),
     }] : []),
-    { label: 'Video updates', labelNe: 'भिडियो अपडेट', href: '/videos' },
+    { label: 'भिडियो अपडेट', href: '/videos' },
     ...visibleCategories.map((category) => ({
-      label: category.nameEn || category.name || '',
-      labelNe: category.nameNe || category.name || '',
+      label: category.name || '',
       href: `/category/${category.slug}`,
     })),
   ];
 
   const moreNavItem: NavItem = {
-    label: 'More',
-    labelNe: 'अन्य',
+    label: 'थप',
     href: '#',
     hasDropdown: true,
     children: remainingCategories.map((category) => ({
-      label: category.nameEn || category.name || '',
-      labelNe: category.nameNe || category.name || '',
+      label: category.name || '',
       href: `/category/${category.slug}`,
     })),
   };
@@ -112,12 +107,12 @@ export function Header() {
                 className="rounded-lg"
                 priority
               />
-              <div className={cn('hidden sm:block', isNepali ? 'font-nepali' : '')}>
+              <div className={'hidden sm:block'}>
                 <h1 className="text-2xl font-bold text-news-red dark:text-white">
-                  {t('site.name')}
+                  HTC Media
                 </h1>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  {t('site.tagline')}
+                  ताजा समाचार, तपाईंको भाषामा
                 </p>
               </div>
             </Link>
@@ -130,13 +125,13 @@ export function Header() {
                   <Link
                     href="/audio"
                     className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-news-card-dark transition-colors"
-                    aria-label="Audio news"
+                    aria-label="अडियो समाचार"
                   >
                     <Headphones className="h-5 w-5 text-gray-600 dark:text-gray-300" />
                   </Link>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>{isNepali ? 'अडियो समाचार' : 'Audio news'}</p>
+                  <p>{'अडियो समाचार'}</p>
                 </TooltipContent>
               </Tooltip>
 
@@ -144,7 +139,7 @@ export function Header() {
               <button
                 onClick={toggleTheme}
                 className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-news-card-dark transition-colors"
-                aria-label="Toggle theme"
+                 aria-label="थिम परिवर्तन"
               >
                 {theme === 'dark' ? (
                   <Sun className="h-5 w-5 text-yellow-500" />
@@ -157,7 +152,7 @@ export function Header() {
               <button
                 onClick={() => setIsSearchOpen(true)}
                 className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-news-card-dark transition-colors"
-                aria-label="Search"
+                 aria-label="खोज"
               >
                 <Search className="h-5 w-5 text-gray-600 dark:text-gray-300" />
               </button>
@@ -166,7 +161,7 @@ export function Header() {
               <button
                 onClick={() => setIsOverlayOpen(true)}
                 className="lg:hidden p-2 rounded-full hover:bg-gray-100 dark:hover:bg-news-card-dark transition-colors"
-                aria-label="Open menu"
+                 aria-label="मेनु खोल्नुहोस्"
               >
                 <Menu className="h-5 w-5 text-gray-600 dark:text-gray-300" />
               </button>
@@ -191,9 +186,9 @@ export function Header() {
                       'border-b-2 border-transparent hover:border-news-red'
                     )}
                   >
-                    <span className={cn(isNepali ? 'font-nepali text-lg font-bold' : '')}>
-                      {isNepali ? item.labelNe : item.label}
-                    </span>
+                      <span className={cn('text-lg font-bold')}>
+                       {item.label}
+                     </span>
                     {item.children && <ChevronDown className="h-4 w-4" />}
                   </Link>
 
@@ -207,9 +202,9 @@ export function Header() {
                               href={child.href}
                               className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-news-bg-dark hover:text-news-red"
                             >
-                              <span className={isNepali ? 'font-nepali text-lg font-bold' : ''}>
-                                {isNepali ? child.labelNe : child.label}
-                              </span>
+                      <span className={'text-lg font-bold'}>
+                        {child.label}
+                      </span>
                             </Link>
                           </li>
                         ))}
@@ -227,8 +222,8 @@ export function Header() {
                   href={moreNavItem.href}
                   className="flex items-center gap-1 px-4 py-3 text-base font-bold transition-colors text-gray-800 dark:text-gray-200 hover:text-news-red dark:hover:text-news-red border-b-2 border-transparent hover:border-news-red"
                 >
-                  <span className={cn(isNepali ? 'font-nepali text-lg font-bold' : '')}>
-                    {isNepali ? moreNavItem.labelNe : moreNavItem.label}
+                  <span className={cn('text-lg font-bold')}>
+                    {moreNavItem.label}
                   </span>
                   {moreNavItem.children && <ChevronDown className="h-4 w-4" />}
                 </Link>
@@ -242,9 +237,9 @@ export function Header() {
                             href={child.href}
                             className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-news-bg-dark hover:text-news-red"
                           >
-                            <span className={isNepali ? 'font-nepali text-lg font-bold' : ''}>
-                              {isNepali ? child.labelNe : child.label}
-                            </span>
+                              <span className={'text-lg font-bold'}>
+                                {child.label}
+                              </span>
                           </Link>
                         </li>
                       ))}
@@ -262,13 +257,13 @@ export function Header() {
         <div className="fixed inset-0 z-50 bg-white dark:bg-news-bg-dark">
           <div className="container mx-auto px-4 py-4">
             <div className="flex items-center justify-between mb-6">
-              <h2 className={cn('text-xl font-bold', isNepali ? 'font-nepali' : '')}>
-                {t('nav.menu')}
+              <h2 className={'text-xl font-bold'}>
+                मेनु
               </h2>
               <button
                 onClick={() => setIsOverlayOpen(false)}
                 className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-news-card-dark"
-                aria-label="Close menu"
+                 aria-label="मेनु बन्द गर्नुहोस्"
               >
                 <X className="h-6 w-6" />
               </button>
@@ -281,9 +276,9 @@ export function Header() {
                     onClick={() => setIsOverlayOpen(false)}
                     className="block px-4 py-3 text-lg font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-news-card-dark rounded-lg"
                   >
-                    <span className={isNepali ? 'font-nepali' : ''}>
-                      {isNepali ? 'होमपेज' : 'Home'}
-                    </span>
+                   <span>
+                       {'गृह'}
+                     </span>
                   </Link>
                 </li>
                 {categories.map((category) => (
@@ -293,8 +288,8 @@ export function Header() {
                       onClick={() => setIsOverlayOpen(false)}
                       className="block px-4 py-3 text-lg font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-news-card-dark rounded-lg"
                     >
-                      <span className={isNepali ? 'font-nepali' : ''}>
-                        {isNepali ? (category.nameNe || category.nameEn) : (category.nameEn || category.nameNe)}
+                      <span>
+                        {category.name}
                       </span>
                     </Link>
                   </li>
@@ -315,12 +310,11 @@ export function Header() {
                 type="text"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                placeholder={t('search.placeholder') as string}
+                placeholder={'खोज्नुहोस्...'}
                 className={cn(
                   'flex-1 text-lg outline-none bg-transparent',
                   'text-gray-900 dark:text-gray-100',
                   'placeholder:text-gray-400',
-                  isNepali ? 'font-nepali' : ''
                 )}
                 autoFocus
               />
@@ -328,14 +322,14 @@ export function Header() {
                 type="button"
                 onClick={() => setIsSearchOpen(false)}
                 className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-news-bg-dark"
-                aria-label="Close search"
+                 aria-label="खोज बन्द गर्नुहोस्"
               >
                 <X className="h-5 w-5" />
               </button>
             </form>
             <div className="p-4">
-              <p className={cn('text-sm text-gray-500', isNepali ? 'font-nepali' : '')}>
-                {t('search.results')}
+              <p className={'text-sm text-gray-500'}>
+                खोज्न यहाँ टाइप गर्नुहोस्...
               </p>
             </div>
           </div>

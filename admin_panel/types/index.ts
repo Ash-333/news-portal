@@ -4,7 +4,6 @@ import {
   ArticleStatus,
   MediaType,
   CommentStatus,
-  Language,
 } from "@prisma/client";
 
 export type {
@@ -13,7 +12,6 @@ export type {
   ArticleStatus,
   MediaType,
   CommentStatus,
-  Language,
 };
 
 // API Response Types
@@ -40,7 +38,6 @@ export interface User {
   bio?: string;
   role: Role;
   status: UserStatus;
-  language: Language;
   lastLoginAt?: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -54,18 +51,16 @@ export interface UserWithStats extends User {
 // Article Types
 export interface Article {
   id: string;
-  titleNe: string;
-  titleEn: string;
-  subheadingNe?: string;
-  subheadingEn?: string;
-  contentNe: string;
-  contentEn: string;
-  excerptNe?: string;
-  excerptEn?: string;
+  title: string;
+  subheading?: string;
+  content: string;
+  excerpt?: string;
+  summary?: string;
   slug: string;
   status: ArticleStatus;
   isFlashUpdate: boolean;
   isFeatured: boolean;
+  isTitleOnly: boolean;
   scheduledAt?: Date;
   publishedAt?: Date;
   viewCount: number;
@@ -80,7 +75,7 @@ export interface Article {
 }
 
 export interface ArticleWithRelations extends Article {
-  author: Pick<User, "id" | "name" | "profilePhoto">;
+  author: Pick<Author, "id" | "name" | "image">;
   category: Category;
   tags: Tag[];
   featuredImage?: Media;
@@ -89,8 +84,7 @@ export interface ArticleWithRelations extends Article {
 // Category Types
 export interface Category {
   id: string;
-  nameNe: string;
-  nameEn: string;
+  name: string;
   slug: string;
   parentId?: string;
   createdAt: Date;
@@ -108,8 +102,7 @@ export interface CategoryWithChildren extends Category {
 // Tag Types
 export interface Tag {
   id: string;
-  nameNe: string;
-  nameEn: string;
+  name: string;
   slug: string;
 }
 
@@ -129,8 +122,7 @@ export interface Media {
 // Video Types
 export interface Video {
   id: string;
-  titleNe: string;
-  titleEn: string;
+  title: string;
   youtubeUrl: string;
   thumbnailUrl: string;
   iframeUrl: string;
@@ -145,8 +137,7 @@ export interface Video {
 // Advertisement Types
 export interface Advertisement {
   id: string;
-  titleNe: string;
-  titleEn: string;
+  title: string;
   mediaUrl: string;
   mediaType: string;
   linkUrl?: string;
@@ -163,12 +154,9 @@ export interface Advertisement {
 // FlashUpdate Types
 export interface FlashUpdate {
   id: string;
-  titleNe: string;
-  titleEn: string;
-  contentNe: string;
-  contentEn: string;
-  excerptNe?: string;
-  excerptEn?: string;
+  title: string;
+  content: string;
+  excerpt?: string;
   slug: string;
   featuredImageId?: string;
   isPublished: boolean;
@@ -201,7 +189,7 @@ export interface Comment {
 
 export interface CommentWithRelations extends Comment {
   user: Pick<User, "id" | "name" | "profilePhoto">;
-  article: Pick<Article, "id" | "titleNe" | "titleEn" | "slug">;
+  article: Pick<Article, "id" | "title" | "slug">;
   replies?: CommentWithRelations[];
 }
 
@@ -254,8 +242,7 @@ export interface DailyView {
 
 export interface TopArticle {
   id: string;
-  titleNe: string;
-  titleEn: string;
+  title: string;
   slug: string;
   views: number;
   authorName: string;
@@ -289,33 +276,32 @@ export interface RegisterFormData {
 }
 
 export interface ArticleFormData {
-  titleNe: string;
-  titleEn: string;
-  contentNe: string;
-  contentEn: string;
-  excerptNe?: string;
-  excerptEn?: string;
+  title: string;
+  subheading?: string;
+  content: string;
+  excerpt?: string;
   categoryId: string;
+  subcategoryId?: string;
   tagIds: string[];
   metaTitle?: string;
   metaDescription?: string;
   ogImage?: string;
   isFlashUpdate: boolean;
   isFeatured: boolean;
+  isTitleOnly: boolean;
   scheduledAt?: Date;
   featuredImageId?: string;
+  authorId?: string;
 }
 
 export interface CategoryFormData {
-  nameNe: string;
-  nameEn: string;
+  name: string;
   slug: string;
   parentId?: string;
 }
 
 export interface TagFormData {
-  nameNe: string;
-  nameEn: string;
+  name: string;
   slug: string;
 }
 
@@ -342,8 +328,7 @@ export interface Permission {
 // Poll Types
 export interface Poll {
   id: string;
-  questionNe: string;
-  questionEn: string;
+  question: string;
   description?: string;
   isActive: boolean;
   isMultiple: boolean;
@@ -360,34 +345,29 @@ export interface PollWithOptions extends Poll {
 
 export interface PollOption {
   id: string;
-  textNe: string;
-  textEn: string;
+  text: string;
   order: number;
   voteCount: number;
   percentage: number;
 }
 
 export interface PollFormData {
-  questionNe: string;
-  questionEn: string;
+  question: string;
   description?: string;
   isActive: boolean;
   isMultiple: boolean;
   startsAt?: string;
   expiresAt?: string;
   options: Array<{
-    textNe: string;
-    textEn: string;
+    text: string;
   }>;
 }
 
 // Photo Gallery Types
 export interface PhotoGallery {
   id: string;
-  titleNe: string;
-  titleEn: string;
-  excerptNe?: string;
-  excerptEn?: string;
+  title: string;
+  excerpt?: string;
   slug: string;
   isPublished: boolean;
   authorId: string;
@@ -410,8 +390,27 @@ export interface PhotoGalleryPhoto {
   photoGalleryId: string;
   mediaId: string;
   order: number;
-  captionNe?: string;
-  captionEn?: string;
+  caption?: string;
   createdAt: Date;
   media?: Media;
+}
+
+// Author Types (for article authorship, separate from User accounts)
+export interface Author {
+  id: string;
+  name: string;
+  bio?: string;
+  image?: string;
+  email?: string;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface AuthorFormData {
+  name: string;
+  bio?: string;
+  image?: string;
+  email?: string;
+  isActive?: boolean;
 }

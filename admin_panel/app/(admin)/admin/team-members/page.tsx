@@ -17,14 +17,10 @@ import { toast } from 'sonner'
 interface TeamMember {
   id: string
   name: string
-  nameNe: string
   department: string
-  departmentNe: string
   designation: string
-  designationNe: string
   image: string
   bio: string
-  bioNe: string
   email: string
   phone: string
   order: number

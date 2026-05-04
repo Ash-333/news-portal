@@ -38,7 +38,7 @@ export default function AdsPage() {
   const [showForm, setShowForm] = useState(false)
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [editingAd, setEditingAd] = useState<Advertisement | null>(null)
-  const [formData, setFormData] = useState({ titleNe: '', titleEn: '', linkUrl: '', position: 'SIDEBAR' })
+  const [formData, setFormData] = useState({ title: '', linkUrl: '', position: 'SIDEBAR' })
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
 
@@ -56,14 +56,13 @@ export default function AdsPage() {
   }, [])
 
   const handleCreate = async () => {
-    if (!formData.titleEn || !formData.titleNe || !selectedFile) {
-      toast.error('Please fill title fields and select an image/GIF')
+    if (!formData.title || !selectedFile) {
+      toast.error('Please fill title and select an image/GIF')
       return
     }
     const fd = new FormData()
     fd.append('file', selectedFile)
-    fd.append('titleNe', formData.titleNe)
-    fd.append('titleEn', formData.titleEn)
+    fd.append('title', formData.title)
     fd.append('linkUrl', formData.linkUrl)
     fd.append('position', formData.position)
 
@@ -71,7 +70,7 @@ export default function AdsPage() {
       onSuccess: () => {
         toast.success('Ad created successfully')
         setShowForm(false)
-        setFormData({ titleNe: '', titleEn: '', linkUrl: '', position: 'SIDEBAR' })
+        setFormData({ title: '', linkUrl: '', position: 'SIDEBAR' })
         setSelectedFile(null)
         setPreviewUrl(null)
       },
@@ -82,27 +81,25 @@ export default function AdsPage() {
     })
   }
 
-  const handleEdit = (ad: Advertisement) => {
-    setEditingAd(ad)
-    setFormData({
-      titleNe: ad.titleNe,
-      titleEn: ad.titleEn,
-      linkUrl: ad.linkUrl || '',
-      position: ad.position,
-    })
-    setPreviewUrl(ad.mediaUrl)
-    setSelectedFile(null)
-  }
+   const handleEdit = (ad: any) => {
+     setEditingAd(ad)
+     setFormData({
+       title: ad.title || '',
+       linkUrl: ad.linkUrl || '',
+       position: ad.position,
+     })
+     setPreviewUrl(ad.mediaUrl)
+     setSelectedFile(null)
+   }
 
   const handleUpdate = async () => {
-    if (!editingAd || !formData.titleEn || !formData.titleNe) {
-      toast.error('Please fill title fields')
+    if (!editingAd || !formData.title) {
+      toast.error('Please fill title field')
       return
     }
     
     const fd = new FormData()
-    fd.append('titleNe', formData.titleNe)
-    fd.append('titleEn', formData.titleEn)
+    fd.append('title', formData.title)
     fd.append('linkUrl', formData.linkUrl)
     fd.append('position', formData.position)
     if (selectedFile) {
@@ -113,7 +110,7 @@ export default function AdsPage() {
       onSuccess: () => {
         toast.success('Ad updated successfully')
         setEditingAd(null)
-        setFormData({ titleNe: '', titleEn: '', linkUrl: '', position: 'SIDEBAR' })
+        setFormData({ title: '', linkUrl: '', position: 'SIDEBAR' })
         setSelectedFile(null)
         setPreviewUrl(null)
       },
@@ -126,7 +123,7 @@ export default function AdsPage() {
 
   const cancelEdit = () => {
     setEditingAd(null)
-    setFormData({ titleNe: '', titleEn: '', linkUrl: '', position: 'SIDEBAR' })
+    setFormData({ title: '', linkUrl: '', position: 'SIDEBAR' })
     setSelectedFile(null)
     setPreviewUrl(null)
   }
@@ -151,26 +148,15 @@ export default function AdsPage() {
         <Card>
           <CardContent className="p-6 space-y-4">
             <h3 className="text-lg font-semibold">Create New Advertisement</h3>
-            <div className="grid gap-4 md:grid-cols-2">
-              <div>
-                <label className="text-sm font-medium">Title (English)</label>
+            <div>
+                <label className="text-sm font-medium">Title</label>
                 <Input
-                  value={formData.titleEn}
-                  onChange={(e) => setFormData(p => ({ ...p, titleEn: e.target.value }))}
-                  placeholder="Ad title in English"
+                  value={formData.title || ''}
+                  onChange={(e) => setFormData(p => ({ ...p, title: e.target.value }))}
+                  placeholder="Ad title"
                   className="mt-1"
                 />
               </div>
-              <div>
-                <label className="text-sm font-medium">Title (Nepali)</label>
-                <Input
-                  value={formData.titleNe}
-                  onChange={(e) => setFormData(p => ({ ...p, titleNe: e.target.value }))}
-                  placeholder="Ad title in Nepali"
-                  className="mt-1"
-                />
-              </div>
-            </div>
             <div className="grid gap-4 md:grid-cols-2">
               <div>
                 <label className="text-sm font-medium">Click Link URL (optional)</label>
@@ -230,32 +216,16 @@ export default function AdsPage() {
       {editingAd && (
         <Card>
           <CardContent className="p-6 space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold">Edit Advertisement</h3>
-              <Button variant="ghost" size="sm" onClick={cancelEdit}>
-                <X className="w-4 h-4" />
-              </Button>
-            </div>
-            <div className="grid gap-4 md:grid-cols-2">
-              <div>
-                <label className="text-sm font-medium">Title (English)</label>
+            <h3 className="text-lg font-semibold">Edit Advertisement</h3>
+            <div>
+                <label className="text-sm font-medium">Title</label>
                 <Input
-                  value={formData.titleEn}
-                  onChange={(e) => setFormData(p => ({ ...p, titleEn: e.target.value }))}
-                  placeholder="Ad title in English"
+                  value={formData.title || ''}
+                  onChange={(e) => setFormData(p => ({ ...p, title: e.target.value }))}
+                  placeholder="Ad title"
                   className="mt-1"
                 />
               </div>
-              <div>
-                <label className="text-sm font-medium">Title (Nepali)</label>
-                <Input
-                  value={formData.titleNe}
-                  onChange={(e) => setFormData(p => ({ ...p, titleNe: e.target.value }))}
-                  placeholder="Ad title in Nepali"
-                  className="mt-1"
-                />
-              </div>
-            </div>
             <div className="grid gap-4 md:grid-cols-2">
               <div>
                 <label className="text-sm font-medium">Click Link URL (optional)</label>
@@ -331,10 +301,10 @@ export default function AdsPage() {
             <Card key={ad.id} className="overflow-hidden">
               <CardContent className="p-0">
                 <div className="aspect-video bg-slate-100 dark:bg-slate-900 flex items-center justify-center">
-                  <img src={ad.mediaUrl} alt={ad.titleEn} className="w-full h-full object-cover" />
+                  <img src={ad.mediaUrl} alt={ad.title} className="w-full h-full object-cover" />
                 </div>
                 <div className="p-3">
-                  <p className="font-medium text-sm truncate">{ad.titleEn}</p>
+                  <p className="font-medium text-sm truncate">{ad.title}</p>
                   <div className="flex items-center gap-2 mt-1">
                     <span className={`px-2 py-0.5 rounded text-xs font-medium ${ad.isActive ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'}`}>
                       {ad.isActive ? 'Active' : 'Inactive'}

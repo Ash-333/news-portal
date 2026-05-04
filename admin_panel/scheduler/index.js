@@ -84,8 +84,7 @@ async function publishScheduledArticles() {
     },
     select: {
       id: true,
-      titleNe: true,
-      titleEn: true,
+      title: true,
       scheduledAt: true,
     },
   });
@@ -93,7 +92,7 @@ async function publishScheduledArticles() {
   if (scheduledArticles.length > 0) {
     console.log(`[${formatTime(getCurrentNepaliTime())}] Found ${scheduledArticles.length} scheduled article(s) to publish:`);
     for (const article of scheduledArticles) {
-      console.log(`  - ${article.titleEn} (ID: ${article.id}, scheduledAt: ${article.scheduledAt})`);
+      console.log(`  - ${article.title} (ID: ${article.id}, scheduledAt: ${article.scheduledAt})`);
     }
   } else {
     console.log(`[${formatTime(getCurrentNepaliTime())}] No scheduled articles found to publish`);
@@ -123,10 +122,7 @@ async function generateAISummaries() {
   const articles = await prisma.article.findMany({
     where: {
       status: 'PUBLISHED',
-      OR: [
-        { summaryNe: null },
-        { summaryEn: null },
-      ],
+      summary: null,
       deletedAt: null,
     },
     take: 1,
@@ -140,14 +136,9 @@ async function generateAISummaries() {
   for (const article of articles) {
     const updates = {};
 
-    if (!article.summaryNe && article.contentNe) {
-      const summaryNe = await generateSummary(article.contentNe, 'ne');
-      if (summaryNe) updates.summaryNe = summaryNe;
-    }
-
-    if (!article.summaryEn && article.contentEn) {
-      const summaryEn = await generateSummary(article.contentEn, 'en');
-      if (summaryEn) updates.summaryEn = summaryEn;
+    if (!article.summary && article.content) {
+      const summary = await generateSummary(article.content, 'ne');
+      if (summary) updates.summary = summary;
     }
 
     if (Object.keys(updates).length > 0) {

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { useLanguage } from '@/context/LanguageContext';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -13,8 +13,7 @@ import { Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react';
 export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuth();
-  const { isNepali, t } = useLanguage();
-  
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -30,7 +29,7 @@ export default function LoginPage() {
       await login({ email, password });
       router.push('/');
     } catch (err) {
-      setError(err instanceof Error ? err.message : t('auth.loginFailed'));
+      setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setIsLoading(false);
     }
@@ -42,11 +41,11 @@ export default function LoginPage() {
         <div className="bg-white dark:bg-news-card-dark rounded-xl shadow-lg p-8">
           {/* Logo / Header */}
           <div className="text-center mb-8">
-            <h1 className={isNepali ? 'font-nepali text-2xl font-bold' : 'text-2xl font-bold'}>
-              {t('auth.welcomeBack')}
+            <h1 className='font-nepali text-2xl font-bold'>
+              लगइन
             </h1>
             <p className="text-gray-500 dark:text-gray-400 mt-2">
-              {t('auth.loginSubtitle')}
+              तपाईंको खातामा लगइन गर्नुहोस्
             </p>
           </div>
 
@@ -62,7 +61,7 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Email */}
             <div className="space-y-2">
-              <Label htmlFor="email">{t('user.email')}</Label>
+              <Label htmlFor="email">इमेल</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <Input
@@ -70,7 +69,7 @@ export default function LoginPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder={isNepali ? 'तपाईंको इमेल' : 'your@email.com'}
+                  placeholder={'तपाईंको इमेल'}
                   className="pl-10"
                   required
                 />
@@ -79,7 +78,7 @@ export default function LoginPage() {
 
             {/* Password */}
             <div className="space-y-2">
-              <Label htmlFor="password">{t('user.password')}</Label>
+              <Label htmlFor="password">पासवर्ड</Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <Input
@@ -87,7 +86,7 @@ export default function LoginPage() {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder={isNepali ? '••••••••' : '••••••••'}
+                  placeholder={'••••••••'}
                   className="pl-10 pr-10"
                   required
                 />
@@ -107,28 +106,28 @@ export default function LoginPage() {
                 href="/forgot-password"
                 className="text-sm text-news-red hover:underline"
               >
-                {t('user.forgotPassword')}
+                पासवर्ड बिर्सनुभयो?
               </Link>
             </div>
 
             {/* Submit Button */}
-            <Button
-              type="submit"
-              disabled={isLoading}
-              className="w-full py-3 bg-news-red hover:bg-news-red-dark text-white font-medium rounded-lg transition-colors disabled:opacity-60"
-            >
-              {isLoading ? t('common.loading') : t('user.login')}
-            </Button>
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="w-full py-3 bg-news-red hover:bg-news-red-dark text-white font-medium rounded-lg transition-colors disabled:opacity-60"
+              >
+                {isLoading ? 'प्रस्तुत गर्दै...' : 'लगइन गर्नुहोस्'}
+              </Button>
           </form>
 
           {/* Register Link */}
           <div className="mt-6 text-center">
-            <p className="text-gray-600 dark:text-gray-400">
-              {t('user.noAccount')}{' '}
-              <Link href="/register" className="text-news-red hover:underline font-medium">
-                {t('user.register')}
-              </Link>
-            </p>
+              <p className="text-gray-600 dark:text-gray-400">
+                खाता छैन? 
+                <Link href="/register" className="text-news-red hover:underline font-medium">
+                  दर्ता गर्नुहोस्
+                </Link>
+              </p>
           </div>
         </div>
       </div>

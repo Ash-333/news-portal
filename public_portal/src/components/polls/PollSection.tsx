@@ -3,7 +3,7 @@
 import { usePolls } from '@/hooks/usePolls';
 import { PollCard, PollCardSkeleton } from '@/components/polls/PollCard';
 import { cn } from '@/lib/utils';
-import { useLanguage } from '@/context/LanguageContext';
+
 import { BarChart3 } from 'lucide-react';
 
 interface PollSectionProps {
@@ -11,7 +11,7 @@ interface PollSectionProps {
 }
 
 export function PollSection({ className }: PollSectionProps) {
-  const { isNepali } = useLanguage();
+
   const { data: polls, isLoading, error } = usePolls();
 
   if (isLoading) {
@@ -41,7 +41,7 @@ export function PollSection({ className }: PollSectionProps) {
       <div className="flex items-center gap-2 mb-4">
         <BarChart3 className="w-5 h-5 text-news-red" />
         <h3 className="font-semibold text-lg text-gray-900 dark:text-white">
-          {isNepali ? 'मतदान' : 'Polls'}
+          {'मतदान'}
         </h3>
       </div>
 

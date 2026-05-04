@@ -16,8 +16,7 @@ export async function GET() {
   const allArticles = await fetchPublishedArticles({ revalidate: 604800 });
 
   const articles = allArticles
-    .sort(
-      (a, b) =>
+    .sort((a, b) =>
         new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
     )
     .slice(0, 1000); // Limit to most recent 1000 articles to prevent oversized sitemaps
@@ -32,8 +31,8 @@ ${articles
     <loc>${siteUrl}/article/${article.slug}</loc>
     <image:image>
       <image:loc>${getArticleImageUrl(article)}</image:loc>
-      <image:title>${escapeXml(article.titleEn || article.titleNe)}</image:title>
-      <image:caption>${escapeXml(article.excerptEn || article.excerptNe)}</image:caption>
+      <image:title>${escapeXml(article.title || '')}</image:title>
+      <image:caption>${escapeXml(article.excerpt || '')}</image:caption>
     </image:image>
   </url>`,
   )

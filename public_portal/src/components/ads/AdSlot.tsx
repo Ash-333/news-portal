@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { AdPosition, AdWithPosition } from '@/types';
 import { getAdsByPosition, trackAdClick } from '@/lib/api/ads';
-import { useLanguage } from '@/context/LanguageContext';
+
 import { cn } from '@/lib/utils';
 
 interface AdSlotProps {
@@ -13,7 +13,7 @@ interface AdSlotProps {
 }
 
 export function AdSlot({ position, className }: AdSlotProps) {
-  const { isNepali } = useLanguage();
+  
   const [ad, setAd] = useState<AdWithPosition | null>(null);
 
   const { data, isLoading, error } = useQuery({
@@ -74,7 +74,7 @@ export function AdSlot({ position, className }: AdSlotProps) {
       {mediaType === 'image' || mediaType === 'gif' ? (
         <img
           src={ad.mediaUrl}
-          alt={isNepali ? ad.titleNe : ad.titleEn}
+          alt={ad.title}
           className="w-full h-auto object-cover"
         />
       ) : mediaType === 'video' ? (

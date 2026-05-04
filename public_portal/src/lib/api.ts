@@ -205,8 +205,6 @@ export function normalizeCategory(raw: any): Category {
     id: String(raw?.id ?? raw?._id ?? slug),
     slug,
     name,
-    nameNe: coerceString(raw?.nameNe ?? raw?.name_ne, name),
-    nameEn: coerceString(raw?.nameEn ?? raw?.name_en),
   };
 }
 
@@ -218,8 +216,6 @@ export function normalizeTag(raw: any): Tag {
     id: String(raw?.id ?? raw?._id ?? slug),
     slug,
     name,
-    nameNe: coerceString(raw?.nameNe ?? raw?.name_ne, name),
-    nameEn: coerceString(raw?.nameEn ?? raw?.name_en),
   };
 }
 
@@ -234,12 +230,10 @@ export function normalizeAuthor(raw: any): Author {
     id: String(raw?.id ?? raw?._id ?? slug),
     slug,
     name,
-    nameNe: coerceString(raw?.nameNe ?? raw?.name_ne, name),
     email: coerceString(raw?.email),
     bio: coerceString(raw?.bio),
-    bioNe: coerceString(raw?.bioNe ?? raw?.bio_ne),
     avatar: coerceString(
-      raw?.avatar ?? raw?.avatarUrl ?? raw?.profileImage ?? raw?.profilePhoto,
+      raw?.avatar ?? raw?.avatarUrl ?? raw?.profileImage ?? raw?.profilePhoto ?? raw?.image,
     ),
     socialLinks: raw?.socialLinks,
     articleCount: coerceNumber(
@@ -251,8 +245,6 @@ export function normalizeAuthor(raw: any): Author {
 
 export function normalizeArticle(raw: any): Article {
   const content = coerceString(raw?.content ?? raw?.body ?? raw?.description);
-  const contentNe = coerceString(raw?.contentNe ?? raw?.content_ne);
-  const contentEn = coerceString(raw?.contentEn ?? raw?.content_en);
   const title = coerceString(
     raw?.title ?? raw?.titleEn ?? raw?.title_en,
     "Untitled",
@@ -298,14 +290,8 @@ export function normalizeArticle(raw: any): Article {
     id: String(raw?.id ?? raw?._id ?? raw?.slug ?? title),
     slug: coerceString(raw?.slug, slugify(title || "article")),
     title,
-    titleNe: coerceString(raw?.titleNe ?? raw?.title_ne),
-    titleEn: coerceString(raw?.titleEn ?? raw?.title_en),
     excerpt,
-    excerptNe: coerceString(raw?.excerptNe ?? raw?.excerpt_ne),
-    excerptEn: coerceString(raw?.excerptEn ?? raw?.excerpt_en),
     content,
-    contentNe,
-    contentEn,
     featuredImage,
     category,
     author,
@@ -321,6 +307,7 @@ export function normalizeArticle(raw: any): Article {
     views: coerceNumber(raw?.views ?? raw?.viewCount ?? raw?.view_count, 0),
     isFlashUpdate: Boolean(raw?.isFlashUpdate ?? raw?.breaking),
     isFeatured: Boolean(raw?.isFeatured ?? raw?.featured),
+    isTitleOnly: Boolean(raw?.isTitleOnly ?? raw?.titleOnly),
     isOpinion: Boolean(raw?.isOpinion ?? raw?.opinion),
   };
 }
@@ -353,7 +340,9 @@ export function deriveCategoriesFromArticles(articles: Article[]) {
   const categoryMap = new Map<string, ArticleCategory>();
 
   for (const article of articles) {
-    categoryMap.set(article.category.slug, article.category);
+    if (article.category && !categoryMap.has(article.category.slug)) {
+      categoryMap.set(article.category.slug, article.category);
+    }
   }
 
   return Array.from(categoryMap.values());
@@ -364,7 +353,9 @@ function mergeCategories(...groups: Category[][]) {
 
   for (const group of groups) {
     for (const category of group) {
-      categoryMap.set(category.slug, category);
+      if (!categoryMap.has(category.slug)) {
+        categoryMap.set(category.slug, category);
+      }
     }
   }
 
@@ -376,7 +367,9 @@ export function deriveTagsFromArticles(articles: Article[]) {
 
   for (const article of articles) {
     for (const tag of article.tags) {
-      tagMap.set(tag.slug, tag);
+      if (!tagMap.has(tag.slug)) {
+        tagMap.set(tag.slug, tag);
+      }
     }
   }
 
@@ -390,16 +383,26 @@ export function deriveAuthorsFromArticles(articles: Article[]) {
   for (const article of articles) {
     const slug = article.author.slug;
     if (!slug) continue;
-    authorMap.set(slug, article.author as unknown as Author);
+    
+    if (!authorMap.has(slug)) {
+      authorMap.set(slug, {
+        id: article.author.id,
+        slug: article.author.slug || '',
+        name: article.author.name || '',
+        email: article.author.email || '',
+        bio: article.author.bio || undefined,
+        avatar: article.author.avatar || article.author.image || '',
+        articleCount: 0,
+        socialLinks: undefined,
+      });
+    }
+    
     articleCountMap.set(slug, (articleCountMap.get(slug) ?? 0) + 1);
   }
 
   return Array.from(authorMap.values()).map((author) => ({
     ...author,
-    articleCount:
-      (author as unknown as Author).articleCount ??
-      articleCountMap.get(author.slug ?? "") ??
-      0,
+    articleCount: articleCountMap.get(author.slug) ?? 0,
   }));
 }
 
@@ -411,10 +414,10 @@ export async function fetchPublishedArticles(options?: {
   try {
     const params = new URLSearchParams();
     if (options?.isFlashUpdate) {
-      params.set("isFlashUpdate", "true");
+      params.set('isFlashUpdate', 'true');
     }
     if (options?.limit) {
-      params.set("limit", String(options.limit));
+      params.set('limit', String(options.limit));
     }
     const queryString = params.toString();
     const payload = await apiFetch<unknown>(`/api/articles${queryString ? `?${queryString}` : ""}`, {
@@ -495,11 +498,7 @@ export async function fetchComments(articleId: string) {
   }
 }
 
-export async function createComment(input: {
-  articleId: string;
-  content: string;
-  authorName?: string;
-}) {
+export async function createComment(input: { articleId: string; content: string; parentId?: string }): Promise<Comment | null> {
   const payload = await apiFetch<unknown>("/api/comments", {
     method: "POST",
     body: JSON.stringify(input),
