@@ -98,23 +98,23 @@ export function Header() {
           {/* Logo Section */}
           <div className="flex items-center justify-between py-4">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-3">
+            <Link href="/" className="flex items-center">
               <Image
                 src="/images/htcmedia.png"
-                alt="HTC Media"
+                alt="Logo"
                 width={48}
                 height={48}
-                className="rounded-lg"
+                className="h-auto w-auto max-h-[48px] sm:hidden"
                 priority
               />
-              <div className={'hidden sm:block'}>
-                <h1 className="text-2xl font-bold text-news-red dark:text-white">
-                  HTC Media
-                </h1>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  ताजा समाचार, तपाईंको भाषामा
-                </p>
-              </div>
+              <Image
+                src="/images/logo.png"
+                alt="Logo"
+                width={180}
+                height={60}
+                className="hidden h-auto w-auto max-h-[60px] sm:block"
+                priority
+              />
             </Link>
 
             {/* Right Actions */}

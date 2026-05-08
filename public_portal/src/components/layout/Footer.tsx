@@ -47,20 +47,21 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* About Column */}
           <div>
-            <h3 className='text-white text-lg font-bold mb-4'>
-              HTC Media
-             </h3>
-             <div className="flex items-center gap-3 mb-4">
+             <div className="mb-4">
                <Image
                  src="/images/htcmedia.png"
-                 alt="HTC Media"
-                 width={40}
-                 height={40}
-                 className="rounded-lg"
+                 alt="Logo"
+                 width={48}
+                 height={48}
+                 className="h-auto w-auto max-h-[48px] sm:hidden"
                />
-               <span className='text-white font-bold text-lg'>
-                 HTC Media
-               </span>
+               <Image
+                 src="/images/logo.png"
+                 alt="Logo"
+                 width={180}
+                 height={60}
+                 className="hidden h-auto w-auto max-h-[60px] sm:block"
+               />
              </div>
              <p className='text-sm text-gray-400 mb-4'>
                नेपाल र विश्वभरका समाचार र अपडेटको तपाईंको भरपर्दो स्रोत।
