@@ -13,6 +13,7 @@ import {
   errorHandler,
   AuthenticatedRequest,
 } from "@/lib/middleware";
+import { slugify } from "@/lib/utils";
 
 // GET /api/admin/articles/:id - Get single article (Author+)
 export async function GET(
@@ -119,7 +120,7 @@ export async function PATCH(
     // Get existing article
      const existingArticle = await prisma.article.findUnique({
        where: { id, deletedAt: null },
-       select: { authorId: true, status: true, title: true },
+       select: { authorId: true, status: true, title: true, slug: true },
      });
 
     if (!existingArticle) {
@@ -333,10 +334,19 @@ export async function PATCH(
     const titleChanged = rest.title && rest.title !== existingArticle.title;
     if (titleChanged) {
       const newTitle = (rest.title as string) || existingArticle.title;
-      articleData.slug = newTitle
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-|-$/g, '');
+      const baseSlug = slugify(newTitle);
+      
+      // Check for duplicate slug and append number if needed
+      let newSlug = baseSlug;
+      let counter = 1;
+      while (
+        newSlug !== existingArticle.slug &&
+        await prisma.article.findUnique({ where: { slug: newSlug } })
+      ) {
+        newSlug = `${baseSlug}-${counter}`;
+        counter++;
+      }
+      articleData.slug = newSlug;
     }
 
      // Update article

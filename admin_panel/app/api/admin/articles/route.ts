@@ -15,6 +15,7 @@ import {
   AuthenticatedRequest,
 } from "@/lib/middleware";
 import { deleteCachedPattern } from "@/lib/redis";
+import { slugify } from "@/lib/utils";
 
 // GET /api/admin/articles - List all articles (Admin+)
 export async function GET(req: NextRequest) {
@@ -251,19 +252,16 @@ export async function POST(req: NextRequest) {
       articleData.featuredImage = { connect: { id: featuredImageId } };
     }
 
-     // Generate slug from title
-     const baseSlug = (articleData.title as string)
-       .toLowerCase()
-       .replace(/[^a-z0-9]+/g, "-")
-       .replace(/^-|-$/g, "");
+// Generate slug from title
+      const baseSlug = slugify(articleData.title as string);
 
-     // Check for duplicate slug and append number if needed
-     let slug = baseSlug;
-     let counter = 1;
-     while (await prisma.article.findUnique({ where: { slug } })) {
-       slug = `${baseSlug}-${counter}`;
-       counter++;
-     }
+      // Check for duplicate slug and append number if needed
+      let slug = baseSlug;
+      let counter = 1;
+      while (await prisma.article.findUnique({ where: { slug } })) {
+        slug = `${baseSlug}-${counter}`;
+        counter++;
+      }
 
 // Create article
       const createData: Record<string, unknown> = {
