@@ -33,7 +33,7 @@ export function SearchClient() {
   const searchParams = useSearchParams();
 
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
-  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '');
+  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || 'all');
   const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'relevance');
   const [debouncedSearch, setDebouncedSearch] = useState(searchParams.get('q') || '');
 
@@ -41,7 +41,7 @@ export function SearchClient() {
 
   const { data: articles = [], isLoading } = useArticles({
     search: debouncedSearch || undefined,
-    category: selectedCategory || undefined,
+    category: selectedCategory === 'all' ? undefined : selectedCategory,
   });
 
   useEffect(() => {
@@ -88,7 +88,7 @@ export function SearchClient() {
     } else {
       params.delete('q');
     }
-    if (selectedCategory) {
+    if (selectedCategory && selectedCategory !== 'all') {
       params.set('category', selectedCategory);
     } else {
       params.delete('category');
@@ -150,7 +150,7 @@ export function SearchClient() {
                       </div>
                     </SelectTrigger>
                     <SelectContent>
-                       <SelectItem value="">सबै श्रेणीहरू</SelectItem>
+                       <SelectItem value="all">सबै श्रेणीहरू</SelectItem>
                       {categories.map((cat) => (
                         <SelectItem key={cat.id} value={cat.slug}>
                           {cat.name}

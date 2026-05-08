@@ -271,13 +271,25 @@ export async function PATCH(
       publishedAt?: string;
       featuredImageId?: string;
       authorId?: string;
+      categoryId?: string;
+      subcategoryId?: string;
       [key: string]: unknown;
     };
-    const { tagIds, scheduledAt, publishedAt, featuredImageId, authorId, ...rest } = validatedData;
+    const { tagIds, scheduledAt, publishedAt, featuredImageId, authorId, categoryId, subcategoryId, ...rest } = validatedData;
 
     const articleData: Record<string, unknown> = {
       ...rest,
     };
+
+    if (categoryId) {
+      articleData.category = { connect: { id: categoryId } };
+    }
+
+    if (subcategoryId && subcategoryId !== "") {
+      articleData.subcategory = { connect: { id: subcategoryId } };
+    } else {
+      articleData.subcategory = { disconnect: true };
+    }
 
     if (publishedAt && publishedAt !== "") {
       let dateStr = publishedAt as string;
@@ -312,7 +324,9 @@ export async function PATCH(
     }
 
     if (featuredImageId && featuredImageId !== "") {
-      articleData.featuredImageId = featuredImageId;
+      articleData.featuredImage = { connect: { id: featuredImageId } };
+    } else {
+      articleData.featuredImage = { disconnect: true };
     }
 
     // Regenerate slug if title changed
@@ -326,18 +340,18 @@ export async function PATCH(
     }
 
      // Update article
-     const article = await prisma.article.update({
-       where: { id },
-       data: {
-         ...(articleData as typeof articleData),
-         authorId: authorId || undefined,
-         tags: tagIds && tagIds.length > 0
-           ? {
-               deleteMany: {},
-               create: tagIds.map((tagId: string) => ({ tagId })),
-             }
-           : undefined,
-       } as any,
+const article = await prisma.article.update({
+        where: { id },
+        data: {
+          ...(articleData as typeof articleData),
+          author: authorId ? { connect: { id: authorId } } : { disconnect: true },
+          tags: tagIds && tagIds.length > 0
+            ? {
+                deleteMany: {},
+                create: tagIds.map((tagId: string) => ({ tagId })),
+              }
+            : undefined,
+        } as any,
        select: {
          id: true,
          title: true,

@@ -112,10 +112,8 @@ export async function GET(req: NextRequest) {
         } else if (categoryId) {
           where.categoryId = categoryId;
         }
-        console.log('[API] isFlashUpdate param:', isFlashUpdate);
         if (isFlashUpdate?.toLowerCase() === "true") {
           where.isFlashUpdate = true;
-          console.log('[API] Applied isFlashUpdate filter, where:', JSON.stringify(where));
         }
         if (isFeatured === "true") where.isFeatured = true;
 

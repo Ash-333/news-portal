@@ -200,11 +200,19 @@ export async function POST(req: NextRequest) {
       return validation;
     }
 
-     const { tagIds, scheduledAt, publishedAt, featuredImageId, authorId, ...rest } = validation;
+     const { tagIds, scheduledAt, publishedAt, featuredImageId, authorId, categoryId, subcategoryId, ...rest } = validation;
 
     const articleData: Record<string, unknown> = {
       ...rest,
     };
+
+    if (categoryId) {
+      articleData.category = { connect: { id: categoryId } };
+    }
+
+    if (subcategoryId && subcategoryId !== "") {
+      articleData.subcategory = { connect: { id: subcategoryId } };
+    }
 
     if (publishedAt && publishedAt !== "") {
       let dateStr = publishedAt as string;
@@ -240,7 +248,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (featuredImageId && featuredImageId !== "") {
-      articleData.featuredImageId = featuredImageId;
+      articleData.featuredImage = { connect: { id: featuredImageId } };
     }
 
      // Generate slug from title
@@ -257,27 +265,38 @@ export async function POST(req: NextRequest) {
        counter++;
      }
 
-     // Create article
-     const article = await prisma.article.create({
-       data: {
-         title: articleData.title as string,
-         content: articleData.content as string,
-         excerpt: articleData.excerpt as string | undefined,
-         categoryId: articleData.categoryId as string,
-         metaTitle: articleData.metaTitle as string | undefined,
-         metaDescription: articleData.metaDescription as string | undefined,
-         ogImage: articleData.ogImage as string | undefined,
-          isFlashUpdate: articleData.isFlashUpdate as boolean | undefined,
-          isFeatured: articleData.isFeatured as boolean | undefined,
-          isTitleOnly: articleData.isTitleOnly as boolean | undefined,
-         slug,
-         authorId: authorId || authenticatedReq.user!.id,
-         status: (articleData.status as ArticleStatus) || ArticleStatus.DRAFT,
-         scheduledAt: articleData.scheduledAt as Date | undefined,
-         tags: {
-           create: tagIds?.map((tagId) => ({ tagId })) || [],
-         },
-       },
+// Create article
+      const createData: Record<string, unknown> = {
+        title: articleData.title as string,
+        content: articleData.content as string,
+        excerpt: articleData.excerpt as string | undefined,
+        metaTitle: articleData.metaTitle as string | undefined,
+        metaDescription: articleData.metaDescription as string | undefined,
+        ogImage: articleData.ogImage as string | undefined,
+        isFlashUpdate: articleData.isFlashUpdate as boolean | undefined,
+        isFeatured: articleData.isFeatured as boolean | undefined,
+        isTitleOnly: articleData.isTitleOnly as boolean | undefined,
+        slug,
+        author: { connect: { id: authorId || authenticatedReq.user!.id } },
+        status: (articleData.status as ArticleStatus) || ArticleStatus.DRAFT,
+        scheduledAt: articleData.scheduledAt as Date | undefined,
+        tags: {
+          create: tagIds?.map((tagId) => ({ tagId })) || [],
+        },
+      };
+
+      if (articleData.category) {
+        createData.category = articleData.category as { connect: { id: string } };
+      }
+      if (articleData.subcategory) {
+        createData.subcategory = articleData.subcategory as { connect: { id: string } };
+      }
+      if (articleData.featuredImage) {
+        createData.featuredImage = articleData.featuredImage as { connect: { id: string } };
+      }
+
+      const article = await prisma.article.create({
+        data: createData as never,
        select: {
          id: true,
          title: true,

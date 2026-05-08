@@ -88,10 +88,11 @@ model Category {
   deletedAt DateTime? @map("deleted_at")
 
   // Relations
-  parent   Category?  @relation("CategoryParent", fields: [parentId], references: [id])
-  children Category[] @relation("CategoryParent")
-  articles Article[]
-  audioNews AudioNews[]
+  parent         Category?    @relation("CategoryParent", fields: [parentId], references: [id])
+  children       Category[]   @relation("CategoryParent")
+  articles       Article[]
+  subcategoryArticles Article[] @relation("ArticleSubcategory")
+  audioNews      AudioNews[]
 
   @@index([parentId])
   @@index([deletedAt])
@@ -126,6 +127,7 @@ model Article {
   viewCount       Int           @default(0) @map("view_count")
   authorId        String        @map("author_id")
   categoryId      String        @map("category_id")
+  subcategoryId   String?       @map("subcategory_id")
   metaTitle       String?       @map("meta_title")
   metaDescription String?      @map("meta_description")
   ogImage         String?       @map("og_image")
@@ -135,18 +137,20 @@ model Article {
   updatedAt       DateTime      @updatedAt @map("updated_at")
 
   // Relations
-  author    Author   @relation(fields: [authorId], references: [id])
-  category  Category     @relation(fields: [categoryId], references: [id])
+  author       Author    @relation(fields: [authorId], references: [id])
+  category     Category  @relation(fields: [categoryId], references: [id])
+  subcategory  Category?  @relation("ArticleSubcategory", fields: [subcategoryId], references: [id])
   featuredImage Media?   @relation(fields: [featuredImageId], references: [id])
-  tags      ArticleTag[]
-  comments  Comment[]
-  bookmarks Bookmark[]
-  pageViews PageView[]
+  tags         ArticleTag[]
+  comments     Comment[]
+  bookmarks    Bookmark[]
+  pageViews    PageView[]
 
   @@index([status])
   @@index([publishedAt])
   @@index([authorId])
   @@index([categoryId])
+  @@index([subcategoryId])
   @@index([isFlashUpdate])
   @@index([isFeatured])
   @@index([isTitleOnly])
