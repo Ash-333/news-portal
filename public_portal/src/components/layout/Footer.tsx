@@ -6,7 +6,7 @@ import { Facebook, Twitter, Youtube, Instagram, Mail, Phone, MapPin } from 'luci
 
 import { cn } from '@/lib/utils';
 import { useCategoriesQuery } from '@/hooks/useNewsQueries';
-import { getSocialLinks } from '@/lib/api/settings';
+import { getSocialLinks, getContactInfo } from '@/lib/api/settings';
 import { useQuery } from '@tanstack/react-query';
 
 export function Footer() {
@@ -18,6 +18,13 @@ export function Footer() {
     staleTime: 1000 * 60 * 60,
   });
   const socialLinks = socialLinksResponse?.data;
+
+  const { data: contactResponse } = useQuery({
+    queryKey: ['contact-info'],
+    queryFn: getContactInfo,
+    staleTime: 1000 * 60 * 60,
+  });
+  const contactInfo = contactResponse?.data;
 
   const quickLinks = [
     { label: 'हाम्रो बारेमा', href: '/about' },
@@ -154,16 +161,20 @@ export function Footer() {
               <li className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-news-red shrink-0 mt-0.5" />
                 <span className='text-sm text-gray-400'>
-                   काठमाडौं, नेपाल
+                   {contactInfo?.contactAddress || 'काठमाडौं, नेपाल'}
                 </span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-5 w-5 text-news-red shrink-0" />
-                <span className="text-sm text-gray-400">+977 1 4XXXXXX</span>
+                <a href={`tel:${contactInfo?.contactPhone || '+977-1-4XXXXXX'}`} className="text-sm text-gray-400 hover:text-white transition-colors">
+                  {contactInfo?.contactPhone || '+977 1 4XXXXXX'}
+                </a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-5 w-5 text-news-red shrink-0" />
-                <span className="text-sm text-gray-400">info@yoursite.com</span>
+                <a href={`mailto:${contactInfo?.contactEmail || 'info@yoursite.com'}`} className="text-sm text-gray-400 hover:text-white transition-colors">
+                  {contactInfo?.contactEmail || 'info@yoursite.com'}
+                </a>
               </li>
             </ul>
 
