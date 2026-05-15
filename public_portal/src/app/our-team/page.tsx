@@ -55,7 +55,7 @@ export default async function TeamPage({ searchParams }: TeamPageProps) {
                     key={member.id}
                     className="bg-white dark:bg-news-bg-dark rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow"
                   >
-                    <div className="h-48 bg-gray-200 relative">
+                    <div className="aspect-square bg-gray-200 relative">
                       {member.image ? (
                         <img
                           src={member.image}
