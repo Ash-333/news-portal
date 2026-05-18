@@ -126,7 +126,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             {/* Main Content */}
             <div className="lg:col-span-8">
               {/* Breadcrumb */}
-              <nav className="flex items-center gap-2 text-sm text-gray-500 mb-4">
+              {/* <nav className="flex items-center gap-2 text-sm text-gray-500 mb-4">
                 <Link href="/" className="hover:text-news-red">Home</Link>
                 <span>/</span>
                 <Link href={`/category/${article.category.slug}`} className="hover:text-news-red">
@@ -136,7 +136,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                 <span className="text-gray-400 truncate">
                   {article.title}
                 </span>
-              </nav>
+              </nav> */}
 
               {/* Category Label */}
               <Link href={`/category/${article.category.slug}`}>
@@ -175,10 +175,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                   <Clock className="h-4 w-4" />
                   <span>{article.readTime} min read</span>
                 </div>
-                <div className="flex items-center gap-2">
+                {/* <div className="flex items-center gap-2">
                   <Eye className="h-4 w-4" />
                   <span>{article.viewCount?.toLocaleString() || 0} views</span>
-                </div>
+                </div> */}
               </div>
 
               <ShareBar url={url} title={article.title || ''} />
@@ -197,19 +197,17 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
 
               {/* Article Content */}
               <ArticleContent content={content} />
-              
+
               <InArticleAd className="my-4" />
 
               <ArticleTags tags={article.tags} />
-              
+
               <AuthorBox author={article.author} />
-              
-              <ShareBar url={url} title={article.title || ''} />
-              
+
               <ArticleEndAd className="my-4" />
-              
+
               <ArticleNavigation prevArticle={prevArticle} nextArticle={nextArticle} />
-              
+
               <CommentSection articleId={article.id} articleSlug={article.slug} />
             </div>
 

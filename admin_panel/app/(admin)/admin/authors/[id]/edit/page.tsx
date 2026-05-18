@@ -18,9 +18,9 @@ import { toast } from 'sonner'
 
 const authorSchema = z.object({
   name: z.string().min(1, 'Name is required'),
-  bio: z.string().optional(),
-  image: z.string().optional(),
-  email: z.string().email().optional().or(z.literal('')),
+  bio: z.string().default(''),
+  image: z.string().default(''),
+  email: z.string().email().or(z.literal('')).default(''),
   isActive: z.boolean().default(true),
 })
 
@@ -47,6 +47,7 @@ export default function EditAuthorPage() {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors },
     reset,
   } = useForm<AuthorFormData>({
@@ -63,7 +64,14 @@ export default function EditAuthorPage() {
         const data = await response.json()
         if (data.success) {
           setAuthor(data.data)
-          reset(data.data)
+          const sanitized = {
+            name: data.data.name,
+            email: data.data.email ?? '',
+            bio: data.data.bio ?? '',
+            image: data.data.image ?? '',
+            isActive: data.data.isActive,
+          }
+          reset(sanitized)
           setCurrentImage(data.data.image || '')
           setPreview(data.data.image || '')
         } else {
@@ -189,7 +197,7 @@ export default function EditAuthorPage() {
         }
       />
 
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Card className="max-w-2xl">
           <CardHeader>
             <CardTitle>Author Information</CardTitle>
@@ -252,7 +260,11 @@ export default function EditAuthorPage() {
             </div>
 
             <div className="flex items-center gap-2 pt-2">
-              <Switch id="isActive" {...register('isActive')} />
+              <Switch
+                id="isActive"
+                checked={watch('isActive')}
+                onCheckedChange={(checked) => setValue('isActive', checked)}
+              />
               <Label htmlFor="isActive">Active</Label>
             </div>
           </CardContent>

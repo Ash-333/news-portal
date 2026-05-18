@@ -4,7 +4,7 @@ import { useAdsQuery } from '@/hooks/useNewsQueries';
 
 import { cn } from '@/lib/utils';
 import { AdPlaceholder } from '@/components/ui/AdPlaceholder';
-import { Megaphone } from 'lucide-react';
+
 
 interface AdBoxProps {
   position: 'SIDEBAR_TOP' | 'SIDEBAR_BOTTOM' | 'HOME_MIDDLE' | 'HOME_TOP' | 'TOP_BAR' | 'ARTICLE_DETAIL' | 'LATEST_NEWS' | 'CATEGORY_SECTION' | 'SECTION_SIDEBAR' | string;
@@ -24,19 +24,7 @@ export function AdBox({ position, className }: AdBoxProps) {
   }
 
   if (!activeAd) {
-    // Optional: Return a placeholder or null if no ad is found
-    // For now, return a placeholder to maintain layout and encourage ad placement
-    return (
-      <div className={cn(
-        "bg-gray-50 dark:bg-news-card-dark border border-dashed border-gray-200 dark:border-gray-800 rounded-lg flex items-center justify-center p-4 min-h-[100px]",
-        className
-      )}>
-        <div className="flex flex-col items-center gap-1 text-gray-400 dark:text-gray-500">
-          <Megaphone className="h-5 w-5 opacity-30" />
-          <span className="text-[10px] uppercase font-bold tracking-widest">Advertisement</span>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   const mediaType = activeAd.mediaType?.toLowerCase();
