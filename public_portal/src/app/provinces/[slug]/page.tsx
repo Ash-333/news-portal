@@ -11,53 +11,41 @@ interface ProvincePageProps {
   params: { slug: string };
 }
 
-const slugToProvince: Record<string, string> = {
-  'koshi': 'PROVINCE_1',
-  'madhesh': 'PROVINCE_2',
-  'bagmati': 'PROVINCE_3',
-  'gandaki': 'PROVINCE_4',
-  'lumbini': 'PROVINCE_5',
-  'karnali': 'PROVINCE_6',
-  'sudurpashchim': 'PROVINCE_7',
-};
-
-const provinceData: Record<string, { name: string }> = {
-  PROVINCE_1: { name: 'Koshi' },
-  PROVINCE_2: { name: 'Madhesh' },
-  PROVINCE_3: { name: 'Bagmati' },
-  PROVINCE_4: { name: 'Gandaki' },
-  PROVINCE_5: { name: 'Lumbini' },
-  PROVINCE_6: { name: 'Karnali' },
-  PROVINCE_7: { name: 'Sudurpashchim' },
+const provinceNames: Record<string, string> = {
+  koshi: 'Koshi',
+  madhesh: 'Madhesh',
+  bagmati: 'Bagmati',
+  gandaki: 'Gandaki',
+  lumbini: 'Lumbini',
+  karnali: 'Karnali',
+  sudurpashchim: 'Sudurpashchim',
 };
 
 export const revalidate = 120;
 
 export async function generateMetadata({ params }: ProvincePageProps): Promise<Metadata> {
-  const provinceKey = slugToProvince[params.slug.toLowerCase()];
-  const province = provinceData[provinceKey];
+  const provinceName = provinceNames[params.slug.toLowerCase()];
   
-  if (!province) {
+  if (!provinceName) {
     return {
       title: 'Province Not Found',
     };
   }
 
   return {
-    title: `${province.name} Province - HTC Media`,
-    description: `Latest news and updates from ${province.name} Province`,
+    title: `${provinceName} Province - HTC Media`,
+    description: `Latest news and updates from ${provinceName} Province`,
   };
 }
 
 export default async function ProvincePage({ params }: ProvincePageProps) {
-  const provinceKey = slugToProvince[params.slug.toLowerCase()];
-  const province = provinceData[provinceKey];
+  const provinceName = provinceNames[params.slug.toLowerCase()];
   
-  if (!province) {
+  if (!provinceName) {
     notFound();
   }
 
-  const articlesRes = await getArticles({ province: provinceKey, limit: 20 });
+  const articlesRes = await getArticles({ category: `${params.slug}-province`, limit: 20 });
   const articles = articlesRes.success ? articlesRes.data : [];
   const videosRes = await getVideos({ limit: 6 });
   const videos = videosRes.success ? videosRes.data : [];
@@ -76,15 +64,15 @@ export default async function ProvincePage({ params }: ProvincePageProps) {
         data={BreadcrumbListJsonLd([
           { name: 'गृह', url: `${process.env.NEXT_PUBLIC_SITE_URL}` },
           { name: 'प्रदेशहरू', url: `${process.env.NEXT_PUBLIC_SITE_URL}/provinces` },
-          { name: `${province.name} Province`, url: `${process.env.NEXT_PUBLIC_SITE_URL}/provinces/${params.slug}` },
+          { name: `${provinceName} Province`, url: `${process.env.NEXT_PUBLIC_SITE_URL}/provinces/${params.slug}` },
         ])}
       />
 
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold">{province.name} प्रदेश</h1>
+          <h1 className="text-3xl font-bold">{provinceName} प्रदेश</h1>
           <p className="text-gray-600 dark:text-gray-400 mt-2">
-            {province.name} प्रदेशबाट ताजा समाचार र अपडेट
+            {provinceName} प्रदेशबाट ताजा समाचार र अपडेट
           </p>
         </div>
 

@@ -84,13 +84,13 @@ export default async function HomePage() {
     getArticles({ category: 'world', limit: 5 }),
     getArticles({ category: 'diaspora', limit: 9 }),
     getPolls(),
-    getArticles({ province: 'PROVINCE_1', limit: 5 }),
-    getArticles({ province: 'PROVINCE_2', limit: 5 }),
-    getArticles({ province: 'PROVINCE_3', limit: 5 }),
-    getArticles({ province: 'PROVINCE_4', limit: 5 }),
-    getArticles({ province: 'PROVINCE_5', limit: 5 }),
-    getArticles({ province: 'PROVINCE_6', limit: 5 }),
-    getArticles({ province: 'PROVINCE_7', limit: 5 }),
+    getArticles({ category: 'koshi-province', limit: 5 }),
+    getArticles({ category: 'madhesh-province', limit: 5 }),
+    getArticles({ category: 'bagmati-province', limit: 5 }),
+    getArticles({ category: 'gandaki-province', limit: 5 }),
+    getArticles({ category: 'lumbini-province', limit: 5 }),
+    getArticles({ category: 'karnali-province', limit: 5 }),
+    getArticles({ category: 'sudurpashchim-province', limit: 5 }),
     getArticles({ category: 'society', limit: 6 }),
     getArticles({ category: 'swasthya', limit: 4 }),
     getArticles({ category: 'jeevan-shaili', limit: 10 }),
@@ -311,13 +311,13 @@ export default async function HomePage() {
         {hasProvinceNews && (
           <ProvinceSection
             provinces={[
-              { data: province1Articles, info: { slug: 'PROVINCE_1', name: 'Province 1' } },
-              { data: province2Articles, info: { slug: 'PROVINCE_2', name: 'Province 2' } },
-              { data: province3Articles, info: { slug: 'PROVINCE_3', name: 'Province 3' } },
-              { data: province4Articles, info: { slug: 'PROVINCE_4', name: 'Province 4' } },
-              { data: province5Articles, info: { slug: 'PROVINCE_5', name: 'Province 5' } },
-              { data: province6Articles, info: { slug: 'PROVINCE_6', name: 'Province 6' } },
-              { data: province7Articles, info: { slug: 'PROVINCE_7', name: 'Province 7' } },
+              { data: province1Articles, info: { slug: 'koshi', name: 'Koshi' } },
+              { data: province2Articles, info: { slug: 'madhesh', name: 'Madhesh' } },
+              { data: province3Articles, info: { slug: 'bagmati', name: 'Bagmati' } },
+              { data: province4Articles, info: { slug: 'gandaki', name: 'Gandaki' } },
+              { data: province5Articles, info: { slug: 'lumbini', name: 'Lumbini' } },
+              { data: province6Articles, info: { slug: 'karnali', name: 'Karnali' } },
+              { data: province7Articles, info: { slug: 'sudurpashchim', name: 'Sudurpashchim' } },
             ]}
           />
         )}
