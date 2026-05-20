@@ -289,17 +289,21 @@ model Video {
   thumbnailUrl  String    @map("thumbnail_url")
   iframeUrl     String    @map("iframe_url")
   authorId      String    @map("author_id")
-  isPublished   Boolean   @default(false) @map("is_published")
-  publishedAt   DateTime? @map("published_at")
-  deletedAt     DateTime? @map("deleted_at")
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
+  isPublished           Boolean   @default(false) @map("is_published")
+  isLivestream          Boolean   @default(false) @map("is_livestream")
+  isFeaturedLivestream   Boolean   @default(false) @map("is_featured_livestream")
+  publishedAt           DateTime? @map("published_at")
+  deletedAt             DateTime? @map("deleted_at")
+  createdAt             DateTime  @default(now()) @map("created_at")
+  updatedAt             DateTime  @updatedAt @map("updated_at")
 
   // Relations
   author Author @relation(fields: [authorId], references: [id])
 
   @@index([authorId])
   @@index([isPublished])
+  @@index([isLivestream])
+  @@index([isFeaturedLivestream])
   @@index([deletedAt])
   @@map("videos")
 }

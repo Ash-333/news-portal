@@ -128,6 +128,8 @@ export interface Video {
   iframeUrl: string;
   authorId: string;
   isPublished: boolean;
+  isLivestream: boolean;
+  isFeaturedLivestream: boolean;
   publishedAt?: Date;
   createdAt: Date;
   updatedAt: Date;

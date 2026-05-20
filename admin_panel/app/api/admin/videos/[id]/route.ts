@@ -54,7 +54,17 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const updateData: Record<string, unknown> = {}
 
     if (body.title !== undefined) updateData.title = body.title
-    if (body.title !== undefined) updateData.title = body.title
+    if (body.isLivestream !== undefined) updateData.isLivestream = body.isLivestream
+    if (body.isFeaturedLivestream !== undefined) {
+      // If setting this as featured livestream, unset any existing one first
+      if (body.isFeaturedLivestream) {
+        await prisma.video.updateMany({
+          where: { isFeaturedLivestream: true, id: { not: id }, deletedAt: null },
+          data: { isFeaturedLivestream: false },
+        })
+      }
+      updateData.isFeaturedLivestream = body.isFeaturedLivestream
+    }
     if (body.isPublished !== undefined) {
       updateData.isPublished = body.isPublished
       if (body.isPublished) updateData.publishedAt = new Date()

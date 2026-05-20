@@ -181,6 +181,8 @@ export interface VideoUpdate {
   iframeUrl: string;
   authorId: string;
   isPublished: boolean;
+  isLivestream: boolean;
+  isFeaturedLivestream: boolean;
   publishedAt: string;
   deletedAt: string | null;
   createdAt: string;

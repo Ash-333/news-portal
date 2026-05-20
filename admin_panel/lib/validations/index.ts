@@ -321,11 +321,15 @@ export const videoSchema = z.object({
     .url("Invalid YouTube URL")
     .min(1, "YouTube URL is required"),
   authorId: z.string().min(1, "Author is required"),
+  isLivestream: booleanFromInput.default(false),
+  isFeaturedLivestream: booleanFromInput.default(false),
 });
 
 export const videoFilterSchema = z.object({
   search: z.string().optional(),
   isPublished: z.preprocess((val) => val === "true", z.boolean()).optional(),
+  isLivestream: z.preprocess((val) => val === "true", z.boolean()).optional(),
+  isFeaturedLivestream: z.preprocess((val) => val === "true", z.boolean()).optional(),
 });
 
 // Advertisement Validations

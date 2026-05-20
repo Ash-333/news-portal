@@ -46,10 +46,12 @@ export async function GET(req: NextRequest) {
     }
 
     const { page = 1, limit = 20, sortBy, order = 'desc' } = pagination.data as any
-    const { search, isPublished } = filters.success ? filters.data : {}
+    const { search, isPublished, isLivestream, isFeaturedLivestream } = filters.success ? filters.data : {}
 
     const where: Record<string, unknown> = { deletedAt: null }
     if (isPublished !== undefined) where.isPublished = isPublished
+    if (isLivestream !== undefined) where.isLivestream = isLivestream
+    if (isFeaturedLivestream !== undefined) where.isFeaturedLivestream = isFeaturedLivestream
     if (search) {
       where.OR = [
         { title: { contains: search, mode: 'insensitive' } },
@@ -67,6 +69,8 @@ export async function GET(req: NextRequest) {
           thumbnailUrl: true,
           iframeUrl: true,
           isPublished: true,
+          isLivestream: true,
+          isFeaturedLivestream: true,
           publishedAt: true,
           createdAt: true,
           updatedAt: true,
@@ -103,7 +107,7 @@ export async function POST(req: NextRequest) {
     const validation = await validationMiddleware(videoSchema)(req)
     if (validation instanceof NextResponse) return validation
 
-    const { title, youtubeUrl } = validation
+    const { title, youtubeUrl, authorId, isLivestream: lsFlag, isFeaturedLivestream: featuredLsFlag } = validation
 
     const videoId = extractYouTubeId(youtubeUrl as string)
     if (!videoId) {
@@ -116,13 +120,23 @@ export async function POST(req: NextRequest) {
     const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
     const iframeUrl = `https://www.youtube.com/embed/${videoId}`
 
+    // If setting a new featured livestream, unset any existing one
+    if (featuredLsFlag) {
+      await prisma.video.updateMany({
+        where: { isFeaturedLivestream: true, deletedAt: null },
+        data: { isFeaturedLivestream: false },
+      })
+    }
+
     const video = await prisma.video.create({
       data: {
         title: title as string,
         youtubeUrl: youtubeUrl as string,
         thumbnailUrl,
         iframeUrl,
-        authorId: authenticatedReq.user!.id,
+        authorId: authorId as string,
+        isLivestream: lsFlag as boolean,
+        isFeaturedLivestream: featuredLsFlag as boolean,
       },
     })
 

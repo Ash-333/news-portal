@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Plus, Search, Trash2, Eye, EyeOff, ExternalLink } from 'lucide-react'
+import { Plus, Search, Trash2, Eye, EyeOff, ExternalLink, Radio, Monitor } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -17,7 +17,7 @@ export default function VideosPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [showForm, setShowForm] = useState(false)
-  const [formData, setFormData] = useState({ title: '', youtubeUrl: '', authorId: '' })
+  const [formData, setFormData] = useState({ title: '', youtubeUrl: '', authorId: '', isLivestream: false, isFeaturedLivestream: false })
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const { data, isLoading } = useVideos({ search: searchQuery || undefined })
@@ -40,7 +40,7 @@ export default function VideosPage() {
       if (result.success) {
         toast.success('Video created successfully')
         setShowForm(false)
-        setFormData({ title: '', youtubeUrl: '', authorId: '' })
+        setFormData({ title: '', youtubeUrl: '', authorId: '', isLivestream: false, isFeaturedLivestream: false })
         window.location.reload()
       } else {
         toast.error(result.message || 'Failed to create video')
@@ -106,6 +106,32 @@ export default function VideosPage() {
                 />
               </div>
             </div>
+            <div className="flex items-center gap-6 pt-2">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={formData.isLivestream}
+                  onChange={(e) => setFormData(p => ({ ...p, isLivestream: e.target.checked }))}
+                  className="w-4 h-4 rounded border-gray-300"
+                />
+                <span className="text-sm font-medium flex items-center gap-1">
+                  <Radio className="w-4 h-4 text-red-500" />
+                  Livestream
+                </span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={formData.isFeaturedLivestream}
+                  onChange={(e) => setFormData(p => ({ ...p, isFeaturedLivestream: e.target.checked }))}
+                  className="w-4 h-4 rounded border-gray-300"
+                />
+                <span className="text-sm font-medium flex items-center gap-1">
+                  <Monitor className="w-4 h-4 text-blue-500" />
+                  Featured Livestream (shows at top of homepage)
+                </span>
+              </label>
+            </div>
             {previewThumb && (
               <div className="mt-2">
                 <p className="text-sm text-slate-500 mb-1">Thumbnail Preview:</p>
@@ -152,18 +178,31 @@ export default function VideosPage() {
           {videos.map((video) => (
             <Card key={video.id} className="overflow-hidden">
               <CardContent className="p-0">
-                <div className="relative aspect-video bg-slate-900">
-                  <img
-                     src={video.thumbnailUrl}
-                     alt={video.title}
-                     className="w-full h-full object-cover"
-                   />
-                  <div className="absolute top-2 right-2">
-                    <span className={`px-2 py-0.5 rounded text-xs font-medium ${video.isPublished ? 'bg-green-500 text-white' : 'bg-yellow-500 text-black'}`}>
-                      {video.isPublished ? 'Published' : 'Draft'}
-                    </span>
+                  <div className="relative aspect-video bg-slate-900">
+                    <img
+                       src={video.thumbnailUrl}
+                       alt={video.title}
+                       className="w-full h-full object-cover"
+                     />
+                    <div className="absolute top-2 right-2 flex gap-1">
+                      {video.isLivestream && (
+                        <span className="px-2 py-0.5 rounded text-xs font-bold bg-red-600 text-white animate-pulse flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 bg-white rounded-full" />
+                          LIVE
+                        </span>
+                      )}
+                      <span className={`px-2 py-0.5 rounded text-xs font-medium ${video.isPublished ? 'bg-green-500 text-white' : 'bg-yellow-500 text-black'}`}>
+                        {video.isPublished ? 'Published' : 'Draft'}
+                      </span>
+                    </div>
+                    {video.isFeaturedLivestream && (
+                      <div className="absolute bottom-2 left-2">
+                        <span className="px-2 py-0.5 rounded text-xs font-bold bg-blue-600 text-white">
+                          Featured
+                        </span>
+                      </div>
+                    )}
                   </div>
-                </div>
                 <div className="p-3">
                    <p className="font-medium text-sm truncate">{video.title}</p>
                    <p className="text-xs text-slate-500 truncate">by {video.author?.name}</p>

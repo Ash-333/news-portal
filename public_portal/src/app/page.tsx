@@ -14,6 +14,7 @@ import { HoroscopeSection } from '@/components/horoscopes/HoroscopeSection';
 import { VideoSection } from '@/components/sections/VideoSection';
 import { PhotoGallerySection } from '@/components/sections/PhotoGallerySection';
 import { FullWidthArticlesSection } from '@/components/sections/FullWidthArticlesSection';
+import { FeaturedLivestreamSection } from '@/components/sections/FeaturedLivestreamSection';
 import { WorldDiasporaSection } from '@/components/sections/WorldDiasporaSection';
 import { Article, Poll, Category } from '@/types';
 
@@ -193,6 +194,7 @@ export default async function HomePage() {
 
       <div className="min-h-screen">
         <div className="container mx-auto px-4 py-8">
+          <FeaturedLivestreamSection />
           <FullWidthArticlesSection articles={fullWidthArticles} />
 
           <div className="mt-8 flex justify-center">

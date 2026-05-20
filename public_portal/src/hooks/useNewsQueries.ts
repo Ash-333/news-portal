@@ -8,7 +8,7 @@ import {
   fetchComments,
   fetchPublishedArticles,
 } from '@/lib/api';
-import { getVideos } from '@/lib/api/videos';
+import { getVideos, getFeaturedLivestream } from '@/lib/api/videos';
 import { getAds } from '@/lib/api/ads';
 export const newsQueryKeys = {
   articles: ['articles'] as const,
@@ -16,6 +16,7 @@ export const newsQueryKeys = {
   categories: ['categories'] as const,
   comments: (articleId: string) => ['comments', articleId] as const,
   videos: ['videos'] as const,
+  featuredLivestream: ['videos', 'featuredLivestream'] as const,
   ads: ['ads'] as const,
 };
 
@@ -64,6 +65,13 @@ export function useVideosQuery(params = {}) {
   return useQuery({
     queryKey: [...newsQueryKeys.videos, params],
     queryFn: () => getVideos(params),
+  });
+}
+
+export function useFeaturedLivestreamQuery() {
+  return useQuery({
+    queryKey: newsQueryKeys.featuredLivestream,
+    queryFn: () => getFeaturedLivestream(),
   });
 }
 

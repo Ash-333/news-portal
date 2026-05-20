@@ -10,18 +10,50 @@ export async function GET(request: Request) {
     const limit = parseInt(searchParams.get('limit') || '10')
     const page = parseInt(searchParams.get('page') || '1')
     const search = searchParams.get('search') || ''
+    const isLivestream = searchParams.get('isLivestream')
+    const isFeaturedLivestream = searchParams.get('isFeaturedLivestream')
 
-    const result = await cachedApi(
-      'videos:list',
-      { limit, page, search },
-      async () => {
-        const where = {
+    // Featured livestream endpoint: return single matching livestream
+    if (isFeaturedLivestream === 'true') {
+      const video = await prisma.video.findFirst({
+        where: {
           isPublished: true,
           deletedAt: null,
-          OR: search ? [
+          isFeaturedLivestream: true,
+          isLivestream: true,
+        },
+        include: {
+          author: { select: { id: true, name: true, image: true } }
+        },
+        orderBy: { publishedAt: 'desc' },
+      })
+
+      return NextResponse.json({
+        success: true,
+        data: video || null,
+        message: video ? 'Featured livestream found' : 'No featured livestream',
+      })
+    }
+
+    const cacheKey = isLivestream ? 'videos:livestream' : 'videos:list'
+
+    const result = await cachedApi(
+      cacheKey,
+      { limit, page, search, isLivestream },
+      async () => {
+        const where: Record<string, unknown> = {
+          isPublished: true,
+          deletedAt: null,
+        }
+
+        if (isLivestream === 'true') {
+          where.isLivestream = true
+        }
+
+        if (search) {
+          where.OR = [
             { title: { contains: search, mode: 'insensitive' } },
-  
-          ] : undefined
+          ]
         }
 
         const [videos, total] = await Promise.all([
