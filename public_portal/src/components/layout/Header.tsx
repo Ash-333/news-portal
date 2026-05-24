@@ -108,12 +108,13 @@ export function Header() {
                 priority
               />
               <Image
-                src="/images/logo.png"
+                src="/images/logo.gif"
                 alt="Logo"
                 width={180}
                 height={60}
                 className="hidden h-auto w-auto max-h-[60px] sm:block"
                 priority
+                unoptimized
               />
             </Link>
 

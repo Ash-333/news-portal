@@ -41,31 +41,31 @@ export function Footer() {
   const instagramUrl = socialLinks?.instagramUrl || 'https://instagram.com';
 
   return (
-    <footer className="bg-gray-900 text-gray-300">
+    <footer className="bg-gray-900 text-gray-300 border-t-4 border-news-red">
       {/* Main Footer */}
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* About Column */}
           <div>
-             <div className="mb-4">
-               <Image
-                 src="/images/htcmedia.png"
-                 alt="Logo"
-                 width={48}
-                 height={48}
-                 className="h-auto w-auto max-h-[48px] sm:hidden"
-               />
-               <Image
-                 src="/images/logo.png"
-                 alt="Logo"
-                 width={180}
-                 height={60}
-                 className="hidden h-auto w-auto max-h-[60px] sm:block"
-               />
-             </div>
-             <p className='text-sm text-gray-400 mb-4'>
-               नेपाल र विश्वभरका समाचार र अपडेटको तपाईंको भरपर्दो स्रोत।
-             </p>
+            <div className="mb-4">
+              <Image
+                src="/images/htcmedia.png"
+                alt="Logo"
+                width={48}
+                height={48}
+                className="h-auto w-auto max-h-[48px] sm:hidden"
+              />
+              <Image
+                src="/images/logo.png"
+                alt="Logo"
+                width={180}
+                height={60}
+                className="hidden h-auto w-auto max-h-[60px] sm:block"
+              />
+            </div>
+            <p className='text-sm text-gray-400 mb-4'>
+              सञ्चार क्षेत्रमा नयाँ आयाम।
+            </p>
             {/* Social Links */}
             <div className="flex items-center gap-3">
               {socialLinks?.facebookUrl && (
@@ -85,7 +85,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-9 h-9 bg-gray-800 rounded-full flex items-center justify-center hover:bg-news-red transition-colors"
-                   aria-label="ट्विटर"
+                  aria-label="ट्विटर"
                 >
                   <Twitter className="h-4 w-4" />
                 </a>
@@ -96,7 +96,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-9 h-9 bg-gray-800 rounded-full flex items-center justify-center hover:bg-news-red transition-colors"
-                   aria-label="युट्युब"
+                  aria-label="युट्युब"
                 >
                   <Youtube className="h-4 w-4" />
                 </a>
@@ -107,7 +107,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-9 h-9 bg-gray-800 rounded-full flex items-center justify-center hover:bg-news-red transition-colors"
-                   aria-label="इन्स्टाग्राम"
+                  aria-label="इन्स्टाग्राम"
                 >
                   <Instagram className="h-4 w-4" />
                 </a>
@@ -117,15 +117,15 @@ export function Footer() {
 
           {/* Categories Column */}
           <div>
-            <h3 className='text-white text-lg font-bold mb-4'>
-               श्रेणीहरू
-             </h3>
+            <h3 className='text-news-red text-lg font-bold mb-4'>
+              श्रेणीहरू
+            </h3>
             <ul className="space-y-2">
               {categories.slice(0, 8).map((category) => (
                 <li key={category.id}>
                   <Link
                     href={`/category/${category.slug}`}
-                    className='text-sm text-gray-400 hover:text-white transition-colors'
+                    className='text-sm text-gray-400 hover:text-news-red transition-colors'
                   >
                     {category.name}
                   </Link>
@@ -136,15 +136,15 @@ export function Footer() {
 
           {/* Quick Links Column */}
           <div>
-            <h3 className='text-white text-lg font-bold mb-4'>
-               द्रुत लिङ्कहरू
-             </h3>
+            <h3 className='text-news-red text-lg font-bold mb-4'>
+              द्रुत लिङ्कहरू
+            </h3>
             <ul className="space-y-2">
               {quickLinks.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className='text-sm text-gray-400 hover:text-white transition-colors'
+                    className='text-sm text-gray-400 hover:text-news-red transition-colors'
                   >
                     {link.label}
                   </Link>
@@ -155,25 +155,25 @@ export function Footer() {
 
           {/* Contact & Newsletter Column */}
           <div>
-            <h3 className='text-white text-lg font-bold mb-4'>
-               सम्पर्क
-             </h3>
+            <h3 className='text-news-red text-lg font-bold mb-4'>
+              सम्पर्क
+            </h3>
             <ul className="space-y-3 mb-6">
               <li className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-news-red shrink-0 mt-0.5" />
                 <span className='text-sm text-gray-400'>
-                   {contactInfo?.contactAddress || 'काठमाडौं, नेपाल'}
+                  {contactInfo?.contactAddress || 'काठमाडौं, नेपाल'}
                 </span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-5 w-5 text-news-red shrink-0" />
-                <a href={`tel:${contactInfo?.contactPhone || '+977-1-4XXXXXX'}`} className="text-sm text-gray-400 hover:text-white transition-colors">
+                <a href={`tel:${contactInfo?.contactPhone || '+977-1-4XXXXXX'}`} className="text-sm text-gray-400 hover:text-news-red transition-colors">
                   {contactInfo?.contactPhone || '+977 1 4XXXXXX'}
                 </a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-5 w-5 text-news-red shrink-0" />
-                <a href={`mailto:${contactInfo?.contactEmail || 'info@yoursite.com'}`} className="text-sm text-gray-400 hover:text-white transition-colors">
+                <a href={`mailto:${contactInfo?.contactEmail || 'info@yoursite.com'}`} className="text-sm text-gray-400 hover:text-news-red transition-colors">
                   {contactInfo?.contactEmail || 'info@yoursite.com'}
                 </a>
               </li>
@@ -181,17 +181,17 @@ export function Footer() {
 
             {/* Newsletter */}
             <div>
-              <h4 className='text-white text-sm font-bold mb-2'>
-                 न्युजलेटर
-               </h4>
+              <h4 className='text-news-red text-sm font-bold mb-2'>
+                न्युजलेटर
+              </h4>
               <div className="flex gap-2">
                 <input
                   type="email"
-                   placeholder="तपाईंको इमेल"
+                  placeholder="तपाईंको इमेल"
                   className='flex-1 px-3 py-2 bg-gray-800 rounded-lg text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-news-red'
                 />
                 <button className="px-4 py-2 bg-news-red text-white text-sm font-medium rounded-lg hover:bg-news-red-dark transition-colors">
-                   सदस्यता लिनुहोस्
+                  सदस्यता लिनुहोस्
                 </button>
               </div>
             </div>
@@ -203,16 +203,16 @@ export function Footer() {
       <div className="border-t border-gray-800">
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-               <p className="text-sm text-gray-400">
-               © {new Date().getFullYear()} HTC Media. सर्वाधिकार सुरक्षित।
-             </p>
-             <div className="flex items-center gap-4">
-               <Link href="/privacy" className='text-sm text-gray-400 hover:text-white transition-colors'>
-                 गोपनीयता
-               </Link>
-               <Link href="/terms" className='text-sm text-gray-400 hover:text-white transition-colors'>
-                 सर्तहरू
-               </Link>
+            <p className="text-sm text-gray-400">
+              © {new Date().getFullYear()} HTC Media. सर्वाधिकार सुरक्षित।
+            </p>
+            <div className="flex items-center gap-4">
+              <Link href="/privacy" className='text-sm text-gray-400 hover:text-news-red transition-colors'>
+                गोपनीयता
+              </Link>
+              <Link href="/terms" className='text-sm text-gray-400 hover:text-news-red transition-colors'>
+                सर्तहरू
+              </Link>
             </div>
           </div>
         </div>

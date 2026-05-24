@@ -40,6 +40,21 @@ const ICON_MAP: Record<string, LucideIcon> = {
   Star,
 };
 
+const ZODIAC_SIGN_MAP: Record<string, string> = {
+  aries: 'मेष',
+  taurus: 'वृष',
+  gemini: 'मिथुन',
+  cancer: 'कर्कट',
+  leo: 'सिंह',
+  virgo: 'कन्या',
+  libra: 'तुला',
+  scorpio: 'वृश्चिक',
+  sagittarius: 'धनु',
+  capricorn: 'मकर',
+  aquarius: 'कुम्भ',
+  pisces: 'मीन',
+};
+
 // Helper function to get icon component by name
 function getIconByName(iconName: string | undefined): LucideIcon {
   if (!iconName) return Star;
@@ -165,7 +180,7 @@ export function HoroscopeSection({ className }: HoroscopeSectionProps) {
                 >
                   <SignIcon className="w-6 h-6 mb-1" />
                   <span className={cn('text-xs font-medium', 'font-nepali')}>
-                    {horoscope.zodiacSign.charAt(0).toUpperCase() + horoscope.zodiacSign.slice(1, 3)}
+                    {ZODIAC_SIGN_MAP[horoscope.zodiacSign] || horoscope.zodiacSign}
                   </span>
                 </button>
               );
