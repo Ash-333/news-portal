@@ -89,33 +89,48 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.png" type="image/png" />
         <link rel="apple-touch-icon" href="/favicon.png" />
         <link rel="manifest" href="/site.webmanifest" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        
+        {/* 1. Preconnect to your Cloudflare R2 bucket for faster image/banner loading (~90ms savings) */}
+        <link 
+          rel="preconnect" 
+          href="https://pub-0b3a31472a884459a6924728f1b443e3.r2.dev" 
+          crossOrigin="anonymous" 
+        />
+
+        {/* 2. Optional: Preload the absolute slowest font file from your initial audit report */}
+        {/* Replace this specific file name if the hash string changes upon your next project build */}
+        <link
+          rel="preload"
+          href="/_next/static/media/f149253a5c6880ff-s.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
       </head>
       <body className={`${mukta.variable} antialiased`}>
         <ThemeProvider>
           <TooltipProvider>
             <QueryProvider>
               <AuthProvider>
-                  <a href="#main-content" className="skip-link">
-                    Skip to main content
-                  </a>
-                  <div className="flex min-h-screen flex-col">
-                    <Suspense fallback={<div className="bg-news-red text-white py-2" />}>
-                      <TopBar />
-                    </Suspense>
-                    <Header />
-                    <BreakingNewsTicker />
-                    <main id="main-content" className="flex-1">
-                      {children}
-                    </main>
-                    <Footer />
-                    <MobileBottomBar />
-                    <FloatingWatchButton />
-                    <FlashNewsSheet />
-                  </div>
-                </AuthProvider>
-              </QueryProvider>
+                <a href="#main-content" className="skip-link">
+                  Skip to main content
+                </a>
+                <div className="flex min-h-screen flex-col">
+                  <Suspense fallback={<div className="bg-news-red text-white py-2" />}>
+                    <TopBar />
+                  </Suspense>
+                  <Header />
+                  <BreakingNewsTicker />
+                  <main id="main-content" className="flex-1">
+                    {children}
+                  </main>
+                  <Footer />
+                  <MobileBottomBar />
+                  <FloatingWatchButton />
+                  <FlashNewsSheet />
+                </div>
+              </AuthProvider>
+            </QueryProvider>
           </TooltipProvider>
         </ThemeProvider>
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ''} />
