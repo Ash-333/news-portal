@@ -6,6 +6,7 @@ import { AdPosition, AdWithPosition } from '@/types';
 import { getAdsByPosition, trackAdClick } from '@/lib/api/ads';
 
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 interface AdSlotProps {
   position: AdPosition;
@@ -72,11 +73,14 @@ export function AdSlot({ position, className }: AdSlotProps) {
       onClick={handleAdClick}
     >
       {mediaType === 'image' || mediaType === 'gif' ? (
-        <img
-          src={ad.mediaUrl}
-          alt={ad.title}
-          className="w-full h-auto object-cover"
-        />
+        <div className="relative w-full min-h-[250px]">
+          <Image
+            src={ad.mediaUrl}
+            alt={ad.title || 'Advertisement'}
+            fill
+            className="object-cover"
+          />
+        </div>
       ) : mediaType === 'video' ? (
         <video
           src={ad.mediaUrl}

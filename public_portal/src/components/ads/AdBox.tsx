@@ -4,6 +4,7 @@ import { useAdsQuery } from '@/hooks/useNewsQueries';
 
 import { cn } from '@/lib/utils';
 import { AdPlaceholder } from '@/components/ui/AdPlaceholder';
+import Image from 'next/image';
 
 
 interface AdBoxProps {
@@ -46,11 +47,14 @@ export function AdBox({ position, className }: AdBoxProps) {
             loop
           />
         ) : (
-          <img
-            src={activeAd.mediaUrl}
-            alt={activeAd.title}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-          />
+          <div className="relative w-full h-full">
+            <Image
+              src={activeAd.mediaUrl}
+              alt={activeAd.title || 'Advertisement'}
+              fill
+              className="object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+          </div>
         )}
         <div className="absolute top-2 right-2 bg-black/50 text-white text-[9px] px-1.5 py-0.5 rounded backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity">
           Ad
