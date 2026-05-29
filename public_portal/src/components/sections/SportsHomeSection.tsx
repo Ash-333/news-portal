@@ -6,7 +6,7 @@ import { Article, Category } from '@/types';
 
 import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { getArticleImage } from '@/lib/utils/image';
+import { getArticleImage, getBlurDataUrl } from '@/lib/utils/image';
 
 interface SportsHomeSectionProps {
   articles: Article[];
@@ -58,6 +58,8 @@ export function SportsHomeSection({ articles, category }: SportsHomeSectionProps
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
                 sizes="(max-width: 1024px) 100vw, 600px"
+                placeholder="blur"
+                blurDataURL={getBlurDataUrl()}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 flex flex-col justify-end">
@@ -86,6 +88,8 @@ export function SportsHomeSection({ articles, category }: SportsHomeSectionProps
                       fill
                       className="object-cover transition-transform duration-300 group-hover:scale-105"
                       sizes="(max-width: 768px) 50vw, 300px"
+                      placeholder="blur"
+                      blurDataURL={getBlurDataUrl()}
                     />
                   </Link>
                   <Link href={`/article/${article.slug}`}>

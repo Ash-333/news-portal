@@ -6,7 +6,7 @@ import { Article, Category } from '@/types';
 
 import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { getArticleImage } from '@/lib/utils/image';
+import { getArticleImage, getBlurDataUrl } from '@/lib/utils/image';
 
 interface LifestyleHealthSectionProps {
   lifestyleCategory: Category;
@@ -74,13 +74,15 @@ export function LifestyleHealthSection({
                  <article key={article.id} className="group flex gap-3 items-start">
                    <Link href={`/article/${article.slug}`} className="shrink-0">
                      <div className="relative w-24 h-20 rounded-lg overflow-hidden">
-                       <Image
-                         src={getArticleImage(article)}
-                         alt={article.title || ''}
-                         fill
-                         className="object-cover transition-transform duration-300 group-hover:scale-105"
-                         sizes="96px"
-                       />
+                        <Image
+                          src={getArticleImage(article)}
+                          alt={article.title || ''}
+                          fill
+                          className="object-cover transition-transform duration-300 group-hover:scale-105"
+                          sizes="96px"
+                          placeholder="blur"
+                          blurDataURL={getBlurDataUrl()}
+                        />
                      </div>
                    </Link>
                    <div className="flex-1 min-w-0">
@@ -125,12 +127,14 @@ export function LifestyleHealthSection({
                 className="block relative aspect-[16/9] rounded-xl overflow-hidden mb-4 group"
               >
                  <Image
-                   src={getArticleImage(healthFeatured)}
-                   alt={healthFeatured.title || ''}
-                   fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  sizes="(max-width: 1024px) 100vw, 500px"
-                />
+                    src={getArticleImage(healthFeatured)}
+                    alt={healthFeatured.title || ''}
+                    fill
+                   className="object-cover transition-transform duration-700 group-hover:scale-105"
+                   sizes="(max-width: 1024px) 100vw, 500px"
+                   placeholder="blur"
+                   blurDataURL={getBlurDataUrl()}
+                 />
               </Link>
             )}
             {healthFeatured && (
@@ -150,13 +154,15 @@ export function LifestyleHealthSection({
                  <article key={article.id} className="group">
                    <Link href={`/article/${article.slug}`} className="block">
                      <div className="relative aspect-[4/3] rounded-lg overflow-hidden mb-2">
-                       <Image
-                         src={getArticleImage(article)}
-                         alt={article.title || ''}
-                         fill
-                         className="object-cover transition-transform duration-300 group-hover:scale-105"
-                         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 200px"
-                       />
+                        <Image
+                          src={getArticleImage(article)}
+                          alt={article.title || ''}
+                          fill
+                          className="object-cover transition-transform duration-300 group-hover:scale-105"
+                          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 200px"
+                          placeholder="blur"
+                          blurDataURL={getBlurDataUrl()}
+                        />
                      </div>
                      <h5 className={cn(
                        'font-medium text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-news-red transition-colors',

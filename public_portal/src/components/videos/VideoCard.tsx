@@ -5,6 +5,7 @@ import { VideoUpdate } from '@/types';
 import { cn } from '@/lib/utils';
 import { Play, Calendar, User } from 'lucide-react';
 import Image from 'next/image';
+import { getBlurDataUrl } from '@/lib/utils/image';
 
 interface VideoCardProps {
   video: VideoUpdate;
@@ -16,10 +17,14 @@ export function VideoCard({ video }: VideoCardProps) {
     <div className="bg-white dark:bg-news-card-dark rounded-xl border border-news-border dark:border-news-border-dark overflow-hidden group hover:shadow-lg transition-all duration-300">
       {/* Thumbnail */}
       <div className="relative aspect-video overflow-hidden bg-gray-100 dark:bg-gray-800">
-        <img
-          src={video.thumbnailUrl}
+        <Image
+          src={video.thumbnailUrl || ''}
           alt={video.title || ''}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-500"
+          sizes="(max-width: 768px) 100vw, 400px"
+          placeholder="blur"
+          blurDataURL={getBlurDataUrl()}
         />
         <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">
           <div className="w-12 h-12 rounded-full bg-white/90 text-news-red flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">

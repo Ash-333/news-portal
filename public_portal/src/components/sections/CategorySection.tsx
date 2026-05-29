@@ -9,7 +9,7 @@ import { ArticleCard } from '@/components/ArticleCard';
 import { AdPlaceholder } from '@/components/ui/AdPlaceholder';
 import { cn } from '@/lib/utils';
 
-import { getArticleImage } from '@/lib/utils/image';
+import { getArticleImage, getBlurDataUrl } from '@/lib/utils/image';
 import React from 'react';
 
 type LayoutType = 'grid' | 'featured' | 'horizontal' | 'three-column' | 'compact' | 'list' | 'opinion' | 'entertainment';
@@ -203,6 +203,8 @@ export function CategorySection({ category, articles, layout = 'grid' }: Categor
                 fill
                 className="object-cover transition-transform duration-300 group-hover:scale-105"
                 sizes="(max-width: 768px) 100vw, 400px"
+                placeholder="blur"
+                blurDataURL={getBlurDataUrl()}
               />
             </Link>
             <Link href={`/article/${article.slug}`}>

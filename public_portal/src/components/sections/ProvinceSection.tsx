@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Article } from '@/types';
 
 import { cn } from '@/lib/utils';
-import { getArticleImage } from '@/lib/utils/image';
+import { getArticleImage, getBlurDataUrl } from '@/lib/utils/image';
 
 interface ProvinceData {
   slug: string;
@@ -57,12 +57,14 @@ export function ProvinceSection({ provinces }: ProvinceSectionProps) {
                        className="block relative aspect-[16/10] rounded-lg overflow-hidden mb-2"
                      >
                        <Image
-                         src={getArticleImage(featuredArticle)}
-                         alt={featuredArticle.title || ''}
-                         fill
-                        className="object-cover transition-transform duration-300 group-hover:scale-105"
-                        sizes="(max-width: 768px) 100vw, 400px"
-                      />
+                          src={getArticleImage(featuredArticle)}
+                          alt={featuredArticle.title || ''}
+                          fill
+                         className="object-cover transition-transform duration-300 group-hover:scale-105"
+                         sizes="(max-width: 768px) 100vw, 400px"
+                         placeholder="blur"
+                         blurDataURL={getBlurDataUrl()}
+                       />
                     </Link>
                      <Link href={`/article/${featuredArticle.slug}`}>
                        <h3 className={cn(

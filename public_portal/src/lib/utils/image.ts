@@ -24,3 +24,7 @@ export function getAuthorAvatar(
   }
   return "/images/avatar-placeholder.jpg";
 }
+
+export function getBlurDataUrl(): string {
+  return "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2UyZThmMCIvPjwvc3ZnPg==";
+}

@@ -6,7 +6,7 @@ import { Article, Category } from '@/types';
 
 import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { getArticleImage } from '@/lib/utils/image';
+import { getArticleImage, getBlurDataUrl } from '@/lib/utils/image';
 
 interface EconomySectionProps {
   articles: Article[];
@@ -56,6 +56,8 @@ export function EconomySection({ articles, category }: EconomySectionProps) {
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
                 sizes="(max-width: 1024px) 100vw, 700px"
+                placeholder="blur"
+                blurDataURL={getBlurDataUrl()}
               />
             </Link>
             <Link href={`/article/${featuredArticle.slug}`}>
@@ -81,6 +83,8 @@ export function EconomySection({ articles, category }: EconomySectionProps) {
                          fill
                         className="object-cover transition-transform duration-300 group-hover:scale-105"
                         sizes="(max-width: 768px) 112px, 120px"
+                        placeholder="blur"
+                        blurDataURL={getBlurDataUrl()}
                       />
                     </div>
                   </Link>

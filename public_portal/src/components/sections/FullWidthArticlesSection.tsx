@@ -6,7 +6,7 @@ import { Clock } from 'lucide-react';
 import { Article } from '@/types';
 
 import { getRelativeTime, cn } from '@/lib/utils';
-import { getArticleImage } from '@/lib/utils/image';
+import { getArticleImage, getBlurDataUrl } from '@/lib/utils/image';
 
 import { Featured1Ad, Featured2Ad, Featured3Ad } from '@/components/ads/AdSlot';
 
@@ -78,6 +78,9 @@ export function FullWidthArticlesSection({ articles }: FullWidthArticlesSectionP
                      fill
                      className="object-cover transition-transform duration-700 group-hover:scale-105"
                      sizes="(max-width: 1200px) 100vw"
+                     placeholder="blur"
+                     blurDataURL={getBlurDataUrl()}
+                     priority={index === 0}
                    />
                  </Link>
               )}

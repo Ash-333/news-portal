@@ -6,7 +6,7 @@ import { Article, Category } from '@/types';
 
 import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { getArticleImage, getAuthorAvatar } from '@/lib/utils/image';
+import { getArticleImage, getAuthorAvatar, getBlurDataUrl } from '@/lib/utils/image';
 
 interface StoryOpinionSectionProps {
   storyArticles: Article[];
@@ -67,6 +67,8 @@ export function StoryOpinionSection({
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                   sizes="(max-width: 1024px) 100vw, 700px"
+                  placeholder="blur"
+                  blurDataURL={getBlurDataUrl()}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-4 flex flex-col justify-end">
@@ -88,28 +90,30 @@ export function StoryOpinionSection({
                      href={`/article/${article.slug}`}
                      className="block relative aspect-[4/3] rounded-lg overflow-hidden mb-2"
                    >
-                     <Image
-                       src={getArticleImage(article)}
-                       alt={article.title || 'Article'}
-                       fill
-                       className="object-cover transition-transform duration-300 group-hover:scale-105"
-                       sizes="(max-width: 768px) 50vw, 150px"
-                     />
-                   </Link>
-                   <Link href={`/article/${article.slug}`}>
-                     <h3 className={cn(
-                       'font-bold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-news-red transition-colors',
-                       'font-nepali text-xs sm:text-sm leading-relaxed'
-                     )}>
-                       {article.title || ''}
-                     </h3>
-                   </Link>
-                 </article>
-               ))}
-             </div>
-          </div>
+                      <Image
+                        src={getArticleImage(article)}
+                        alt={article.title || 'Article'}
+                        fill
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                        sizes="(max-width: 768px) 50vw, 150px"
+                        placeholder="blur"
+                        blurDataURL={getBlurDataUrl()}
+                      />
+                    </Link>
+                    <Link href={`/article/${article.slug}`}>
+                      <h3 className={cn(
+                        'font-bold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-news-red transition-colors',
+                        'font-nepali text-xs sm:text-sm leading-relaxed'
+                      )}>
+                        {article.title || ''}
+                      </h3>
+                    </Link>
+                  </article>
+                ))}
+              </div>
+           </div>
 
-          {/* RIGHT: Opinion - 30% - List Only */}
+           {/* RIGHT: Opinion - 30% - List Only */}
           <div className="lg:col-span-4">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
@@ -139,13 +143,15 @@ export function StoryOpinionSection({
                    <article key={article.id} className="group flex gap-3 items-start">
                      <Link href={`/article/${article.slug}`} className="shrink-0 relative w-24 h-24 rounded-full overflow-hidden bg-news-red">
                        {article.author?.image ? (
-                         <Image
-                           src={getAuthorAvatar(article.author.image, authorName)}
-                           alt={authorName || 'Author'}
-                           fill
-                           className="object-cover"
-                           sizes="96px"
-                         />
+                          <Image
+                            src={getAuthorAvatar(article.author.image, authorName)}
+                            alt={authorName || 'Author'}
+                            fill
+                            className="object-cover"
+                            sizes="96px"
+                            placeholder="blur"
+                            blurDataURL={getBlurDataUrl()}
+                          />
                        ) : (
                          <div className="w-full h-full flex items-center justify-center text-white text-sm font-bold">
                            {authorInitial}

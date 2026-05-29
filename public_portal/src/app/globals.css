@@ -208,3 +208,11 @@
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/* Image container background fallback - prevents white flash while loading */
+.bg-image-fallback {
+  background-color: #f3f4f6;
+}
+.dark .bg-image-fallback {
+  background-color: #1f2937;
+}

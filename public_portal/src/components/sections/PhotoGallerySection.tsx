@@ -9,6 +9,7 @@ import { PhotoGallery } from '@/types'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import { getBlurDataUrl } from '@/lib/utils/image'
 
 export function PhotoGallerySection() {
   const { data: galleries = [], isLoading } = useQuery({
@@ -68,12 +69,14 @@ export function PhotoGallerySection() {
             <Link key={gallery.id} href={`/photos/${gallery.slug}/`}>
               <Card className="overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow">
                 <div className="relative aspect-video bg-slate-100 dark:bg-slate-800">
-                  {gallery.coverImage ? (
+                    {gallery.coverImage ? (
                       <Image
                        src={gallery.coverImage.url}
                        alt={gallery.title || ''}
                        fill
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      placeholder="blur"
+                      blurDataURL={getBlurDataUrl()}
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-slate-400 text-xs">
