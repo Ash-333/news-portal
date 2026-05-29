@@ -6,7 +6,7 @@ import { Article, Category } from '@/types';
 
 import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { getArticleImage, getBlurDataUrl } from '@/lib/utils/image';
+import { getArticleImage, getBlurDataUrl, isCDNImage } from '@/lib/utils/image';
 
 interface LifestyleHealthSectionProps {
   lifestyleCategory: Category;
@@ -82,6 +82,7 @@ export function LifestyleHealthSection({
                           sizes="96px"
                           placeholder="blur"
                           blurDataURL={getBlurDataUrl()}
+                          unoptimized={isCDNImage(getArticleImage(article))}
                         />
                      </div>
                    </Link>
@@ -134,6 +135,7 @@ export function LifestyleHealthSection({
                    sizes="(max-width: 1024px) 100vw, 500px"
                    placeholder="blur"
                    blurDataURL={getBlurDataUrl()}
+                   unoptimized={isCDNImage(getArticleImage(healthFeatured))}
                  />
               </Link>
             )}
@@ -162,6 +164,7 @@ export function LifestyleHealthSection({
                           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 200px"
                           placeholder="blur"
                           blurDataURL={getBlurDataUrl()}
+                          unoptimized={isCDNImage(getArticleImage(article))}
                         />
                      </div>
                      <h5 className={cn(

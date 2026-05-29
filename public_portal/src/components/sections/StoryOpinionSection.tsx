@@ -6,7 +6,7 @@ import { Article, Category } from '@/types';
 
 import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { getArticleImage, getAuthorAvatar, getBlurDataUrl } from '@/lib/utils/image';
+import { getArticleImage, getAuthorAvatar, getBlurDataUrl, isCDNImage } from '@/lib/utils/image';
 
 interface StoryOpinionSectionProps {
   storyArticles: Article[];
@@ -69,6 +69,7 @@ export function StoryOpinionSection({
                   sizes="(max-width: 1024px) 100vw, 700px"
                   placeholder="blur"
                   blurDataURL={getBlurDataUrl()}
+                  unoptimized={isCDNImage(getArticleImage(displayStory[0]))}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-4 flex flex-col justify-end">
@@ -98,6 +99,7 @@ export function StoryOpinionSection({
                         sizes="(max-width: 768px) 50vw, 150px"
                         placeholder="blur"
                         blurDataURL={getBlurDataUrl()}
+                        unoptimized={isCDNImage(getArticleImage(article))}
                       />
                     </Link>
                     <Link href={`/article/${article.slug}`}>
@@ -151,6 +153,7 @@ export function StoryOpinionSection({
                             sizes="96px"
                             placeholder="blur"
                             blurDataURL={getBlurDataUrl()}
+                            unoptimized={isCDNImage(getAuthorAvatar(article.author.image, authorName))}
                           />
                        ) : (
                          <div className="w-full h-full flex items-center justify-center text-white text-sm font-bold">

@@ -9,7 +9,7 @@ import { PhotoGallery } from '@/types'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { getBlurDataUrl } from '@/lib/utils/image'
+import { getBlurDataUrl, isCDNImage } from '@/lib/utils/image'
 
 export function PhotoGallerySection() {
   const { data: galleries = [], isLoading } = useQuery({
@@ -77,6 +77,7 @@ export function PhotoGallerySection() {
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
                       placeholder="blur"
                       blurDataURL={getBlurDataUrl()}
+                      unoptimized={isCDNImage(gallery.coverImage.url)}
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-slate-400 text-xs">

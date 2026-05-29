@@ -6,7 +6,7 @@ import { Article, Category } from '@/types';
 
 import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { getArticleImage, getBlurDataUrl } from '@/lib/utils/image';
+import { getArticleImage, getBlurDataUrl, isCDNImage } from '@/lib/utils/image';
 
 interface EconomySectionProps {
   articles: Article[];
@@ -58,6 +58,7 @@ export function EconomySection({ articles, category }: EconomySectionProps) {
                 sizes="(max-width: 1024px) 100vw, 700px"
                 placeholder="blur"
                 blurDataURL={getBlurDataUrl()}
+                unoptimized={isCDNImage(getArticleImage(featuredArticle))}
               />
             </Link>
             <Link href={`/article/${featuredArticle.slug}`}>
@@ -85,6 +86,7 @@ export function EconomySection({ articles, category }: EconomySectionProps) {
                         sizes="(max-width: 768px) 112px, 120px"
                         placeholder="blur"
                         blurDataURL={getBlurDataUrl()}
+                        unoptimized={isCDNImage(getArticleImage(article))}
                       />
                     </div>
                   </Link>

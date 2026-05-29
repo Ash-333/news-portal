@@ -6,7 +6,7 @@ import { Clock } from 'lucide-react';
 import { Article } from '@/types';
 
 import { getRelativeTime, cn } from '@/lib/utils';
-import { getArticleImage, getBlurDataUrl } from '@/lib/utils/image';
+import { getArticleImage, getBlurDataUrl, isCDNImage } from '@/lib/utils/image';
 
 import { Featured1Ad, Featured2Ad, Featured3Ad } from '@/components/ads/AdSlot';
 
@@ -81,6 +81,7 @@ export function FullWidthArticlesSection({ articles }: FullWidthArticlesSectionP
                      placeholder="blur"
                      blurDataURL={getBlurDataUrl()}
                      priority={index === 0}
+                     unoptimized={isCDNImage(getArticleImage(article))}
                    />
                  </Link>
               )}

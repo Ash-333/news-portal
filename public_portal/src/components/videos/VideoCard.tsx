@@ -5,7 +5,7 @@ import { VideoUpdate } from '@/types';
 import { cn } from '@/lib/utils';
 import { Play, Calendar, User } from 'lucide-react';
 import Image from 'next/image';
-import { getBlurDataUrl } from '@/lib/utils/image';
+import { getBlurDataUrl, isCDNImage } from '@/lib/utils/image';
 
 interface VideoCardProps {
   video: VideoUpdate;
@@ -25,6 +25,7 @@ export function VideoCard({ video }: VideoCardProps) {
           sizes="(max-width: 768px) 100vw, 400px"
           placeholder="blur"
           blurDataURL={getBlurDataUrl()}
+          unoptimized={isCDNImage(video.thumbnailUrl)}
         />
         <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">
           <div className="w-12 h-12 rounded-full bg-white/90 text-news-red flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">

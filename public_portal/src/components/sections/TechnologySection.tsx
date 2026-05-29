@@ -6,7 +6,7 @@ import { Article, Category } from '@/types';
 
 import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { getArticleImage, getBlurDataUrl } from '@/lib/utils/image';
+import { getArticleImage, getBlurDataUrl, isCDNImage } from '@/lib/utils/image';
 
 interface TechnologySectionProps {
   articles: Article[];
@@ -58,6 +58,7 @@ export function TechnologySection({ articles, category }: TechnologySectionProps
                 sizes="(max-width: 1024px) 100vw, 600px"
                 placeholder="blur"
                 blurDataURL={getBlurDataUrl()}
+                unoptimized={isCDNImage(getArticleImage(featuredArticle))}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-4 flex flex-col justify-end">
@@ -86,6 +87,7 @@ export function TechnologySection({ articles, category }: TechnologySectionProps
                         sizes="96px"
                         placeholder="blur"
                         blurDataURL={getBlurDataUrl()}
+                        unoptimized={isCDNImage(getArticleImage(article))}
                       />
                     </div>
                   </Link>

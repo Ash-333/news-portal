@@ -8,7 +8,7 @@ import { ArrowRight, TrendingUp } from 'lucide-react';
 import { AdBox } from '@/components/ads/AdBox';
 import { PollCard } from '@/components/polls/PollCard';
 import { cn } from '@/lib/utils';
-import { getArticleImage, getBlurDataUrl } from '@/lib/utils/image';
+import { getArticleImage, getBlurDataUrl, isCDNImage } from '@/lib/utils/image';
 
 interface NewsSectionProps {
   articles: Article[];
@@ -67,6 +67,7 @@ export function NewsSection({ articles, category, poll, mostReadArticles = [] }:
                 priority
                 placeholder="blur"
                 blurDataURL={getBlurDataUrl()}
+                unoptimized={isCDNImage(getArticleImage(featuredArticle))}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-5 md:p-6 flex flex-col justify-end">
@@ -106,6 +107,7 @@ export function NewsSection({ articles, category, poll, mostReadArticles = [] }:
                         sizes="(max-width: 768px) 96px, 128px"
                         placeholder="blur"
                         blurDataURL={getBlurDataUrl()}
+                        unoptimized={isCDNImage(getArticleImage(article))}
                       />
                     </Link>
                     <div className="flex-1 min-w-0">

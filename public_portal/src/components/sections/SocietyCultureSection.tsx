@@ -6,7 +6,7 @@ import { Article, Category } from '@/types';
 
 import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { getArticleImage, getBlurDataUrl } from '@/lib/utils/image';
+import { getArticleImage, getBlurDataUrl, isCDNImage } from '@/lib/utils/image';
 
 interface SocietyCultureSectionProps {
   societyCategory: Category;
@@ -84,6 +84,7 @@ export function SocietyCultureSection({
                   sizes="(max-width: 1024px) 100vw, 500px"
                   placeholder="blur"
                   blurDataURL={getBlurDataUrl()}
+                  unoptimized={isCDNImage(getArticleImage(societyFeatured))}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-4 flex flex-col justify-end">
@@ -113,6 +114,7 @@ export function SocietyCultureSection({
                         sizes="(max-width: 768px) 100vw, 150px"
                         placeholder="blur"
                         blurDataURL={getBlurDataUrl()}
+                        unoptimized={isCDNImage(getArticleImage(article))}
                       />
                     </Link>
                    <Link href={`/article/${article.slug}`}>
@@ -160,11 +162,12 @@ export function SocietyCultureSection({
                     alt={cultureFeatured.title || ''}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    sizes="(max-width: 1024px) 100vw, 500px"
-                    placeholder="blur"
-                    blurDataURL={getBlurDataUrl()}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                     sizes="(max-width: 1024px) 100vw, 500px"
+                     placeholder="blur"
+                     blurDataURL={getBlurDataUrl()}
+                     unoptimized={isCDNImage(getArticleImage(cultureFeatured))}
+                   />
+                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                  <div className="absolute bottom-0 left-0 right-0 p-4 flex flex-col justify-end">
                    <h4 className={cn(
                      'font-bold text-white line-clamp-2 group-hover:text-red-300 transition-colors',
@@ -192,6 +195,7 @@ export function SocietyCultureSection({
                         sizes="(max-width: 768px) 100vw, 150px"
                         placeholder="blur"
                         blurDataURL={getBlurDataUrl()}
+                        unoptimized={isCDNImage(getArticleImage(article))}
                       />
                     </Link>
                    <Link href={`/article/${article.slug}`}>

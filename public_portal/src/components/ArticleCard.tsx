@@ -6,7 +6,7 @@ import { Clock } from 'lucide-react';
 import { Article } from '@/types';
 
 import { getRelativeTime, toNepaliDigits, cn } from '@/lib/utils';
-import { getArticleImage, getBlurDataUrl } from '@/lib/utils/image';
+import { getArticleImage, getBlurDataUrl, isCDNImage } from '@/lib/utils/image';
 
 interface ArticleCardProps {
   article: Article;
@@ -43,6 +43,7 @@ export function ArticleCard({
               sizes="(max-width: 640px) 128px, 160px"
               placeholder="blur"
               blurDataURL={getBlurDataUrl()}
+              unoptimized={isCDNImage(getArticleImage(article))}
             />
           </div>
         </Link>
@@ -108,6 +109,7 @@ export function ArticleCard({
             sizes="(max-width: 768px) 100vw, 300px"
             placeholder="blur"
             blurDataURL={getBlurDataUrl()}
+            unoptimized={isCDNImage(getArticleImage(article))}
           />
         </Link>
         <Link href={`/article/${article.slug}`}>
@@ -140,6 +142,7 @@ export function ArticleCard({
             priority
             placeholder="blur"
             blurDataURL={getBlurDataUrl()}
+            unoptimized={isCDNImage(getArticleImage(article))}
           />
           {/* Much stronger and taller gradient to make text super legible */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
@@ -187,6 +190,7 @@ export function ArticleCard({
           sizes="(max-width: 768px) 100vw, 400px"
           placeholder="blur"
           blurDataURL={getBlurDataUrl()}
+          unoptimized={isCDNImage(getArticleImage(article))}
         />
       </Link>
       {showCategory && (

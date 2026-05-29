@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Article } from '@/types';
 
 import { cn } from '@/lib/utils';
-import { getArticleImage, getBlurDataUrl } from '@/lib/utils/image';
+import { getArticleImage, getBlurDataUrl, isCDNImage } from '@/lib/utils/image';
 
 interface ProvinceData {
   slug: string;
@@ -64,6 +64,7 @@ export function ProvinceSection({ provinces }: ProvinceSectionProps) {
                          sizes="(max-width: 768px) 100vw, 400px"
                          placeholder="blur"
                          blurDataURL={getBlurDataUrl()}
+                         unoptimized={isCDNImage(getArticleImage(featuredArticle))}
                        />
                     </Link>
                      <Link href={`/article/${featuredArticle.slug}`}>

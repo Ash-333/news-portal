@@ -9,7 +9,7 @@ import { ArticleCard } from '@/components/ArticleCard';
 import { AdPlaceholder } from '@/components/ui/AdPlaceholder';
 import { cn } from '@/lib/utils';
 
-import { getArticleImage, getBlurDataUrl } from '@/lib/utils/image';
+import { getArticleImage, getBlurDataUrl, isCDNImage } from '@/lib/utils/image';
 import React from 'react';
 
 type LayoutType = 'grid' | 'featured' | 'horizontal' | 'three-column' | 'compact' | 'list' | 'opinion' | 'entertainment';
@@ -205,6 +205,7 @@ export function CategorySection({ category, articles, layout = 'grid' }: Categor
                 sizes="(max-width: 768px) 100vw, 400px"
                 placeholder="blur"
                 blurDataURL={getBlurDataUrl()}
+                unoptimized={isCDNImage(getArticleImage(article))}
               />
             </Link>
             <Link href={`/article/${article.slug}`}>
