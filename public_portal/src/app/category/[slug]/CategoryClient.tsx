@@ -4,7 +4,7 @@ import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArticleCard } from '@/components/ArticleCard';
-import { getArticleImage } from '@/lib/utils/image';
+import { getArticleImage, getBlurDataUrl, isCDNImage } from '@/lib/utils/image';
 
 import { getArticles } from '@/lib/api/articles';
 import { Category, Article } from '@/types';
@@ -179,6 +179,9 @@ export function CategoryClient({ initialArticles, initialPagination, category, s
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
                       sizes="(max-width: 1024px) 100vw, 1200px"
                       priority
+                      unoptimized={isCDNImage(getArticleImage(featuredArticle))}
+                      placeholder="blur"
+                      blurDataURL={getBlurDataUrl()}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                     <div className="absolute bottom-0 left-0 right-0 p-6">

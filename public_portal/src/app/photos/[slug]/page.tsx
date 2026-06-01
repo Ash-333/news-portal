@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 import { getPhotoGalleryBySlug } from '@/lib/api/photo-galleries'
+import { getBlurDataUrl, isCDNImage } from '@/lib/utils/image'
 
 export const dynamic = 'force-dynamic'
 
@@ -72,6 +73,9 @@ export default async function PhotoGalleryDetailPage({ params }: PhotoGalleryPag
                     alt={photo.media.altText || caption || ''}
                     fill
                     className="object-cover"
+                    unoptimized={isCDNImage(photo.media.url)}
+                    placeholder="blur"
+                    blurDataURL={getBlurDataUrl()}
                   />
                   {caption && (
                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">

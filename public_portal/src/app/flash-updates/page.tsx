@@ -7,7 +7,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { getArticles } from '@/lib/api/articles';
 import { Article, ApiResponse } from '@/types';
 import { cn } from '@/lib/utils';
-import { getArticleImage } from '@/lib/utils/image';
+import { getArticleImage, getBlurDataUrl, isCDNImage } from '@/lib/utils/image';
 import { ArticleCard } from '@/components/ArticleCard';
 
 export default function FlashUpdatesPage() {
@@ -74,6 +74,9 @@ export default function FlashUpdatesPage() {
                               className="object-cover transition-transform duration-700 group-hover:scale-105"
                               sizes="(max-width: 1024px) 100vw, 1200px"
                               priority
+                              unoptimized={isCDNImage(getArticleImage(featuredArticle))}
+                              placeholder="blur"
+                              blurDataURL={getBlurDataUrl()}
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
                             <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">

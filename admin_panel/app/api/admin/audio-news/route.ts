@@ -146,6 +146,7 @@ export async function POST(req: NextRequest) {
     const audioFile = formData.get("audioFile") as File | null;
     const thumbnailFile = formData.get("thumbnailFile") as File | null;
     const thumbnailUrl = formData.get("thumbnailUrl") as string | null;
+    const authorId = formData.get("authorId") as string | null;
 
     // Validate required fields
     if (!title) {
@@ -205,7 +206,7 @@ export async function POST(req: NextRequest) {
         thumbnailUrl: thumbnailUrlValue || undefined,
         categoryId: categoryId || undefined,
         isPublished,
-        authorId: authenticatedReq.user!.id,
+        authorId: authorId || authenticatedReq.user!.id,
       },
     });
 

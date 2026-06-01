@@ -428,6 +428,7 @@ export const photoGallerySchema = z.object({
     .uuid("Invalid cover image")
     .optional()
     .or(z.literal("")),
+  authorId: z.string().uuid("Invalid author").optional().or(z.literal("")),
   photos: z
     .array(
       z.object({

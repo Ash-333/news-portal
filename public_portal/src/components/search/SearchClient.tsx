@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Search, Filter, X } from 'lucide-react';
 
-import { getArticleImage } from '@/lib/utils/image';
+import { getArticleImage, getBlurDataUrl, isCDNImage } from '@/lib/utils/image';
 import { cn } from '@/lib/utils';
 import { useCategoriesQuery } from '@/hooks/useNewsQueries';
 import { useArticles } from '@/hooks/useArticles';
@@ -207,6 +207,9 @@ export function SearchClient() {
                           fill
                           className="object-cover transition-transform duration-300 group-hover:scale-105"
                           sizes="128px"
+                          unoptimized={isCDNImage(result.featuredImage)}
+                          placeholder="blur"
+                          blurDataURL={getBlurDataUrl()}
                         />
                       </div>
                     </Link>

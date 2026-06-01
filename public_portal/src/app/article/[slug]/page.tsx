@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Clock, Calendar, User, Eye } from 'lucide-react';
 import { JsonLd } from '@/components/JsonLd';
 import { NewsArticleJsonLd, BreadcrumbListJsonLd } from '@/lib/jsonLd';
-import { getArticleImage } from '@/lib/utils/image';
+import { getArticleImage, getBlurDataUrl, isCDNImage } from '@/lib/utils/image';
 import { ArticleContent } from '@/components/article/ArticleContent';
 import { ShareBar } from '@/components/article/ShareBar';
 import { AuthorBox } from '@/components/article/AuthorBox';
@@ -192,6 +192,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                   className="object-cover"
                   sizes="(max-width: 1024px) 100vw, 800px"
                   priority
+                  unoptimized={isCDNImage(getArticleImage(article as any))}
+                  placeholder="blur"
+                  blurDataURL={getBlurDataUrl()}
                 />
               </div>
 

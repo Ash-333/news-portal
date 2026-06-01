@@ -8,6 +8,7 @@ import { getCategories } from '@/lib/api/categories';
 import { JsonLd } from '@/components/JsonLd';
 import { BreadcrumbListJsonLd } from '@/lib/jsonLd';
 import { ProvincesClient } from './ProvincesClient';
+import { getBlurDataUrl, isCDNImage } from '@/lib/utils/image';
 
 export const dynamic = 'force-dynamic';
 
@@ -136,6 +137,9 @@ export default async function ProvincesPage() {
                         fill
                         className="object-cover transition-transform duration-300 group-hover:scale-105"
                         sizes="200px"
+                        unoptimized={isCDNImage(province.image)}
+                        placeholder="blur"
+                        blurDataURL={getBlurDataUrl()}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
                       <div className="absolute bottom-0 left-0 right-0 p-3">

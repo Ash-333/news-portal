@@ -10,6 +10,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { getPhotoGalleries } from '@/lib/api/photo-galleries'
+import { getBlurDataUrl, isCDNImage } from '@/lib/utils/image'
 
 interface PhotoGalleryItem {
   id: string
@@ -147,6 +148,9 @@ export default function PhotosPage() {
                                alt={gallery.title || ''}
                                fill
                               className="object-cover"
+                              unoptimized={isCDNImage(gallery.coverImage.url)}
+                              placeholder="blur"
+                              blurDataURL={getBlurDataUrl()}
                             />
                           ) : (
                             <div className="w-full h-full bg-muted flex items-center justify-center">

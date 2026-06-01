@@ -133,7 +133,7 @@ export async function POST(req: NextRequest) {
       return validation;
     }
 
-    const { title, excerpt, isPublished, coverImageId, photos } = validation;
+    const { title, excerpt, isPublished, coverImageId, authorId, photos } = validation;
 
     // Generate slug from English title
     const baseSlug = title
@@ -155,7 +155,7 @@ export async function POST(req: NextRequest) {
           title,
           excerpt: excerpt || null,
           slug,
-          authorId: authenticatedReq.user!.id,
+          authorId: authorId || authenticatedReq.user!.id,
           isPublished: Boolean(isPublished),
           coverImageId: coverImageId || null,
           photos: {

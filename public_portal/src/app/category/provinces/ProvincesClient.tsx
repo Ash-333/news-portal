@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Article } from '@/types';
 import { getArticles } from '@/lib/api/articles';
-import { getArticleImage } from '@/lib/utils/image';
+import { getArticleImage, getBlurDataUrl, isCDNImage } from '@/lib/utils/image';
 
 import { cn } from '@/lib/utils';
 
@@ -97,6 +97,9 @@ export function ProvincesClient({ initialArticles, initialPagination }: Province
                    fill
                   className="object-cover transition-transform duration-300 group-hover:scale-105"
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  unoptimized={isCDNImage(getArticleImage(article))}
+                  placeholder="blur"
+                  blurDataURL={getBlurDataUrl()}
                 />
               </div>
                  <h3 className={cn(
