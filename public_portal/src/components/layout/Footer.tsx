@@ -206,14 +206,17 @@ export function Footer() {
             <p className="text-sm text-gray-400">
               © {new Date().getFullYear()} HTC Media. सर्वाधिकार सुरक्षित।
             </p>
-            <div className="flex items-center gap-4">
-              <Link href="/privacy" className='text-sm text-gray-400 hover:text-news-red transition-colors'>
-                गोपनीयता
-              </Link>
-              <Link href="/terms" className='text-sm text-gray-400 hover:text-news-red transition-colors'>
-                सर्तहरू
-              </Link>
-            </div>
+            <p className="text-sm text-gray-400">
+              Designed and developed by{' '}
+              <a
+                href="https://maurisys.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-news-red hover:underline transition-colors"
+              >
+                Maurisys
+              </a>
+            </p>
           </div>
         </div>
       </div>
