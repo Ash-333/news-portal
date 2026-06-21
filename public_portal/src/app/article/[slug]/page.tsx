@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Clock, Calendar, User, Eye } from 'lucide-react';
+import { Clock, Calendar, Eye } from 'lucide-react';
 import { JsonLd } from '@/components/JsonLd';
 import { NewsArticleJsonLd, BreadcrumbListJsonLd } from '@/lib/jsonLd';
 import { getArticleImage, getBlurDataUrl, isCDNImage } from '@/lib/utils/image';
@@ -162,7 +162,22 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               {/* Meta Row */}
               <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500 mb-6 pb-6 border-b border-news-border dark:border-news-border-dark">
                 <div className="flex items-center gap-2">
-                  <User className="h-4 w-4" />
+                  {article.author.image ? (
+                    <div className="relative w-6 h-6 rounded-full overflow-hidden flex-shrink-0">
+                      <Image
+                        src={article.author.image}
+                        alt={article.author.name || ''}
+                        fill
+                        className="object-cover"
+                        sizes="24px"
+                        unoptimized={isCDNImage(article.author.image)}
+                      />
+                    </div>
+                  ) : (
+                    <span className="w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-[10px] font-bold text-news-blue dark:text-blue-400 select-none flex-shrink-0">
+                      {(article.author.name || '??').substring(0, 2).toUpperCase()}
+                    </span>
+                  )}
                   <Link href={`/author/${article.author.slug}`} className="hover:text-news-red">
                     {article.author.name}
                   </Link>

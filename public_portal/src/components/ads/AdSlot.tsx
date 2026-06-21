@@ -73,12 +73,13 @@ export function AdSlot({ position, className }: AdSlotProps) {
       onClick={handleAdClick}
     >
       {mediaType === 'image' || mediaType === 'gif' ? (
-        <div className="relative w-full min-h-[250px]">
+        <div className="relative w-full min-h-[120px] sm:min-h-[180px] md:min-h-[250px]">
           <Image
             src={ad.mediaUrl}
             alt={ad.title || 'Advertisement'}
             fill
-            className="object-cover"
+            className="object-contain"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 728px"
           />
         </div>
       ) : mediaType === 'video' ? (
@@ -101,41 +102,41 @@ export function AdSlot({ position, className }: AdSlotProps) {
 
 // Pre-defined ad positions for easy reuse
 export function SidebarAd({ className }: { className?: string }) {
-  return <AdSlot position="SIDEBAR" className={cn('min-h-[250px]', className)} />;
+  return <AdSlot position="SIDEBAR" className={cn('min-h-[180px] sm:min-h-[250px]', className)} />;
 }
 
 export function BannerAd({ className }: { className?: string }) {
-  return <AdSlot position="BANNER" className={cn('min-h-[90px]', className)} />;
+  return <AdSlot position="BANNER" className={cn('min-h-[60px] sm:min-h-[90px]', className)} />;
 }
 
 export function InArticleAd({ className }: { className?: string }) {
-  return <AdSlot position="IN_ARTICLE" className={cn('min-h-[250px] my-4', className)} />;
+  return <AdSlot position="IN_ARTICLE" className={cn('min-h-[180px] sm:min-h-[250px] my-4', className)} />;
 }
 
 export function ArticleTitleAd({ className }: { className?: string }) {
-  return <AdSlot position="ARTICLE_TITLE" className={cn('min-h-[250px] my-4', className)} />;
+  return <AdSlot position="ARTICLE_TITLE" className={cn('min-h-[180px] sm:min-h-[250px] my-4', className)} />;
 }
 
 export function ArticleExcerptAd({ className }: { className?: string }) {
-  return <AdSlot position="ARTICLE_EXCERPT" className={cn('min-h-[250px] my-4', className)} />;
+  return <AdSlot position="ARTICLE_EXCERPT" className={cn('min-h-[180px] sm:min-h-[250px] my-4', className)} />;
 }
 
 export function ArticleEndAd({ className }: { className?: string }) {
-  return <AdSlot position="ARTICLE_END" className={cn('min-h-[250px] my-4', className)} />;
+  return <AdSlot position="ARTICLE_END" className={cn('min-h-[180px] sm:min-h-[250px] my-4', className)} />;
 }
 
 export function Featured1Ad({ className }: { className?: string }) {
-  return <AdSlot position="FEATURED_1" className={cn('min-h-[250px] my-4', className)} />;
+  return <AdSlot position="FEATURED_1" className={cn('w-full min-h-[120px] sm:min-h-[180px] md:min-h-[250px]', className)} />;
 }
 
 export function Featured2Ad({ className }: { className?: string }) {
-  return <AdSlot position="FEATURED_2" className={cn('min-h-[250px] my-4', className)} />;
+  return <AdSlot position="FEATURED_2" className={cn('w-full min-h-[120px] sm:min-h-[180px] md:min-h-[250px]', className)} />;
 }
 
 export function Featured3Ad({ className }: { className?: string }) {
-  return <AdSlot position="FEATURED_3" className={cn('min-h-[250px] my-4', className)} />;
+  return <AdSlot position="FEATURED_3" className={cn('w-full min-h-[120px] sm:min-h-[180px] md:min-h-[250px]', className)} />;
 }
 
 export function HomeTopAd({ className }: { className?: string }) {
-  return <AdSlot position="HOME_TOP" className={cn('min-h-[90px]', className)} />;
+  return <AdSlot position="HOME_TOP" className={cn('min-h-[60px] sm:min-h-[90px]', className)} />;
 }

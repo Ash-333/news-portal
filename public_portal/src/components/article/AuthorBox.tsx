@@ -5,12 +5,14 @@ import Image from 'next/image';
 import { ArticleAuthor } from '@/types';
 
 import { cn } from '@/lib/utils';
+import { isCDNImage } from '@/lib/utils/image';
 
 interface AuthorBoxProps {
   author: ArticleAuthor;
 }
 
 export function AuthorBox({ author }: AuthorBoxProps) {
+  console.log('AuthorBox author:', author); // Debugging line
 
   const authorName = author.name || '';
 
@@ -18,15 +20,22 @@ export function AuthorBox({ author }: AuthorBoxProps) {
     <div className="bg-gray-50 dark:bg-news-card-dark rounded-xl p-6 my-8">
       <div className="flex items-start gap-4">
         <Link href={`/author/${author.slug}`}>
-          <div className="relative w-20 h-20 rounded-full overflow-hidden shrink-0">
-            <Image
-              src={author.image || author.profilePhoto || '/images/default-avatar.png'}
-              alt={authorName}
-              fill
-              className="object-cover"
-              sizes="80px"
-            />
-          </div>
+          {author.avatar ? (
+            <div className="relative w-20 h-20 rounded-full overflow-hidden shrink-0">
+              <Image
+                src={author.avatar}
+                alt={authorName}
+                fill
+                className="object-cover"
+                sizes="80px"
+                unoptimized={isCDNImage(author.avatar)}
+              />
+            </div>
+          ) : (
+            <div className="w-20 h-20 rounded-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center text-news-blue dark:text-blue-400 font-bold text-xl select-none shrink-0">
+              {(authorName || '??').substring(0, 2).toUpperCase()}
+            </div>
+          )}
         </Link>
         <div className="flex-1">
           <Link href={`/author/${author.slug}`}>

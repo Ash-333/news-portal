@@ -55,13 +55,25 @@ export function FullWidthArticlesSection({ articles }: FullWidthArticlesSectionP
               {/* Meta Information (Author + Time) - Always Visible */}
               <div className="flex items-center gap-4 text-sm font-medium text-gray-700 dark:text-gray-300 mb-6">
                  <div className="flex items-center gap-2">
-                   <span className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center text-news-blue dark:text-blue-400 font-bold text-xs select-none">
-                     {(article.author.name || '??').substring(0, 2).toUpperCase()}
-                   </span>
-                   <span className={cn('font-nepali')}>
-                     {article.author.name || ''}
-                   </span>
-                 </div>
+                    {article.author.image ? (
+                      <div className="relative w-8 h-8 rounded-full overflow-hidden border border-gray-200 dark:border-gray-700 flex-shrink-0">
+                        <Image
+                          src={article.author.image}
+                          alt={article.author.name || ''}
+                          fill
+                          className="object-cover"
+                          sizes="32px"
+                        />
+                      </div>
+                    ) : (
+                      <span className="w-8 h-8 rounded-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center text-news-blue dark:text-blue-400 font-bold text-xs select-none">
+                        {(article.author.name || '??').substring(0, 2).toUpperCase()}
+                      </span>
+                    )}
+                    <span className={cn('font-nepali')}>
+                      {article.author.name || ''}
+                    </span>
+                  </div>
 
                 <span className="flex items-center gap-1.5 whitespace-nowrap">
                   <Clock className="h-4 w-4" />

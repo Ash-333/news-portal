@@ -25,7 +25,7 @@ export function SectionSidebarAd({ position, className }: SectionSidebarAdProps)
     return (
       <AdPlaceholder 
         format="rectangle" 
-        className={cn('h-[250px] w-full', className)} 
+        className={cn('h-[180px] sm:h-[250px] w-full', className)} 
       />
     );
   }
@@ -34,7 +34,7 @@ export function SectionSidebarAd({ position, className }: SectionSidebarAdProps)
     // Return a placeholder to maintain layout
     return (
       <div className={cn(
-        "bg-gray-50 dark:bg-news-card-dark border border-dashed border-gray-200 dark:border-gray-800 rounded-lg flex items-center justify-center p-4 min-h-[250px]",
+        "bg-gray-50 dark:bg-news-card-dark border border-dashed border-gray-200 dark:border-gray-800 rounded-lg flex items-center justify-center p-4 min-h-[180px] sm:min-h-[250px]",
         className
       )}>
         <div className="flex flex-col items-center gap-1 text-gray-400 dark:text-gray-500">
