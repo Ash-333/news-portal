@@ -216,6 +216,15 @@ export function Footer() {
               >
                 Maurisys
               </a>
+              {' '}&{' '}
+              <a
+                href="https://lightwebgroup.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-news-red hover:underline transition-colors"
+              >
+                LightWebGroup
+              </a>
             </p>
           </div>
         </div>
