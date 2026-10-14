@@ -10,6 +10,7 @@ import { PageHeader } from '@/components/ui/page-header'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { EmptyState } from '@/components/ui/empty-state'
 import { DynamicIcon } from '@/components/ui/dynamic-icon'
+import { ZodiacImage } from '@/components/ui/zodiac-image'
 import { toast } from 'sonner'
 import {
   useHoroscopes,
@@ -156,8 +157,8 @@ export default function HoroscopesPage() {
             <div>
               <label className="text-sm font-medium">Icon</label>
               <div className="flex items-center gap-2 mt-1">
-                <DynamicIcon name={formData.icon} className="w-6 h-6 text-purple-500" />
-                <span className="text-sm text-slate-500">{formData.icon}</span>
+                <ZodiacImage sign={formData.zodiacSign} icon={formData.icon} className="w-10 h-10" />
+                <span className="text-sm text-slate-500">{formData.zodiacSign || '—'}</span>
               </div>
             </div>
               <div>
@@ -247,7 +248,7 @@ export default function HoroscopesPage() {
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <DynamicIcon name={horoscope.icon || getZodiacIcon(horoscope.zodiacSign)} className="w-6 h-6 text-purple-500" />
+                      <ZodiacImage sign={horoscope.zodiacSign} icon={horoscope.icon || getZodiacIcon(horoscope.zodiacSign)} className="w-10 h-10" />
                       <span className="text-sm font-medium text-slate-500 uppercase">{horoscope.zodiacSign}</span>
                       <span className={`px-2 py-0.5 rounded text-xs font-medium ${horoscope.isPublished ? 'bg-green-500 text-white' : 'bg-yellow-500 text-black'}`}>
                         {horoscope.isPublished ? 'Published' : 'Draft'}

@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useHoroscopes } from '@/hooks/useHoroscopes';
 
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import {
   ChevronLeft,
@@ -61,6 +62,28 @@ function getIconByName(iconName: string | undefined): LucideIcon {
   return ICON_MAP[iconName] || Star;
 }
 
+const ZODIAC_IMAGES = new Set([
+  'aries', 'taurus', 'gemini', 'cancer', 'leo', 'virgo', 'libra',
+  'scorpio', 'sagittarius', 'capricorn', 'aquarius', 'pisces',
+]);
+
+function ZodiacImage({ sign, icon, className, size }: { sign: string; icon?: string; className?: string; size: number }) {
+  if (ZODIAC_IMAGES.has(sign)) {
+    return (
+      <Image
+        src={`/zodiac/${sign}.jpeg`}
+        alt={ZODIAC_SIGN_MAP[sign] || sign}
+        width={size}
+        height={size}
+        unoptimized
+        className={cn('object-cover rounded-full', className)}
+      />
+    );
+  }
+  const Fallback = getIconByName(icon);
+  return <Fallback className={className} />;
+}
+
 interface HoroscopeSectionProps {
   className?: string;
 }
@@ -71,12 +94,6 @@ export function HoroscopeSection({ className }: HoroscopeSectionProps) {
   const { data: horoscopes, isLoading } = useHoroscopes();
 
   const selectedHoroscope = horoscopes?.find(h => h.zodiacSign === selectedSign);
-
-  // Get the icon component for the selected horoscope
-  const IconComponent = useMemo(
-    () => getIconByName(selectedHoroscope?.icon),
-    [selectedHoroscope?.icon]
-  );
 
   const handlePrevSign = () => {
     if (!horoscopes || horoscopes.length === 0) return;
@@ -133,7 +150,7 @@ export function HoroscopeSection({ className }: HoroscopeSectionProps) {
                   <ChevronLeft className="w-6 h-6" />
                 </button>
                 
-                <IconComponent className="w-20 h-20 text-white mb-4" />
+                <ZodiacImage sign={selectedSign} icon={selectedHoroscope?.icon} size={80} className="w-20 h-20 text-white mb-4" />
                 
                 <button
                   onClick={handleNextSign}
@@ -164,7 +181,6 @@ export function HoroscopeSection({ className }: HoroscopeSectionProps) {
         <div className="bg-white dark:bg-news-card-dark rounded-xl shadow-sm border border-news-border dark:border-news-border-dark p-6">
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-12 gap-3">
             {horoscopes?.map((horoscope) => {
-              const SignIcon = getIconByName(horoscope.icon);
               const isSelected = selectedSign === horoscope.zodiacSign;
               
               return (
@@ -178,7 +194,7 @@ export function HoroscopeSection({ className }: HoroscopeSectionProps) {
                       : 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400'
                   )}
                 >
-                  <SignIcon className="w-6 h-6 mb-1" />
+                  <ZodiacImage sign={horoscope.zodiacSign} icon={horoscope.icon} size={40} className="w-10 h-10 mb-1" />
                   <span className={cn('text-xs font-medium', 'font-nepali')}>
                     {ZODIAC_SIGN_MAP[horoscope.zodiacSign] || horoscope.zodiacSign}
                   </span>
