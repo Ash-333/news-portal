@@ -11,10 +11,24 @@ interface VideoCardProps {
   video: VideoUpdate;
 }
 
+// Prefer the stored YouTube URL; fall back to converting the embed URL into a watch URL
+function getWatchUrl(video: VideoUpdate): string | undefined {
+  if (video.youtubeUrl) return video.youtubeUrl;
+  const embedId = video.iframeUrl?.match(/youtube(?:-nocookie)?\.com\/embed\/([\w-]+)/)?.[1];
+  return embedId ? `https://www.youtube.com/watch?v=${embedId}` : undefined;
+}
+
 export function VideoCard({ video }: VideoCardProps) {
+  const watchUrl = getWatchUrl(video);
 
   return (
-    <div className="bg-white dark:bg-news-card-dark rounded-xl border border-news-border dark:border-news-border-dark overflow-hidden group hover:shadow-lg transition-all duration-300">
+    <a
+      href={watchUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={video.title ? `Watch on YouTube: ${video.title}` : 'Watch on YouTube'}
+      className="block bg-white dark:bg-news-card-dark rounded-xl border border-news-border dark:border-news-border-dark overflow-hidden group hover:shadow-lg transition-all duration-300"
+    >
       {/* Thumbnail */}
       <div className="relative aspect-video overflow-hidden bg-gray-100 dark:bg-gray-800">
         <Image
@@ -54,6 +68,6 @@ export function VideoCard({ video }: VideoCardProps) {
           </div>
         </div>
       </div>
-    </div>
+    </a>
   );
 }
